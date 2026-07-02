@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('lembagas', function (Blueprint $table) {
             $table->id();
             $table->string('nama_lembaga');
+            $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
     }

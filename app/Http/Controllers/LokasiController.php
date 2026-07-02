@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 
 class LokasiController extends Controller
@@ -11,7 +12,9 @@ class LokasiController extends Controller
      */
     public function index()
     {
-        //
+        $lokasis = Lokasi::all();
+
+        return view('lokasi.index', compact('lokasis'));
     }
 
     /**
@@ -19,7 +22,7 @@ class LokasiController extends Controller
      */
     public function create()
     {
-        //
+        return view('lokasi.create');
     }
 
     /**
@@ -27,7 +30,16 @@ class LokasiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_lokasi' => 'required|string|max:255',
+        ]);
+
+        Lokasi::create([
+            'nama_lokasi' => $request->nama_lokasi,
+        ]);
+
+        return redirect()->route('lokasi.index')
+            ->with('success', 'Data lokasi berhasil ditambahkan.');
     }
 
     /**
@@ -35,7 +47,9 @@ class LokasiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $lokasi = Lokasi::findOrFail($id);
+
+        return view('lokasi.show', compact('lokasi'));
     }
 
     /**
@@ -43,7 +57,9 @@ class LokasiController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $lokasi = Lokasi::findOrFail($id);
+
+        return view('lokasi.edit', compact('lokasi'));
     }
 
     /**
@@ -51,7 +67,18 @@ class LokasiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_lokasi' => 'required|string|max:255',
+        ]);
+
+        $lokasi = Lokasi::findOrFail($id);
+
+        $lokasi->update([
+            'nama_lokasi' => $request->nama_lokasi,
+        ]);
+
+        return redirect()->route('lokasi.index')
+            ->with('success', 'Data lokasi berhasil diperbarui.');
     }
 
     /**
@@ -59,6 +86,11 @@ class LokasiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $lokasi = Lokasi::findOrFail($id);
+
+        $lokasi->delete();
+
+        return redirect()->route('lokasi.index')
+            ->with('success', 'Data lokasi berhasil dihapus.');
     }
 }

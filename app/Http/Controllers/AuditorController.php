@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditor;
 use Illuminate\Http\Request;
 
 class AuditorController extends Controller
@@ -11,7 +12,9 @@ class AuditorController extends Controller
      */
     public function index()
     {
-        //
+        $auditors = Auditor::all();
+
+        return view('auditor.index', compact('auditors'));
     }
 
     /**
@@ -19,7 +22,7 @@ class AuditorController extends Controller
      */
     public function create()
     {
-        //
+        return view('auditor.create');
     }
 
     /**
@@ -27,7 +30,22 @@ class AuditorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_auditor' => 'required|string|max:255',
+            'nip' => 'required|string|max:255|unique:auditors,nip',
+            'jabatan' => 'required|string|max:255',
+            'status' => 'required|in:Aktif,Nonaktif',
+        ]);
+
+        Auditor::create([
+            'nama_auditor' => $request->nama_auditor,
+            'nip' => $request->nip,
+            'jabatan' => $request->jabatan,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('auditor.index')
+            ->with('success', 'Data auditor berhasil ditambahkan.');
     }
 
     /**
@@ -35,7 +53,9 @@ class AuditorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $auditor = Auditor::findOrFail($id);
+
+        return view('auditor.show', compact('auditor'));
     }
 
     /**
@@ -43,7 +63,9 @@ class AuditorController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $auditor = Auditor::findOrFail($id);
+
+        return view('auditor.edit', compact('auditor'));
     }
 
     /**
@@ -51,7 +73,24 @@ class AuditorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_auditor' => 'required|string|max:255',
+            'nip' => 'required|string|max:255|unique:auditors,nip,' . $id,
+            'jabatan' => 'required|string|max:255',
+            'status' => 'required|in:Aktif,Nonaktif',
+        ]);
+
+        $auditor = Auditor::findOrFail($id);
+
+        $auditor->update([
+            'nama_auditor' => $request->nama_auditor,
+            'nip' => $request->nip,
+            'jabatan' => $request->jabatan,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('auditor.index')
+            ->with('success', 'Data auditor berhasil diperbarui.');
     }
 
     /**
@@ -59,6 +98,11 @@ class AuditorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $auditor = Auditor::findOrFail($id);
+
+        $auditor->delete();
+
+        return redirect()->route('auditor.index')
+            ->with('success', 'Data auditor berhasil dihapus.');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lembaga;
 use Illuminate\Http\Request;
 
 class LembagaController extends Controller
@@ -11,7 +12,9 @@ class LembagaController extends Controller
      */
     public function index()
     {
-        //
+        $lembagas = Lembaga::all();
+
+        return view('lembaga.index', compact('lembagas'));
     }
 
     /**
@@ -19,7 +22,7 @@ class LembagaController extends Controller
      */
     public function create()
     {
-        //
+        return view('lembaga.create');
     }
 
     /**
@@ -27,7 +30,18 @@ class LembagaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_lembaga' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        Lembaga::create([
+            'nama_lembaga' => $request->nama_lembaga,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        return redirect()->route('lembaga.index')
+            ->with('success', 'Data lembaga berhasil ditambahkan.');
     }
 
     /**
@@ -35,7 +49,9 @@ class LembagaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $lembaga = Lembaga::findOrFail($id);
+
+        return view('lembaga.show', compact('lembaga'));
     }
 
     /**
@@ -43,7 +59,9 @@ class LembagaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $lembaga = Lembaga::findOrFail($id);
+
+        return view('lembaga.edit', compact('lembaga'));
     }
 
     /**
@@ -51,7 +69,20 @@ class LembagaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_lembaga' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        $lembaga = Lembaga::findOrFail($id);
+
+        $lembaga->update([
+            'nama_lembaga' => $request->nama_lembaga,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        return redirect()->route('lembaga.index')
+            ->with('success', 'Data lembaga berhasil diperbarui.');
     }
 
     /**
@@ -59,6 +90,11 @@ class LembagaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $lembaga = Lembaga::findOrFail($id);
+
+        $lembaga->delete();
+
+        return redirect()->route('lembaga.index')
+            ->with('success', 'Data lembaga berhasil dihapus.');
     }
 }
