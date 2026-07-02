@@ -70,8 +70,8 @@
 
         .left-content p{
             width:75%;
-            font-size:18px;
-            line-height:1.6;
+            font-size:17px; /* dikurangi sedikit */
+            line-height:1.55;
             color:#f3f3f3;
             margin-bottom:28px;
         }
@@ -351,38 +351,18 @@
     <div class="left-content">
 
         <h1>
-            Sistem Penjadwalan <br>
-            Auditor BSPJI <br>
-            Palembang
+            SISTEM PENJADWALAN <br>
+            AUDITOR BSPJI <br>
+            PALEMBANG
         </h1>
 
         <p>
-            Sistem informasi penjadwalan auditor yang modern,
-            cepat, terintegrasi, dan memudahkan proses audit
-            di BSPJI Palembang.
+            <p>
+            Sistem Penjadwalan Auditor BSPJI Palembang hadir sebagai
+            solusi digital yang mendukung pengelolaan jadwal audit
+            secara terintegrasi, efisien, akurat, dan profesional.
+            </p>
         </p>
-
-        <div class="fitur">
-
-            <div class="fitur-card">
-                <i class="fas fa-calendar-days"></i>
-                <h5>Penjadwalan</h5>
-                <p>Kelola jadwal audit dengan mudah.</p>
-            </div>
-
-            <div class="fitur-card">
-                <i class="fas fa-users"></i>
-                <h5>Data Auditor</h5>
-                <p>Manajemen auditor lebih cepat.</p>
-            </div>
-
-            <div class="fitur-card">
-                <i class="fas fa-chart-column"></i>
-                <h5>Laporan</h5>
-                <p>Laporan audit secara realtime.</p>
-            </div>
-
-        </div>
 
     </div>
 
@@ -395,7 +375,7 @@
             <img src="{{ asset('images/logo.png') }}" class="logo">
 
             <h2 class="login-title">
-                LOGIN
+                LOGIN SIPAT
             </h2>
 
             <p class="subtitle">
