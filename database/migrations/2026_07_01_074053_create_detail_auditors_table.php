@@ -11,9 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_auditors', function (Blueprint $table) {
+       Schema::create('detail_auditors', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('auditor_id')
+                ->constrained('auditors')
+                ->cascadeOnDelete();
+
+            $table->foreignId('lembaga_id')
+                ->constrained('lembagas')
+                ->cascadeOnDelete();
+
+            $table->foreignId('ruang_lingkup_id')
+                ->constrained('ruang_lingkups')
+                ->cascadeOnDelete();
+
             $table->timestamps();
+
+            $table->unique([
+                'auditor_id',
+                'lembaga_id',
+                'ruang_lingkup_id'
+            ]);
         });
     }
 
