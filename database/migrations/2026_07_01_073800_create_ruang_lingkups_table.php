@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('ruang_lingkups', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('lembaga_id')
+                  ->constrained('lembagas')
+                  ->cascadeOnDelete();
+
+            $table->string('nama_ruang_lingkup');
+
             $table->timestamps();
         });
     }

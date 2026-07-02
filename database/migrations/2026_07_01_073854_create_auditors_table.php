@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('auditors', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_auditor');
+            $table->string('nip')->unique();
+            $table->string('jabatan');
+            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
             $table->timestamps();
         });
     }
