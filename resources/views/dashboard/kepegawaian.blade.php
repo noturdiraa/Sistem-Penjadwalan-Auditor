@@ -46,7 +46,7 @@
 
             top:0;
 
-            width:260px;
+            width:270px;
 
             height:100vh;
 
@@ -54,7 +54,9 @@
 
             color:white;
 
-            padding:25px 20px;
+            padding:14px 18px;
+
+            overflow-y:visible;
 
         }
 
@@ -62,7 +64,7 @@
 
             text-align:center;
 
-            margin-bottom:40px;
+            margin-bottom:18px;
 
         }
 
@@ -70,7 +72,7 @@
 
             width:70px;
 
-            margin-bottom:10px;
+            margin-bottom:8px;
 
         }
 
@@ -100,15 +102,11 @@
 
         .menu li{
 
-            margin-bottom:12px;
+            margin-bottom:10px;
 
         }
 
         .menu li a{
-
-            color:white;
-
-            text-decoration:none;
 
             display:flex;
 
@@ -119,6 +117,10 @@
             padding:14px 18px;
 
             border-radius:12px;
+
+            color:white;
+
+            text-decoration:none;
 
             transition:.3s;
 
@@ -140,7 +142,7 @@
 
         .content{
 
-            margin-left:260px;
+            margin-left:270px;
 
             min-height:100vh;
 
