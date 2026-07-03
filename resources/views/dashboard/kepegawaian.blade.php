@@ -1,186 +1,379 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'Dashboard Kepegawaian')
+<head>
 
-@section('content')
+    <meta charset="UTF-8">
 
-<div class="container-fluid">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Header -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <div>
-            <h2 class="fw-bold text-dark mb-1">Dashboard Kepegawaian</h2>
-            <p class="text-muted mb-0">
-                Selamat datang di Sistem Penjadwalan Auditor BSPJI Palembang.
-            </p>
-        </div>
+    <title>Dashboard Kepegawaian</title>
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Google Font -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:#f4f7fc;
+        }
+
+        /* ===================== SIDEBAR ===================== */
+
+        .sidebar{
+
+            position:fixed;
+
+            left:0;
+
+            top:0;
+
+            width:260px;
+
+            height:100vh;
+
+            background:#0F3D91;
+
+            color:white;
+
+            padding:25px 20px;
+
+        }
+
+        .logo{
+
+            text-align:center;
+
+            margin-bottom:40px;
+
+        }
+
+        .logo img{
+
+            width:70px;
+
+            margin-bottom:10px;
+
+        }
+
+        .logo h4{
+
+            font-weight:700;
+
+            margin:0;
+
+        }
+
+        .logo p{
+
+            font-size:13px;
+
+            opacity:.8;
+
+        }
+
+        .menu{
+
+            list-style:none;
+
+            padding:0;
+
+        }
+
+        .menu li{
+
+            margin-bottom:12px;
+
+        }
+
+        .menu li a{
+
+            color:white;
+
+            text-decoration:none;
+
+            display:flex;
+
+            align-items:center;
+
+            gap:15px;
+
+            padding:14px 18px;
+
+            border-radius:12px;
+
+            transition:.3s;
+
+        }
+
+        .menu li a:hover{
+
+            background:rgba(255,255,255,.15);
+
+        }
+
+        .menu .active{
+
+            background:#2563eb;
+
+        }
+
+        /* ===================== CONTENT ===================== */
+
+        .content{
+
+            margin-left:260px;
+
+            min-height:100vh;
+
+        }
+
+        .navbar-custom{
+
+            background:white;
+
+            padding:20px 35px;
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            box-shadow:0 5px 15px rgba(0,0,0,.05);
+
+        }
+
+        .search-box{
+
+            width:350px;
+
+        }
+
+        .search-box input{
+
+            border-radius:30px;
+
+            height:45px;
+
+        }
+
+        .right-menu{
+
+            display:flex;
+
+            align-items:center;
+
+            gap:25px;
+
+        }
+
+        .right-menu i{
+
+            font-size:20px;
+
+            cursor:pointer;
+
+        }
+
+        .profile{
+
+            display:flex;
+
+            align-items:center;
+
+            gap:10px;
+
+        }
+
+        .profile img{
+
+            width:45px;
+
+            height:45px;
+
+            border-radius:50%;
+
+            object-fit:cover;
+
+        }
+
+        .main{
+
+            padding:35px;
+
+        }
+
+        .main h2{
+
+            font-weight:700;
+
+        }
+
+        .main p{
+
+            color:#777;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <img src="{{ asset('images/logo.png') }}">
+
+        <h4>BSPJI</h4>
+
+        <p>Kepegawaian</p>
+
     </div>
 
-    <!-- Statistik -->
-    <div class="row">
+    <ul class="menu">
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
-                        style="width:60px;height:60px;">
-                        <i class="fas fa-users fa-lg"></i>
-                    </div>
+        <li>
 
-                    <div class="ms-3">
-                        <small class="text-muted">Total Auditor</small>
-                        <h3 class="fw-bold mb-0">28</h3>
-                    </div>
-                </div>
+            <a href="#" class="active">
+
+                <i class="fas fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fas fa-users"></i>
+
+                Kelola Auditor
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fas fa-user"></i>
+
+                Profil
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fas fa-right-from-bracket"></i>
+
+                Logout
+
+            </a>
+
+        </li>
+
+    </ul>
+
+</div>
+
+<!-- ================= CONTENT ================= -->
+
+<div class="content">
+
+    <div class="navbar-custom">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Cari...">
+
+        </div>
+
+        <div class="right-menu">
+
+            <i class="far fa-bell"></i>
+
+            <div class="profile">
+
+                <img src="{{ asset('images/logo.png') }}">
+
+                <span>Admin</span>
+
             </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center"
-                        style="width:60px;height:60px;">
-                        <i class="fas fa-user-check fa-lg"></i>
-                    </div>
-
-                    <div class="ms-3">
-                        <small class="text-muted">Auditor Aktif</small>
-                        <h3 class="fw-bold mb-0">25</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-warning text-white rounded-circle d-flex justify-content-center align-items-center"
-                        style="width:60px;height:60px;">
-                        <i class="fas fa-award fa-lg"></i>
-                    </div>
-
-                    <div class="ms-3">
-                        <small class="text-muted">Kompetensi</small>
-                        <h3 class="fw-bold mb-0">15</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-danger text-white rounded-circle d-flex justify-content-center align-items-center"
-                        style="width:60px;height:60px;">
-                        <i class="fas fa-user-clock fa-lg"></i>
-                    </div>
-
-                    <div class="ms-3">
-                        <small class="text-muted">Auditor Cuti</small>
-                        <h3 class="fw-bold mb-0">3</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Data Auditor -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between">
-
-            <h5 class="fw-bold mb-0">
-                Data Auditor
-            </h5>
-
-            <button class="btn btn-primary">
-                <i class="fas fa-plus"></i> Tambah Auditor
-            </button>
-
-        </div>
-
-        <div class="card-body">
-
-            <table class="table table-hover align-middle">
-
-                <thead class="table-light">
-
-                <tr>
-                    <th>No</th>
-                    <th>Nama Auditor</th>
-                    <th>NIP</th>
-                    <th>Jabatan</th>
-                    <th>Kompetensi</th>
-                    <th>Status</th>
-                </tr>
-
-                </thead>
-
-                <tbody>
-
-                <tr>
-                    <td>1</td>
-                    <td>Andi Saputra</td>
-                    <td>19870001</td>
-                    <td>Auditor Madya</td>
-                    <td>ISO 9001</td>
-                    <td><span class="badge bg-success">Aktif</span></td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Budi Santoso</td>
-                    <td>19880002</td>
-                    <td>Auditor Muda</td>
-                    <td>ISO 17025</td>
-                    <td><span class="badge bg-success">Aktif</span></td>
-                </tr>
-
-                <tr>
-                    <td>3</td>
-                    <td>Citra Lestari</td>
-                    <td>19900003</td>
-                    <td>Auditor</td>
-                    <td>ISO 22000</td>
-                    <td><span class="badge bg-warning">Cuti</span></td>
-                </tr>
-
-                </tbody>
-
-            </table>
 
         </div>
 
     </div>
 
-    <!-- Kompetensi & Aktivitas -->
-    <div class="row">
+    <div class="main">
 
-        <div class="col-lg-6">
+        <h2>Dashboard Kepegawaian</h2>
 
-            <div class="card border-0 shadow-sm rounded-4">
+        <p>
+            Selamat datang di Sistem Penjadwalan Auditor BSPJI Palembang
+        </p>
 
-                <div class="card-header bg-white border-0">
-                    <h5 class="fw-bold mb-0">Kompetensi Auditor</h5>
+        <!-- Card statistik akan kita lanjutkan di Bagian 2 -->
+         <!-- ================= CARD STATISTIK ================= -->
+
+<div class="row mt-4">
+
+    <div class="col-lg-3 col-md-6 mb-4">
+
+        <div class="card shadow border-0 rounded-4">
+
+            <div class="card-body d-flex align-items-center">
+
+                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+                    style="width:70px;height:70px;">
+
+                    <i class="fas fa-users fa-2x"></i>
+
                 </div>
 
-                <div class="card-body">
+                <div class="ms-3">
 
-                    <p>ISO 9001</p>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-primary" style="width:80%">80%</div>
-                    </div>
+                    <h6 class="text-muted mb-1">
+                        Total Auditor
+                    </h6>
 
-                    <p>ISO 17025</p>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-success" style="width:60%">60%</div>
-                    </div>
-
-                    <p>ISO 22000</p>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" style="width:40%">40%</div>
-                    </div>
+                    <h2 class="fw-bold mb-0">
+                        20
+                    </h2>
 
                 </div>
 
@@ -188,35 +381,92 @@
 
         </div>
 
-        <div class="col-lg-6">
+    </div>
 
-            <div class="card border-0 shadow-sm rounded-4">
+    <div class="col-lg-3 col-md-6 mb-4">
 
-                <div class="card-header bg-white border-0">
-                    <h5 class="fw-bold mb-0">Aktivitas Terbaru</h5>
+        <div class="card shadow border-0 rounded-4">
+
+            <div class="card-body d-flex align-items-center">
+
+                <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center"
+                    style="width:70px;height:70px;">
+
+                    <i class="fas fa-user-check fa-2x"></i>
+
                 </div>
 
-                <div class="card-body">
+                <div class="ms-3">
 
-                    <ul class="list-group list-group-flush">
+                    <h6 class="text-muted mb-1">
+                        Auditor Aktif
+                    </h6>
 
-                        <li class="list-group-item">
-                            ✅ Auditor Andi berhasil ditambahkan
-                        </li>
+                    <h2 class="fw-bold mb-0">
+                        18
+                    </h2>
 
-                        <li class="list-group-item">
-                            ✅ Kompetensi Auditor diperbarui
-                        </li>
+                </div>
 
-                        <li class="list-group-item">
-                            ✅ Data Auditor berhasil diubah
-                        </li>
+            </div>
 
-                        <li class="list-group-item">
-                            ✅ Auditor memasuki masa cuti
-                        </li>
+        </div>
 
-                    </ul>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+
+        <div class="card shadow border-0 rounded-4">
+
+            <div class="card-body d-flex align-items-center">
+
+                <div class="bg-warning text-white rounded-circle d-flex justify-content-center align-items-center"
+                    style="width:70px;height:70px;">
+
+                    <i class="fas fa-building fa-2x"></i>
+
+                </div>
+
+                <div class="ms-3">
+
+                    <h6 class="text-muted mb-1">
+                        Total Lembaga
+                    </h6>
+
+                    <h2 class="fw-bold mb-0">
+                        8
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+
+        <div class="card shadow border-0 rounded-4">
+
+            <div class="card-body d-flex align-items-center">
+
+                <div class="bg-danger text-white rounded-circle d-flex justify-content-center align-items-center"
+                    style="width:70px;height:70px;">
+
+                    <i class="fas fa-award fa-2x"></i>
+
+                </div>
+
+                <div class="ms-3">
+
+                    <h6 class="text-muted mb-1">
+                        Jenis Kompetensi
+                    </h6>
+
+                    <h2 class="fw-bold mb-0">
+                        6
+                    </h2>
 
                 </div>
 
@@ -228,4 +478,187 @@
 
 </div>
 
-@endsection
+<!-- ================= TABEL AUDITOR ================= -->
+
+<div class="card border-0 shadow rounded-4 mt-2">
+
+    <div class="card-header bg-white border-0 pt-4">
+
+        <h4 class="fw-bold">
+
+            Data Auditor
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-primary">
+
+                <tr>
+
+                    <th>No</th>
+
+                    <th>Nama Auditor</th>
+
+                    <th>Jabatan</th>
+
+                    <th>Kompetensi</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>1</td>
+
+                    <td>Popy Marlina</td>
+
+                    <td>Lead Auditor</td>
+
+                    <td>LSPro</td>
+
+                    <td>
+
+                        <span class="badge bg-success">
+
+                            Aktif
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>2</td>
+
+                    <td>Ahmad Fauzi</td>
+
+                    <td>Auditor</td>
+
+                    <td>LSSM</td>
+
+                    <td>
+
+                        <span class="badge bg-success">
+
+                            Aktif
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>3</td>
+
+                    <td>Sri Wahyuni</td>
+
+                    <td>Auditor</td>
+
+                    <td>ISO 9001</td>
+
+                    <td>
+
+                        <span class="badge bg-warning">
+
+                            Perpanjangan
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<div class="mt-5 text-center text-muted">
+
+    <hr>
+
+    <p class="mb-3">
+        © 2026 Sistem Penjadwalan Auditor BSPJI Palembang
+    </p>
+
+</div>
+
+</div>
+<!-- End Main -->
+
+</div>
+<!-- End Content -->
+
+<!-- Bootstrap JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    // Efek aktif menu sidebar
+
+    const menu = document.querySelectorAll(".menu a");
+
+    menu.forEach(item => {
+
+        item.addEventListener("click", function(){
+
+            menu.forEach(i => i.classList.remove("active"));
+
+            this.classList.add("active");
+
+        });
+
+    });
+
+    // Hover Card
+
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach(card=>{
+
+        card.addEventListener("mouseenter",()=>{
+
+            card.style.transform="translateY(-6px)";
+
+            card.style.transition=".3s";
+
+        });
+
+        card.addEventListener("mouseleave",()=>{
+
+            card.style.transform="translateY(0px)";
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</html>
+
