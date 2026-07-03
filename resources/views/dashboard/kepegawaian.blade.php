@@ -234,6 +234,28 @@
 
         }
 
+        /* Header card and table box styles */
+        .header-card{
+            background: linear-gradient(180deg,#ffffff,#fbfdff);
+            border-radius:12px;
+            padding:18px 22px;
+            box-shadow:0 6px 18px rgba(15,61,145,0.06);
+            margin-bottom:18px;
+        }
+
+        .header-card .title{font-size:28px;margin:0 0 6px 0;font-weight:700}
+        .header-card .subtitle{margin:0;color:#6b7280}
+
+        .table-box{
+            background:white;
+            border-radius:12px;
+            padding:18px;
+            box-shadow:0 8px 20px rgba(0,0,0,.06);
+            margin-top:18px;
+        }
+
+        .table-box .table thead th{background:#dbeafe}
+
     </style>
 
 </head>
@@ -341,11 +363,10 @@
 
     <div class="main">
 
-        <h2>Dashboard Kepegawaian</h2>
-
-        <p>
-            Selamat datang di Sistem Penjadwalan Auditor BSPJI Palembang
-        </p>
+        <div class="header-card">
+            <h2 class="title">Dashboard Kepegawaian</h2>
+            <p class="subtitle">Selamat datang di Sistem Penjadwalan Auditor BSPJI Palembang</p>
+        </div>
 
         <!-- Card statistik akan kita lanjutkan di Bagian 2 -->
          <!-- ================= CARD STATISTIK ================= -->
@@ -370,10 +391,6 @@
                     <h6 class="text-muted mb-1">
                         Total Auditor
                     </h6>
-
-                    <h2 class="fw-bold mb-0">
-                        20
-                    </h2>
 
                 </div>
 
@@ -402,10 +419,6 @@
                         Auditor Aktif
                     </h6>
 
-                    <h2 class="fw-bold mb-0">
-                        18
-                    </h2>
-
                 </div>
 
             </div>
@@ -432,10 +445,6 @@
                     <h6 class="text-muted mb-1">
                         Total Lembaga
                     </h6>
-
-                    <h2 class="fw-bold mb-0">
-                        8
-                    </h2>
 
                 </div>
 
@@ -464,10 +473,6 @@
                         Jenis Kompetensi
                     </h6>
 
-                    <h2 class="fw-bold mb-0">
-                        6
-                    </h2>
-
                 </div>
 
             </div>
@@ -480,112 +485,27 @@
 
 <!-- ================= TABEL AUDITOR ================= -->
 
-<div class="card border-0 shadow rounded-4 mt-2">
-
-    <div class="card-header bg-white border-0 pt-4">
-
-        <h4 class="fw-bold">
-
-            Data Auditor
-
-        </h4>
-
+<div class="table-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">Data Auditor</h4>
+        <button class="btn btn-sm btn-primary">Tambah Auditor</button>
     </div>
 
-    <div class="card-body">
-
+    <div class="table-responsive">
         <table class="table table-hover align-middle">
-
-            <thead class="table-primary">
-
+            <thead>
                 <tr>
-
                     <th>No</th>
-
                     <th>Nama Auditor</th>
-
                     <th>Jabatan</th>
-
                     <th>Kompetensi</th>
-
                     <th>Status</th>
-
                 </tr>
-
             </thead>
-
             <tbody>
-
-                <tr>
-
-                    <td>1</td>
-
-                    <td>Popy Marlina</td>
-
-                    <td>Lead Auditor</td>
-
-                    <td>LSPro</td>
-
-                    <td>
-
-                        <span class="badge bg-success">
-
-                            Aktif
-
-                        </span>
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>2</td>
-
-                    <td>Ahmad Fauzi</td>
-
-                    <td>Auditor</td>
-
-                    <td>LSSM</td>
-
-                    <td>
-
-                        <span class="badge bg-success">
-
-                            Aktif
-
-                        </span>
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>3</td>
-
-                    <td>Sri Wahyuni</td>
-
-                    <td>Auditor</td>
-
-                    <td>ISO 9001</td>
-
-                    <td>
-
-                        <span class="badge bg-warning">
-
-                            Perpanjangan
-
-                        </span>
-
-                    </td>
-
-                </tr>
-
+                <!-- Data rows go here -->
             </tbody>
-
         </table>
-
     </div>
 
 </div>
@@ -661,4 +581,3 @@ document.addEventListener("DOMContentLoaded", function(){
 </body>
 
 </html>
-
