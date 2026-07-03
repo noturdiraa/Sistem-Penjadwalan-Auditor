@@ -256,6 +256,78 @@
 
         .table-box .table thead th{background:#dbeafe}
 
+        .auditor-list{
+            display:grid;
+            gap:14px;
+        }
+
+        .auditor-card{
+            background:#ffffff;
+            border-radius:18px;
+            box-shadow:0 8px 20px rgba(0,0,0,.05);
+            padding:18px 22px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:20px;
+        }
+
+        .auditor-info{
+            display:flex;
+            align-items:center;
+            gap:16px;
+        }
+
+        .auditor-avatar{
+            width:52px;
+            height:52px;
+            border-radius:50%;
+            background:#2563EB;
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:20px;
+            font-weight:700;
+        }
+
+        .auditor-meta h5{
+            margin:0;
+            font-size:1.05rem;
+            font-weight:700;
+        }
+
+        .auditor-meta p{
+            margin:4px 0 0;
+            color:#6b7280;
+            font-size:.95rem;
+        }
+
+        .badge-group{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            justify-content:flex-end;
+            align-items:center;
+        }
+
+        .badge-group .badge{
+            padding:.45em .75em;
+            border-radius:10px;
+            font-size:.78rem;
+            font-weight:600;
+        }
+
+        .badge-active{
+            background:#dcfce7;
+            color:#15803d;
+        }
+
+        .badge-light{
+            background:#e2e8f0;
+            color:#0f172a;
+        }
+
     </style>
 
 </head>
@@ -353,7 +425,7 @@
 
                 <img src="{{ asset('images/logo.png') }}">
 
-                <span>Admin</span>
+                <span>Kepegawaian</span>
 
             </div>
 
@@ -487,25 +559,17 @@
 
 <div class="table-box">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0">Data Auditor</h4>
-        <button class="btn btn-sm btn-primary">Tambah Auditor</button>
+        <h4 class="fw-bold mb-0">Daftar Auditor</h4>
+        <a href="#" class="text-primary small">Lihat semua →</a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Auditor</th>
-                    <th>Jabatan</th>
-                    <th>Kompetensi</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data rows go here -->
-            </tbody>
-        </table>
+    <div class="auditor-list">
+        <div class="auditor-card justify-content-center">
+            <div class="auditor-meta text-center" style="width:100%;">
+                <h5 class="mb-2">Belum ada data auditor</h5>
+                <p class="mb-0 text-muted">Silakan tambahkan auditor terlebih dahulu di menu Kelola Auditor.</p>
+            </div>
+        </div>
     </div>
 
 </div>

@@ -306,7 +306,7 @@ placeholder="Cari...">
 
 <img src="{{ asset('images/logo.png') }}">
 
-<strong>Admin PJI</strong>
+<span>PJI</span>
 
 </div>
 
@@ -366,6 +366,93 @@ padding:25px;
 box-shadow:0 8px 20px rgba(0,0,0,.08);
 margin-top:35px;
 }
+
+.panel-box{
+background:white;
+border-radius:20px;
+padding:25px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+margin-top:35px;
+}
+
+.panel-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+}
+
+.panel-list{
+display:grid;
+gap:16px;
+}
+
+.panel-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 20px;
+border-radius:16px;
+background:#f8fafc;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+.panel-item h5{
+margin:0;
+font-size:1rem;
+}
+
+.panel-item small{
+font-size:.95rem;
+}
+
+.panel-item .badge{
+font-size:.75rem;
+padding:.45em .7em;
+}
+
+.stats-list{
+    display:grid;
+    gap:16px;
+}
+
+.stats-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 18px;
+    border-radius:14px;
+    font-weight:600;
+    color:#0f172a;
+}
+
+.stats-item div{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.stats-item i{
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    color:white;
+}
+
+.stats-item-green{background:#ecfdf5;color:#166534;}
+.stats-item-green i{background:#16a34a;}
+
+.stats-item-yellow{background:#fef9c3;color:#a16207;}
+.stats-item-yellow i{background:#f59e0b;}
+
+.stats-item-blue{background:#dbeafe;color:#1d4ed8;}
+.stats-item-blue i{background:#2563eb;}
+
+.stats-item-red{background:#fee2e2;color:#b91c1c;}
+.stats-item-red i{background:#dc2626;}
 
 /* Header / banner */
 .header-card{
@@ -500,117 +587,64 @@ margin-top:35px;
 
 </div>
 
-<div class="table-box">
+<div class="row gx-4 align-items-stretch">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="col-lg-7">
 
-        <h4 class="fw-bold">
-            Jadwal Audit Terbaru
-        </h4>
+        <div class="panel-box h-100">
 
-        <button class="btn btn-primary">
+            <div class="panel-header">
 
-            <i class="fas fa-plus"></i>
+                <h4 class="fw-bold mb-0">
+                    Jadwal Audit Terbaru
+                </h4>
 
-            Tambah Jadwal
+            </div>
 
-        </button>
+            <div class="panel-list text-center py-5">
+                <div class="text-secondary">
+                    <i class="fas fa-calendar-times fa-2x mb-3"></i>
+                    <p class="mb-1 fw-semibold">Belum ada Jadwal Audit Terbaru</p>
+                    <small>Data jadwal audit akan muncul setelah dibuat.</small>
+                </div>
+            </div>
+
+        </div>
 
     </div>
 
-    <table class="table table-hover align-middle">
+    <div class="col-lg-5">
 
-        <thead class="table-primary">
+            <div class="chart-box h-100 d-flex flex-column justify-content-center align-items-center text-center px-4">
 
-            <tr>
+            <h4 class="fw-bold mb-4">
+                Statistik Audit Bulan Ini
+            </h4>
 
-                <th>No</th>
+            <div class="text-secondary">
+                <i class="fas fa-chart-bar fa-2x mb-3"></i>
+                <p class="mb-1 fw-semibold">Belum ada data statistik</p>
+                <small>Statistik audit akan muncul setelah data audit tersedia.</small>
+            </div>
 
-                <th>Perusahaan</th>
+        </div>
 
-                <th>Tanggal</th>
-
-                <th>Ketua Tim</th>
-
-                <th>Status</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-        </tbody>
-
-    </table>
+    </div>
 
 </div>
 
-<div class="chart-box">
-
-    <h4 class="fw-bold mb-4">
-
-        Statistik Audit Bulan Ini
-
-    </h4>
-
-    <canvas id="auditChart" height="100"></canvas>
-
-</div>
 </div>
 <!-- End Main -->
 
-    <!-- Footer -->
-    <div class="footer mt-2 text-center text-muted">
-        <hr>
-        <p class="mb-0">
-            © 2026 Sistem Penjadwalan Auditor BSPJI Palembang
-        </p>
-    </div>
+<div class="footer mt-3 text-center text-muted">
+    <hr>
+    <p class="mb-0">
+        © 2026 Sistem Penjadwalan Auditor BSPJI Palembang
+    </p>
+</div>
 
 </div>
 <!-- End Content -->
-
-<!-- ================= Chart JS ================= -->
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-
-const ctx = document.getElementById('auditChart');
-
-    options:{
-
-        responsive:true,
-
-        plugins:{
-
-            legend:{
-                display:false
-            }
-
-        },
-
-        scales:{
-
-            y:{
-
-                beginAtZero:true,
-
-                ticks:{
-                    stepSize:2
-                }
-
-            }
-
-        }
-
-    }
-
-});
-
-</script>
-
 
 <!-- Bootstrap -->
 
