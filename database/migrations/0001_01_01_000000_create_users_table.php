@@ -20,9 +20,9 @@ return new class extends Migration
 
             $table->enum('role', [
                 'Kepegawaian',
-                'Staff PJI',
-                'Katim PJI',
-                'Teknis'
+                'PJI',
+                'Kepala Balai',
+                'Operasional'
             ]);
 
             $table->rememberToken();
