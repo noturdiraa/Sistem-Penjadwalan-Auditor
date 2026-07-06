@@ -12,7 +12,34 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jadwal_audits', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_jadwal_audit');
+
+            $table->foreignId('id_audit')
+                ->constrained('audits', 'id_audit')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->foreignId('id_lokasi')
+                ->constrained('lokasis', 'id_lokasi')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+
+            $table->time('jam_mulai')->nullable();
+            $table->time('jam_selesai')->nullable();
+
+            $table->enum('status', [
+                'Draft',
+                'Diajukan',
+                'Revisi',
+                'Disetujui',
+                'Selesai'
+            ])->default('Draft');
+
+            $table->text('keterangan')->nullable();
+
             $table->timestamps();
         });
     }
