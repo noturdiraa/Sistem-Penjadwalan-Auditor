@@ -11,28 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('detail_auditors', function (Blueprint $table) {
-            $table->id();
+        Schema::create('detail_auditors', function (Blueprint $table) {
+            $table->id('id_detail_auditor');
 
-            $table->foreignId('auditor_id')
-                ->constrained('auditors')
-                ->cascadeOnDelete();
+            $table->foreignId('id_auditor')
+                ->constrained('auditors', 'id_auditor')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
 
-            $table->foreignId('lembaga_id')
-                ->constrained('lembagas')
-                ->cascadeOnDelete();
-
-            $table->foreignId('ruang_lingkup_id')
-                ->constrained('ruang_lingkups')
-                ->cascadeOnDelete();
+            $table->foreignId('id_ruang_lingkup')
+                ->constrained('ruang_lingkups', 'id_ruang_lingkup')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
 
             $table->timestamps();
-
-            $table->unique([
-                'auditor_id',
-                'lembaga_id',
-                'ruang_lingkup_id'
-            ]);
         });
     }
 

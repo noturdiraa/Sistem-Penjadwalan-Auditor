@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('auditors', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_auditor');
+
             $table->string('nama_auditor');
             $table->string('nip')->unique();
-            $table->string('jabatan');
-            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
+            $table->enum('jenis_auditor', [
+            'Pegawai',
+            'Subkontrak'
+            ]);
+
             $table->timestamps();
         });
     }
