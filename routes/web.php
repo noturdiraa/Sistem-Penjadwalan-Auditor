@@ -24,3 +24,4 @@ Route::view('/kepegawaian/auditor/edit', 'kepegawaian.kelola_auditor.edit');
 
 // Profil
 Route::view('/kepegawaian/profil', 'kepegawaian.profil.index');
+Route::view('/kepegawaian/profil/edit', 'kepegawaian.profil.edit');

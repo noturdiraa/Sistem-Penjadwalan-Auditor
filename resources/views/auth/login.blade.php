@@ -387,7 +387,7 @@
                 <div class="mb-3">
 
                     <label class="form-label fw-semibold">
-                        Email
+                        Username
                     </label>
 
                     <div class="input-group">
@@ -399,7 +399,7 @@
                         <input
                             type="email"
                             class="form-control"
-                            placeholder="Masukkan Email">
+                            placeholder="Masukkan Username">
 
                     </div>
 

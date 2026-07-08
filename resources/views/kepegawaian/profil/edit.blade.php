@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya</title>
+    <title>Edit Profil</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -87,7 +87,7 @@
             min-height: 100vh;
         }
 
-                .navbar-custom {
+        .navbar-custom {
             position: sticky;
             top: 0;
             background: white;
@@ -175,7 +175,7 @@
             font-weight: bold;
             color: white;
             margin: auto;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .info {
@@ -190,7 +190,6 @@
         }
 
         .info .form-control {
-            background: #f8f9fa;
             height: 48px;
             border-radius: 12px;
         }
@@ -260,33 +259,71 @@
         <div class="main">
             <!-- HEADER -->
             <div class="page-header">
-                <h2>Profil Saya</h2>
-                <p>Kelola informasi akun dan keamanan Anda.</p>
+                <h2>Edit Profil</h2>
+                <p>Perbarui informasi akun Anda.</p>
             </div>
 
             <!-- PROFILE CARD -->
             <div class="card-profil">
-                <div class="avatar">
-                    A
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 info">
-                        <label>NIP</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly>
+                <form action="/kepegawaian/profil/update" method="POST" enctype="multipart/form-data">
+                    <!-- Unggah Foto Profil -->
+                    <div class="d-flex flex-column align-items-center mb-4">
+                        <div class="position-relative" style="width: 120px; height: 120px;">
+                            <div class="avatar m-0" id="avatarPreview">
+                                A
+                            </div>
+                            <label for="fotoInput" class="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; border: 3px solid white; cursor: pointer; transform: translate(5px, 5px);">
+                                <i class="fas fa-camera" style="font-size: 14px;"></i>
+                            </label>
+                            <input type="file" id="fotoInput" name="foto_profil" class="d-none" accept="image/*">
+                        </div>
+                        <small class="text-muted mt-3">Format: JPG, PNG. Maks: 2MB</small>
                     </div>
-                    <div class="col-md-6 info">
-                        <label>Role</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly>
-                    </div>
-                </div>
 
-                <div class="text-end mt-4">
-                    <a href="/kepegawaian/profil/edit" class="btn btn-primary px-4" style="border-radius: 12px; height: 48px; display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-user-pen"></i>
-                        Edit Profil
-                    </a>
-                </div>
+                    <div class="row">
+                        <!-- NIP -->
+                        <div class="col-md-6 info">
+                            <label>NIP</label>
+                            <input type="text" class="form-control" name="nip" value="" placeholder="Masukkan NIP">
+                        </div>
+                        
+                        <!-- Role -->
+                        <div class="col-md-6 info">
+                            <label>Role</label>
+                            <input type="text" class="form-control" name="role" value="" placeholder="Belum diatur" readonly>
+                        </div>
+                        
+                        <!-- Password Baru -->
+                        <div class="col-md-6 info">
+                            <label>Password Baru</label>
+                            <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak diubah">
+                        </div>
+                        
+                        <!-- Konfirmasi Password -->
+                        <div class="col-md-6 info">
+                            <label>Konfirmasi Password</label>
+                            <input type="password" class="form-control" name="password_confirmation" placeholder="Ulangi Password Baru">
+                        </div>
+                    </div>
+
+                    <!-- TOMBOL AKSI -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="/kepegawaian/profil" class="btn btn-secondary px-4" style="border-radius: 12px; height: 48px; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-arrow-left"></i>
+                            Kembali
+                        </a>
+
+                        <button type="reset" class="btn btn-warning text-white px-4" style="border-radius: 12px; height: 48px; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-rotate-left"></i>
+                            Reset
+                        </button>
+
+                        <button type="submit" class="btn btn-primary px-4" style="border-radius: 12px; height: 48px; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-floppy-disk"></i>
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -300,6 +337,28 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const fotoInput = document.getElementById('fotoInput');
+        const avatarPreview = document.getElementById('avatarPreview');
+
+        fotoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarPreview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Reset preview saat form di-reset
+        document.querySelector('form').addEventListener('reset', function() {
+            setTimeout(() => {
+                avatarPreview.innerHTML = 'A';
+            }, 50);
+        });
+    </script>
 </body>
 
 </html>
