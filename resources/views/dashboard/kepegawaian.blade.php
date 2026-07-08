@@ -34,6 +34,7 @@
 
         body{
             background:#f4f7fc;
+            overflow-x:hidden;
         }
 
         /* ===================== SIDEBAR ===================== */
@@ -52,11 +53,9 @@
 
             background:#0F3D91;
 
+            padding:18px;
+
             color:white;
-
-            padding:14px 18px;
-
-            overflow-y:visible;
 
         }
 
@@ -64,7 +63,7 @@
 
             text-align:center;
 
-            margin-bottom:18px;
+            margin-bottom:25px;
 
         }
 
@@ -72,7 +71,7 @@
 
             width:70px;
 
-            margin-bottom:8px;
+            margin-bottom:10px;
 
         }
 
@@ -86,7 +85,7 @@
 
         .logo p{
 
-            font-size:13px;
+            font-size:14px;
 
             opacity:.8;
 
@@ -126,15 +125,10 @@
 
         }
 
-        .menu li a:hover{
+        .menu li a:hover,
+        .menu li a.active{
 
-            background:rgba(255,255,255,.15);
-
-        }
-
-        .menu .active{
-
-            background:#2563eb;
+            background:#2563EB;
 
         }
 
@@ -176,6 +170,10 @@
 
             height:45px;
 
+        }
+
+        .search-box input{
+            padding:10px 18px;
         }
 
         .right-menu{
