@@ -6,20 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('review_katim_pjis', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_review_katim');
+
+            $table->foreignId('id_jadwal')
+                ->constrained('jadwal_audits', 'id_jadwal')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->foreignId('id_user')
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->enum('status_review', [
+                'Disetujui',
+                'Ditolak',
+                'Perlu Revisi'
+            ]);
+
+            $table->text('catatan')->nullable();
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('review_katim_pjis');

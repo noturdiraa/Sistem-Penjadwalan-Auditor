@@ -12,7 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rekomendasi_auditors', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_rekomendasi');
+
+            $table->foreignId('id_jadwal')
+                ->constrained('jadwal_audits', 'id_jadwal')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->foreignId('id_auditor')
+                ->constrained('auditors', 'id_auditor')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->decimal('nilai_rekomendasi', 5, 2)->nullable();
+
             $table->timestamps();
         });
     }

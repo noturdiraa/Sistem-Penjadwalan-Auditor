@@ -34,7 +34,14 @@ return new class extends Migration
                 'Auditor'
             ]);
 
+            $table->enum('status_penugasan', [
+                'Berlangsung',
+                'Selesai',
+                'Dibatalkan'
+            ])->default('Berlangsung');
+
             $table->date('tanggal_mulai');
+
             $table->date('tanggal_selesai')->nullable();
 
             $table->text('keterangan')->nullable();
