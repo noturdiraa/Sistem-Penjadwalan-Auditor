@@ -8,13 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('perusahaan', function (Blueprint $table) {
+        Schema::create('perusahaans', function (Blueprint $table) {
             $table->id('id_perusahaan');
             $table->string('nama_perusahaan');
             $table->text('alamat');
-            $table->string('kota')->nullable();
             $table->string('provinsi')->nullable();
-            $table->string('email')->nullable();
             $table->string('no_telepon')->nullable();
 
             $table->timestamps();
@@ -23,6 +21,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('perusahaan');
+        Schema::dropIfExists('perusahaans');
     }
 };

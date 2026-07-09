@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lembaga extends Model
 {
+    protected $table = 'lembagas';
+
+    protected $primaryKey = 'id_lembaga';
+
     protected $fillable = [
         'nama_lembaga',
         'deskripsi',
@@ -13,11 +17,11 @@ class Lembaga extends Model
 
     public function ruangLingkups()
     {
-        return $this->hasMany(RuangLingkup::class);
+        return $this->hasMany(RuangLingkup::class, 'id_lembaga', 'id_lembaga');
     }
 
     public function detailAuditors()
     {
-        return $this->hasMany(DetailAuditor::class);
+        return $this->hasMany(DetailAuditor::class, 'id_lembaga', 'id_lembaga');
     }
 }
