@@ -257,39 +257,57 @@ margin-bottom:30px;
 <body>
 
 <div class="sidebar">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}">
+            <h4>BSPJI</h4>
+            <p>PJI</p>
+        </div>
 
-<div class="logo">
-
-<img src="{{ asset('images/logo.png') }}">
-
-<h4>BSPJI</h4>
-
-<p>PJI</p>
-
-</div>
-
-<ul class="menu">
-
-<li><a href="#" class="active"><i class="fas fa-house"></i>Dashboard</a></li>
-
-<li><a href="#"><i class="fas fa-building"></i>Kelola Perusahaan</a></li>
-
-<li><a href="#"><i class="fas fa-file-signature"></i>Kelola Audit</a></li>
-
-<li><a href="#"><i class="fas fa-calendar-days"></i>Jadwal Audit</a></li>
-
-<li><a href="#"><i class="fas fa-users"></i>Tim Audit</a></li>
-
-<!-- Naikkan menu Profil agar terlihat tanpa harus scroll -->
-<li><a href="#"><i class="fas fa-clipboard-check"></i>Review Katim PJI</a></li>
-
-<li><a href="#"><i class="fas fa-user"></i>Profil</a></li>
-
-<li><a href="#"><i class="fas fa-right-from-bracket"></i>Logout</a></li>
-
-</ul>
-
-</div>
+        <ul class="menu">
+            <li>
+                <a href="/dashboard-pji">
+                    <i class="fas fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/pji/perusahaan" class="active">
+                    <i class="fas fa-building"></i>
+                    Kelola Perusahaan
+                </a>
+            </li>
+            <li>
+                <a href="/pji/audit">
+                    <i class="fas fa-file-signature"></i> <!-- Icon dokumen & pena disamakan dengan Dashboard PJI -->
+                    Kelola Audit
+                </a>
+            </li>
+            <li>
+                <a href="/pji/tim-audit">
+                    <i class="fas fa-users"></i>
+                    Tim Audit
+                </a>
+            </li>
+            <li>
+                <a href="/pji/review-katim">
+                    <i class="fas fa-clipboard-check"></i> <!-- Icon checklist disamakan dengan Dashboard PJI -->
+                    Review Katim PJI
+                </a>
+            </li>
+            <li>
+                <a href="/pji/profil">
+                    <i class="fas fa-user"></i>
+                    Profil
+                </a>
+            </li>
+            <li>
+                <a href="/login">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
 
 <div class="content">
 

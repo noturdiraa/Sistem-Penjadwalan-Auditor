@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat Jadwal Audit</title>
+    <title>Generate Tim Audit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -240,96 +240,56 @@
         .step-line {
             width: 100px;
             height: 2px;
-            background: #E5E7EB;
+            background: #2563EB; /* Biru karena langkah 1 sudah sukses */
         }
 
-        /* ================= FORM CARD ================= */
-        .form-card {
-            background: #fff;
+        /* ================= AUDIT INFO CARD ================= */
+        .audit-info {
+            background: white;
             border-radius: 14px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);
+            margin-bottom: 22px;
         }
 
-        .form-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1F2937;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #F3F4F6;
-            padding-bottom: 12px;
-        }
-
-        .form-label {
-            font-size: 15px;
+        .audit-info h6 {
             color: #4B5563;
-            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .audit-info p {
+            margin: 0;
+            color: #1F2937;
             font-weight: 500;
+            font-size: 15px;
         }
 
-        .form-control,
-        .form-select,
-        .dropdown-select-btn {
-            height: 45px;
-            border-radius: 8px;
-            border: 1px solid #E2E8F0;
-            font-size: 14px;
-            padding: 10px 16px;
-            transition: none;
+        /* ================= AUDITOR CARDS ================= */
+        .card-auditor {
+            background: white;
+            border-radius: 14px;
+            border: none;
+            box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);
+            margin-bottom: 20px;
         }
 
-        .form-control:focus,
-        .form-select:focus,
-        .dropdown-select-btn:focus {
-            border-color: #2563EB;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            outline: none;
-        }
-
-        /* Styling Khas untuk Dropdown Multi-Select */
-        .dropdown-select-btn {
-            background-color: #fff;
-            color: #212529;
-            text-align: left;
+        .auditor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 100%;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 22px;
+            color: white;
         }
 
-        .dropdown-select-btn::after {
-            display: inline-block;
-            margin-left: 0.255em;
-            vertical-align: 0.255em;
-            content: "";
-            border-top: 0.3em solid;
-            border-right: 0.3em solid transparent;
-            border-bottom: 0;
-            border-left: 0.3em solid transparent;
-        }
-
-        .dropdown-menu-custom {
-            border-radius: 8px;
-            border: 1px solid #E2E8F0;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-        }
-
-        .dropdown-item-custom {
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .dropdown-item-custom:hover {
-            background-color: #F8FAFC;
-        }
-
-        textarea.form-control {
-            height: 100px;
-            resize: none;
-        }
+        .bg-avatar-blue { background-color: #2563EB; }
+        .bg-avatar-green { background-color: #059669; }
+        .bg-avatar-purple { background-color: #7C3AED; }
 
         .btn {
             height: 45px;
@@ -340,7 +300,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: none; /* Menghapus transisi */
+            transition: none;
         }
 
         .btn-primary {
@@ -387,7 +347,7 @@
                 </li>
                 <li>
                     <a href="/pji/audit" class="active">
-                        <i class="fas fa-file-signature"></i>
+                        <i class="fas fa-file-signature"></i> <!-- Icon dokumen & pena disamakan dengan Dashboard PJI -->
                         Kelola Audit
                     </a>
                 </li>
@@ -399,7 +359,7 @@
                 </li>
                 <li>
                     <a href="/pji/review-katim">
-                        <i class="fas fa-clipboard-check"></i>
+                        <i class="fas fa-clipboard-check"></i> <!-- Icon checklist disamakan dengan Dashboard PJI -->
                         Review Katim PJI
                     </a>
                 </li>
@@ -443,88 +403,155 @@
                 <div class="step-card">
                     <div class="step-wrapper">
                         <div class="step">
-                            <div class="step-circle">1</div>
+                            <div class="step-circle"><i class="fas fa-check"></i></div>
                             <div class="step-title">Informasi Audit</div>
                         </div>
                         <div class="step-line"></div>
                         <div class="step">
-                            <div class="step-circle gray">2</div>
-                            <div class="step-title text-secondary">Generate Tim Audit</div>
+                            <div class="step-circle">2</div>
+                            <div class="step-title">Generate Tim Audit</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ================= FORM CARD ================= -->
-                <div class="form-card">
-                    <h3>Informasi Dasar Audit</h3>
-
-                    <form>
-                        <div class="mb-4">
-                            <label class="form-label">Perusahaan yang Diaudit</label>
-                            <select class="form-select">
-                                <option selected disabled>Pilih Perusahaan</option>
-                                <option>PT ABC Indonesia</option>
-                                <option>CV XYZ Palembang</option>
-                                <option>PT Maju Jaya</option>
-                            </select>
+                <!-- ================= RINGKASAN ================= -->
+                <div class="audit-info">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Perusahaan</h6>
+                            <p>PT ABC Indonesia</p>
                         </div>
+                        <div class="col-md-4">
+                            <h6>Ruang Lingkup</h6>
+                            <p>LSSM</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Periode Audit</h6>
+                            <p>09 Juli 2026 - 11 Juli 2026</p>
+                        </div>
+                    </div>
+                </div>
 
-                        <!-- ================= PERUBAHAN DI SINI ================= -->
-                        <div class="mb-4">
-                            <label class="form-label">Ruang Lingkup Audit</label>
-                            <div class="dropdown">
-                                <button class="dropdown-select-btn btn w-100" type="button" id="dropdownRuangLingkup" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                    <span id="selected-text" class="text-secondary">Pilih Ruang Lingkup</span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-custom w-100" aria-labelledby="dropdownRuangLingkup">
-                                    <li class="dropdown-item-custom d-flex align-items-center gap-2">
-                                        <input class="form-check-input ruang-lingkup-checkbox" type="checkbox" value="LSPro" id="ruang_lspro" name="ruang_lingkup[]">
-                                        <label class="form-check-label w-100" for="ruang_lspro">LSPro</label>
-                                    </li>
-                                    <li class="dropdown-item-custom d-flex align-items-center gap-2">
-                                        <input class="form-check-input ruang-lingkup-checkbox" type="checkbox" value="LSSM" id="ruang_lssm" name="ruang_lingkup[]">
-                                        <label class="form-check-label w-100" for="ruang_lssm">LSSM</label>
-                                    </li>
-                                    <li class="dropdown-item-custom d-flex align-items-center gap-2">
-                                        <input class="form-check-input ruang-lingkup-checkbox" type="checkbox" value="Kalibrasi" id="ruang_kalibrasi" name="ruang_lingkup[]">
-                                        <label class="form-check-label w-100" for="ruang_kalibrasi">Kalibrasi</label>
-                                    </li>
-                                </ul>
+                <!-- ================= TIM AUDIT ================= -->
+                <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
+                    <i class="fas fa-users text-primary"></i>
+                    Tim Audit Terpilih (Berdasarkan Beban Kerja/Poin Terkecil)
+                    <span class="badge bg-success-subtle text-success fs-7" style="padding: 6px 12px; border-radius: 8px;">
+                        Berhasil Digenerate
+                    </span>
+                </h3>
+
+                <div class="row">
+                    <!-- Lead Auditor -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card card-auditor">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="auditor-avatar bg-avatar-blue">PM</div>
+                                    <div class="ms-3">
+                                        <span class="badge bg-primary-subtle text-primary mb-1">Lead Auditor</span>
+                                        <span class="badge bg-success-subtle text-success">Sertifikat Aktif</span>
+                                    </div>
+                                </div>
+                                <h3 class="fw-bold mb-1" style="font-size: 20px; color: #1F2937;">Popy Marlina</h3>
+                                <p class="text-muted mb-4" style="font-size: 14px;">Lead Auditor</p>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-muted" style="font-size: 12px;">Lembaga</small>
+                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #1F2937;">LSPRO</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-muted" style="font-size: 12px;">Beban Kerja</small>
+                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #15803D;">5 Poin</h6>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!-- ===================================================== -->
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tanggal Mulai</label>
-                                <input type="date" class="form-control">
+                    <!-- Auditor 1 -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card card-auditor">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="auditor-avatar bg-avatar-green">AS</div>
+                                    <div class="ms-3">
+                                        <span class="badge bg-secondary-subtle text-secondary mb-1">Auditor</span>
+                                        <span class="badge bg-success-subtle text-success">Sertifikat Aktif</span>
+                                    </div>
+                                </div>
+                                <h3 class="fw-bold mb-1" style="font-size: 20px; color: #1F2937;">Andi Saputra</h3>
+                                <p class="text-muted mb-4" style="font-size: 14px;">Auditor Madya</p>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-muted" style="font-size: 12px;">Lembaga</small>
+                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #1F2937;">LSSM</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-muted" style="font-size: 12px;">Beban Kerja</small>
+                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #15803D;">8 Poin</h6>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tanggal Selesai</label>
-                                <input type="date" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Auditor 2 -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card card-auditor">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="auditor-avatar bg-avatar-purple">RA</div>
+                                    <div class="ms-3">
+                                        <span class="badge bg-secondary-subtle text-secondary mb-1">Auditor</span>
+                                        <span class="badge bg-success-subtle text-success">Sertifikat Aktif</span>
+                                    </div>
+                                </div>
+                                <h3 class="fw-bold mb-1" style="font-size: 20px; color: #1F2937;">Rina Agustina</h3>
+                                <p class="text-muted mb-4" style="font-size: 14px;">Auditor Pertama</p>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-muted" style="font-size: 12px;">Lembaga</small>
+                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #1F2937;">LSPro</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-muted" style="font-size: 12px;">Beban Kerja</small>
+                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #15803D;">12 Poin</h6>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="mb-4">
-                            <label class="form-label">Lokasi</label>
-                            <input type="text" class="form-control" placeholder="Masukkan lokasi audit">
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Keterangan</label>
-                            <textarea class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-3 mt-4">
-                            <a href="/pji/audit" class="btn btn-outline-secondary px-4">
-                                Batal
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4">
-                                Selanjutnya
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </form>
+                <!-- ================= TOMBOL ================= -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a href="/pji/audit/create" class="btn btn-outline-secondary px-4">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </a>
+                    <div class="d-flex gap-3">
+                        <a href="/pji/audit" class="btn btn-outline-primary px-4">
+                            <i class="fas fa-floppy-disk"></i>
+                            Simpan
+                        </a>
+                        <a href="/pji/audit" class="btn btn-primary px-4">
+                            <i class="fas fa-paper-plane"></i>
+                            Kirim Review
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -538,34 +565,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- ================= JAVASCRIPT UNTUK UPDATE TEXT BUTTON ================= -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.ruang-lingkup-checkbox');
-            const selectedText = document.getElementById('selected-text');
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    // Cari semua checkbox yang sedang dicentang
-                    const checkedValues = Array.from(checkboxes)
-                        .filter(cb => cb.checked)
-                        .map(cb => cb.value);
-
-                    // Update tulisan di tombol select
-                    if (checkedValues.length > 0) {
-                        selectedText.textContent = checkedValues.join(', ');
-                        selectedText.classList.remove('text-secondary');
-                        selectedText.classList.add('text-dark');
-                    } else {
-                        selectedText.textContent = 'Pilih Ruang Lingkup';
-                        selectedText.classList.remove('text-dark');
-                        selectedText.classList.add('text-secondary');
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>
