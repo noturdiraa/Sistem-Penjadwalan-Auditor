@@ -31,8 +31,8 @@ return new class extends Migration
 
             $table->enum('status_jadwal', [
                 'Menunggu',
+                'Revisi',
                 'Disetujui',
-                'Ditolak',
                 'Selesai'
             ])->default('Menunggu');
 

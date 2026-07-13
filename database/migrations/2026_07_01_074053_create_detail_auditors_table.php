@@ -24,6 +24,9 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
+            // Mencegah auditor memiliki ruang lingkup yang sama lebih dari satu kali
+            $table->unique(['id_auditor', 'id_ruang_lingkup']);
+
             $table->timestamps();
         });
     }

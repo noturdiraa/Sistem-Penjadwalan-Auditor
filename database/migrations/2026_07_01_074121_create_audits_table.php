@@ -25,8 +25,15 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->date('tanggal_permohonan')->nullable();
+
             $table->string('jenis_audit');
-            $table->string('status')->default('Menunggu');
+
+            $table->enum('status', [
+                'Menunggu',
+                'Diproses',
+                'Revisi',
+                'Selesai'
+            ])->default('Menunggu');
 
             $table->timestamps();
         });
