@@ -30,116 +30,89 @@ background:#f4f7fc;
 overflow-x:hidden;
 }
 
-.sidebar{
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 270px;
+            height: 100vh;
+            background: #0F3D91;
+            color: white;
+            padding: 14px 18px;
+            overflow-y: auto; /* Aktifkan scrollbar kustom */
+            z-index: 1000;
+        }
 
-position:fixed;
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
 
-left:0;
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
 
-top:0;
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
 
-width:270px;
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
 
-height:100vh;
+        .logo {
+            text-align: center;
+            margin-bottom: 18px;
+        }
 
-background:#0F3D91;
+        .logo img {
+            width: 70px;
+            margin-bottom: 8px;
+        }
 
-color:white;
+        .logo h4 {
+            font-weight: 700;
+            margin: 0;
+        }
 
-padding:14px 18px;
+        .logo p {
+            font-size: 13px;
+            opacity: .8;
+        }
 
-/* jangan tampilkan scroll bar; teks akan membungkus jika perlu */
-overflow-y:visible;
+        .menu {
+            list-style: none;
+            padding: 0;
+        }
 
-}
+        .menu li {
+            margin-bottom: 10px;
+        }
 
-.logo{
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            white-space: normal;
+            padding: 10px 12px;
+            font-size: 15px;
+            line-height: 1.1;
+            transition: none; /* Tanpa efek transisi geser */
+        }
 
-text-align:center;
+        .menu li a i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
 
-margin-bottom:18px;
-
-}
-
-.logo img{
-
-width:70px;
-
-margin-bottom:8px;
-
-}
-
-.logo h4{
-
-font-weight:700;
-
-margin:0;
-
-}
-
-.logo p{
-
-font-size:13px;
-
-opacity:.8;
-
-}
-
-.menu{
-
-list-style:none;
-
-padding:0;
-
-}
-
-.menu li{
-
-margin-bottom:10px;
-
-}
-
-.menu li a{
-
-display:flex;
-
-align-items:center;
-
-gap:15px;
-
-padding:14px 18px;
-
-border-radius:12px;
-
-color:white;
-
-text-decoration:none;
-
-transition:.3s;
-
-}
-
-.menu li a{
-    white-space:normal;
-    padding:10px 12px;
-    font-size:15px;
-    line-height:1.1;
-}
-
-/* sembunyikan scrollbar pada browser berbasis WebKit jika masih muncul */
-.sidebar::-webkit-scrollbar{display:none}
-.sidebar{-ms-overflow-style:none;scrollbar-width:none}
-
-/* Pastikan kolom kartu statistik memiliki tinggi yang sama */
-.row > .col-lg-3{display:flex}
-.row > .col-lg-3 > .card-stat{flex:1}
-
-.menu li a:hover,
-.menu li a.active{
-
-background:#2563EB;
-
-}
+        .menu li a:hover,
+        .menu li a.active {
+            background: #2563EB;
+        }
 
 .content{
 
@@ -265,13 +238,13 @@ margin-bottom:30px;
 
         <ul class="menu">
             <li>
-                <a href="/dashboard-pji">
+                <a href="/dashboard-pji" class="active">
                     <i class="fas fa-house"></i>
                     Dashboard
                 </a>
             </li>
             <li>
-                <a href="/pji/perusahaan" class="active">
+                <a href="/pji/perusahaan">
                     <i class="fas fa-building"></i>
                     Kelola Perusahaan
                 </a>

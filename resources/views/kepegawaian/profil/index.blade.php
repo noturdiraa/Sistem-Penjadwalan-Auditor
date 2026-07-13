@@ -226,6 +226,18 @@
                 </a>
             </li>
             <li>
+                <a href="/kepegawaian/lembaga">
+                    <i class="fas fa-landmark"></i>
+                    Kelola Lembaga
+                </a>
+            </li>
+            <li>
+                <a href="/kepegawaian/ruang-lingkup">
+                    <i class="fas fa-circle-nodes"></i>
+                    Kelola Ruang Lingkup
+                </a>
+            </li>
+            <li>
                 <a href="/kepegawaian/profil" class="active">
                     <i class="fas fa-user"></i>
                     Profil

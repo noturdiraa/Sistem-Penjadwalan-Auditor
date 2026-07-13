@@ -21,6 +21,12 @@ Route::view('/kepegawaian/auditor', 'kepegawaian.kelola_auditor.index');
 Route::view('/kepegawaian/auditor/create', 'kepegawaian.kelola_auditor.create');
 Route::view('/kepegawaian/auditor/edit', 'kepegawaian.kelola_auditor.edit');
 
+// Kelola Lembaga
+Route::view('/kepegawaian/lembaga', 'kepegawaian.kelola_lembaga.index');
+
+// Kelola Ruang Lingkup
+Route::view('/kepegawaian/ruang-lingkup', 'kepegawaian.kelola_ruang_lingkup.index');
+
 
 // Profil
 Route::view('/kepegawaian/profil', 'kepegawaian.profil.index');

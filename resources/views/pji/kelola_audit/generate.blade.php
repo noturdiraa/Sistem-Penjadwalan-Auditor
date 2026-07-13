@@ -419,15 +419,15 @@
                     <div class="row">
                         <div class="col-md-4">
                             <h6>Perusahaan</h6>
-                            <p>PT ABC Indonesia</p>
+                            <p>-</p>
                         </div>
                         <div class="col-md-4">
                             <h6>Ruang Lingkup</h6>
-                            <p>LSSM</p>
+                            <p>-</p>
                         </div>
                         <div class="col-md-4">
                             <h6>Periode Audit</h6>
-                            <p>09 Juli 2026 - 11 Juli 2026</p>
+                            <p>-</p>
                         </div>
                     </div>
                 </div>
@@ -436,104 +436,15 @@
                 <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
                     <i class="fas fa-users text-primary"></i>
                     Tim Audit Terpilih (Berdasarkan Beban Kerja/Poin Terkecil)
-                    <span class="badge bg-success-subtle text-success fs-7" style="padding: 6px 12px; border-radius: 8px;">
-                        Berhasil Digenerate
+                    <span class="badge bg-secondary-subtle text-secondary fs-7" style="padding: 6px 12px; border-radius: 8px;">
+                        Belum Digenerate
                     </span>
                 </h3>
 
-                <div class="row">
-                    <!-- Lead Auditor -->
-                    <div class="col-lg-4 mb-4">
-                        <div class="card card-auditor">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="auditor-avatar bg-avatar-blue">PM</div>
-                                    <div class="ms-3">
-                                        <span class="badge bg-primary-subtle text-primary mb-1">Lead Auditor</span>
-                                        <span class="badge bg-success-subtle text-success">Sertifikat Aktif</span>
-                                    </div>
-                                </div>
-                                <h3 class="fw-bold mb-1" style="font-size: 20px; color: #1F2937;">Popy Marlina</h3>
-                                <p class="text-muted mb-4" style="font-size: 14px;">Lead Auditor</p>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <div class="bg-light rounded-3 p-3">
-                                            <small class="text-muted" style="font-size: 12px;">Lembaga</small>
-                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #1F2937;">LSPRO</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="bg-light rounded-3 p-3">
-                                            <small class="text-muted" style="font-size: 12px;">Beban Kerja</small>
-                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #15803D;">5 Poin</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Auditor 1 -->
-                    <div class="col-lg-4 mb-4">
-                        <div class="card card-auditor">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="auditor-avatar bg-avatar-green">AS</div>
-                                    <div class="ms-3">
-                                        <span class="badge bg-secondary-subtle text-secondary mb-1">Auditor</span>
-                                        <span class="badge bg-success-subtle text-success">Sertifikat Aktif</span>
-                                    </div>
-                                </div>
-                                <h3 class="fw-bold mb-1" style="font-size: 20px; color: #1F2937;">Andi Saputra</h3>
-                                <p class="text-muted mb-4" style="font-size: 14px;">Auditor Madya</p>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <div class="bg-light rounded-3 p-3">
-                                            <small class="text-muted" style="font-size: 12px;">Lembaga</small>
-                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #1F2937;">LSSM</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="bg-light rounded-3 p-3">
-                                            <small class="text-muted" style="font-size: 12px;">Beban Kerja</small>
-                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #15803D;">8 Poin</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Auditor 2 -->
-                    <div class="col-lg-4 mb-4">
-                        <div class="card card-auditor">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="auditor-avatar bg-avatar-purple">RA</div>
-                                    <div class="ms-3">
-                                        <span class="badge bg-secondary-subtle text-secondary mb-1">Auditor</span>
-                                        <span class="badge bg-success-subtle text-success">Sertifikat Aktif</span>
-                                    </div>
-                                </div>
-                                <h3 class="fw-bold mb-1" style="font-size: 20px; color: #1F2937;">Rina Agustina</h3>
-                                <p class="text-muted mb-4" style="font-size: 14px;">Auditor Pertama</p>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <div class="bg-light rounded-3 p-3">
-                                            <small class="text-muted" style="font-size: 12px;">Lembaga</small>
-                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #1F2937;">LSPro</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="bg-light rounded-3 p-3">
-                                            <small class="text-muted" style="font-size: 12px;">Beban Kerja</small>
-                                            <h6 class="fw-bold mt-1 mb-0" style="font-size: 14px; color: #15803D;">12 Poin</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- ================= EMPTY STATE ================= -->
+                <div class="card shadow-sm border-0 rounded-4 text-center py-5 text-secondary" style="font-size: 15px; background: white; margin-bottom: 22px; box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);">
+                    <i class="fas fa-info-circle fa-2x mb-3 text-secondary"></i>
+                    <p class="mb-0 fw-medium">Belum ada tim audit yang digenerate.</p>
                 </div>
 
                 <!-- ================= TOMBOL ================= -->
@@ -542,16 +453,10 @@
                         <i class="fas fa-arrow-left"></i>
                         Kembali
                     </a>
-                    <div class="d-flex gap-3">
-                        <a href="/pji/audit" class="btn btn-outline-primary px-4">
-                            <i class="fas fa-floppy-disk"></i>
-                            Simpan
-                        </a>
-                        <a href="/pji/audit" class="btn btn-primary px-4">
-                            <i class="fas fa-paper-plane"></i>
-                            Kirim Review
-                        </a>
-                    </div>
+                    <a href="/pji/audit" class="btn btn-primary px-4">
+                        <i class="fas fa-paper-plane"></i>
+                        Simpan & Kirim Review
+                    </a>
                 </div>
             </div>
 

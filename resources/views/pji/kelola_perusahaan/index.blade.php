@@ -382,7 +382,7 @@
                             <tr>
                                 <th>Nama Perusahaan</th>
                                 <th>Alamat</th>
-                                <th>Kategori</th>
+                                <th>Kontak</th>
                                 <th>Status</th>
                                 <th width="120">Aksi</th>
                             </tr>

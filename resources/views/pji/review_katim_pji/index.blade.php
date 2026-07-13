@@ -366,28 +366,14 @@
                             <option selected>Semua Status</option>
                             <option>Menunggu Persetujuan</option>
                             <option>Disetujui</option>
-                            <option>Ditolak</option>
+                            <option>Dikembalikan</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- ================= MAIN AUDIT CARD (1 Dummy Data) ================= -->
-                <div class="audit-card">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div>
-                            <span class="card-title-code">AUD-2026-001</span> <!-- Badges removed per request -->
-                            <h4 class="fw-bold text-dark mt-2 mb-1" style="font-size: 20px;">PT ABC Indonesia</h4>
-                            <div class="audit-info-row">
-                                <span><i class="far fa-building"></i> Sertifikasi</span>
-                                <span><i class="fas fa-location-dot"></i> Palembang</span>
-                                <span><i class="far fa-user"></i> Popy Marlina</span>
-                                <span><i class="far fa-calendar"></i> 25 Jun – 27 Jun 2026</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-primary px-3" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                            <i class="far fa-eye me-1"></i> Review
-                        </button>
-                    </div>
+                <!-- ================= EMPTY STATE ================= -->
+                <div class="audit-card text-center py-4 text-secondary" style="font-size: 14px;">
+                    <i class="fas fa-info-circle me-1"></i> Belum ada data review.
                 </div>
 
             </div>

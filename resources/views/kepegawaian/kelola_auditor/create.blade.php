@@ -274,35 +274,42 @@ color:#777;
     </div>
 
     <ul class="menu">
-
         <li>
             <a href="/dashboard-kepegawaian">
                 <i class="fas fa-house"></i>
                 Dashboard
             </a>
         </li>
-
         <li>
             <a href="/kepegawaian/auditor" class="active">
                 <i class="fas fa-users"></i>
                 Kelola Auditor
             </a>
         </li>
-
+        <li>
+            <a href="/kepegawaian/lembaga">
+                <i class="fas fa-landmark"></i>
+                Kelola Lembaga
+            </a>
+        </li>
+        <li>
+            <a href="/kepegawaian/ruang-lingkup">
+                <i class="fas fa-circle-nodes"></i>
+                Kelola Ruang Lingkup
+            </a>
+        </li>
         <li>
             <a href="/kepegawaian/profil">
                 <i class="fas fa-user"></i>
                 Profil
             </a>
         </li>
-
         <li>
             <a href="/login">
                 <i class="fas fa-right-from-bracket"></i>
                 Logout
             </a>
         </li>
-
     </ul>
 
 </div>
@@ -447,14 +454,6 @@ color:#777;
                             <label class="form-label text-muted small">Pilih Lembaga</label>
                             <select class="form-select" id="selectLembaga">
                                 <option value="" selected disabled>Pilih Lembaga...</option>
-                                <option value="LSPRO">LSPRO (Lembaga Sertifikasi Produk)</option>
-                                <option value="LSSM">LSSM (Lembaga Sertifikasi Sistem Manajemen Mutu)</option>
-                                <option value="LSMK3">LSMK3 (Lembaga Sertifikasi Sistem Manajemen K3)</option>
-                                <option value="LSUP">LSUP (Lembaga Sertifikasi Usaha Pariwisata)</option>
-                                <option value="LI">LI (Lembaga Inspeksi)</option>
-                                <option value="LP">LP (Laboratorium Penguji)</option>
-                                <option value="LSSMAP">LSSMAP (Lembaga Sertifikasi Sistem Manajemen Anti Penyuapan)</option>
-                                <option value="LSSML">LSSML (Lembaga Sertifikasi Sistem Manajemen Lingkungan)</option>
                             </select>
                         </div>
                         
@@ -542,51 +541,7 @@ menu.forEach(item => {
 });
 
 // Data Pemetaan Ruang Lingkup untuk 8 Lembaga
-const lingkupData = {
-    LSPRO: [
-        "AMDK (Air Minum Dalam Kemasan)",
-        "Garam Konsumsi Beryodium",
-        "Pupuk NPK / Pupuk Urea",
-        "Semen Portland",
-        "Kopi Bubuk"
-    ],
-    LSSM: [
-        "ISO 9001:2015 (Sistem Manajemen Mutu)",
-        "Sektor Kimia",
-        "Sektor Makanan & Minuman",
-        "Sektor Tekstil"
-    ],
-    LSMK3: [
-        "Audit SMK3 PP 50/2012",
-        "Sektor Industri Manufaktur",
-        "Sektor Konstruksi"
-    ],
-    LSUP: [
-        "Hotel Bintang & Non-Bintang",
-        "Restoran / Rumah Makan",
-        "Biro Perjalanan Wisata"
-    ],
-    LI: [
-        "Inspeksi Teknis Pabrik",
-        "Uji Kelayakan Peralatan",
-        "Kalibrasi Tangki"
-    ],
-    LP: [
-        "Pengujian Air Bersih / Limbah",
-        "Pengujian Udara Emisi / Ambient",
-        "Analisis Produk Kimia & Makanan"
-    ],
-    LSSMAP: [
-        "ISO 37001:2016 (Sistem Manajemen Anti Penyuapan)",
-        "Sektor Instansi Pemerintah",
-        "Sektor BUMN / Swasta"
-    ],
-    LSSML: [
-        "ISO 14001:2015 (Sistem Manajemen Lingkungan)",
-        "Sektor Industri Kimia",
-        "Sektor Kelapa Sawit"
-    ]
-};
+const lingkupData = {};
 
 // State list kompetensi terpilih
 let selectedKompetensi = [];

@@ -463,36 +463,58 @@
                             <label class="form-label">Perusahaan yang Diaudit</label>
                             <select class="form-select">
                                 <option selected disabled>Pilih Perusahaan</option>
-                                <option>PT ABC Indonesia</option>
-                                <option>CV XYZ Palembang</option>
-                                <option>PT Maju Jaya</option>
                             </select>
                         </div>
 
-                        <!-- ================= PERUBAHAN DI SINI ================= -->
-                        <div class="mb-4">
-                            <label class="form-label">Ruang Lingkup Audit</label>
-                            <div class="dropdown">
-                                <button class="dropdown-select-btn btn w-100" type="button" id="dropdownRuangLingkup" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                    <span id="selected-text" class="text-secondary">Pilih Ruang Lingkup</span>
+                        <!-- ================= KOMPETENSI LEMBAGA & RUANG LINGKUP (LAYOUT GAMBAR 2) ================= -->
+                        <div class="card p-4 border border-light shadow-sm rounded-4 mb-4" style="background-color: #F8FAFC;">
+                            <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
+                                <i class="fas fa-landmark me-2"></i>Kompetensi Lembaga & Ruang Lingkup
+                            </h5>
+                            
+                            <div class="row">
+                                <!-- Pilih Lembaga -->
+                                <div class="col-md-5 mb-3">
+                                    <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Lembaga</label>
+                                    <select class="form-select" id="selectLembaga" onchange="loadRuangLingkup()">
+                                        <option value="" disabled selected>Pilih Lembaga...</option>
+                                        <option value="lspro">LSPro (Lembaga Sertifikasi Produk)</option>
+                                        <option value="lssm">LSSM (Lembaga Sertifikasi Sistem Manajemen)</option>
+                                        <option value="lssml">LSSML (Sistem Manajemen Lingkungan)</option>
+                                        <option value="lsih">LSIH (Industri Hijau)</option>
+                                        <option value="lssmkp">LSSMKP (Sistem Keamanan Pangan)</option>
+                                        <option value="lph">LPH (Pemeriksa Halal)</option>
+                                        <option value="lshaccp">LSHACCP (Analisis Bahaya Titik Kendali)</option>
+                                        <option value="lssmk3">LSSMK3 (Sistem Manajemen K3)</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Pilih Ruang Lingkup -->
+                                <div class="col-md-7 mb-3">
+                                    <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Ruang Lingkup (Bisa Pilih Lebih dari Satu)</label>
+                                    <!-- Search input inside choice box -->
+                                    <input type="text" class="form-control form-control-sm mb-2" id="searchRuangLingkup" placeholder="Cari ruang lingkup..." onkeyup="filterChoices()" style="display: none;">
+                                    <div class="border rounded p-3 bg-white" id="ruangLingkupContainer" style="max-height: 180px; overflow-y: auto; font-size: 14px;">
+                                        <span class="text-muted">Silakan pilih lembaga terlebih dahulu.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-end mt-2">
+                                <button type="button" class="btn btn-primary px-4 btn-sm" id="btnTambahKompetensi" onclick="tambahKompetensi()" disabled style="height: 38px; font-size: 14px; border-radius: 8px;">
+                                    <i class="fas fa-plus"></i> Tambah Kompetensi
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-custom w-100" aria-labelledby="dropdownRuangLingkup">
-                                    <li class="dropdown-item-custom d-flex align-items-center gap-2">
-                                        <input class="form-check-input ruang-lingkup-checkbox" type="checkbox" value="LSPro" id="ruang_lspro" name="ruang_lingkup[]">
-                                        <label class="form-check-label w-100" for="ruang_lspro">LSPro</label>
-                                    </li>
-                                    <li class="dropdown-item-custom d-flex align-items-center gap-2">
-                                        <input class="form-check-input ruang-lingkup-checkbox" type="checkbox" value="LSSM" id="ruang_lssm" name="ruang_lingkup[]">
-                                        <label class="form-check-label w-100" for="ruang_lssm">LSSM</label>
-                                    </li>
-                                    <li class="dropdown-item-custom d-flex align-items-center gap-2">
-                                        <input class="form-check-input ruang-lingkup-checkbox" type="checkbox" value="Kalibrasi" id="ruang_kalibrasi" name="ruang_lingkup[]">
-                                        <label class="form-check-label w-100" for="ruang_kalibrasi">Kalibrasi</label>
-                                    </li>
-                                </ul>
+                            </div>
+
+                            <!-- Daftar Kompetensi Terpilih -->
+                            <h6 class="fw-bold mt-4 mb-3 text-dark" style="font-size: 15px;">Daftar Kompetensi Terpilih</h6>
+                            <div id="daftarKompetensiTerpilih">
+                                <div class="text-muted text-center py-3 border rounded-3 bg-white" id="emptyKompetensiText" style="font-size: 14px;">
+                                    Belum ada kompetensi yang ditambahkan.
+                                </div>
                             </div>
                         </div>
-                        <!-- ===================================================== -->
+                        <!-- ======================================================================================= -->
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
@@ -507,7 +529,16 @@
 
                         <div class="mb-4">
                             <label class="form-label">Lokasi</label>
-                            <input type="text" class="form-control" placeholder="Masukkan lokasi audit">
+                            <input type="text" class="form-control mb-3" placeholder="Masukkan detail lokasi audit (contoh: Palembang)">
+                            
+                            <label class="form-label text-muted small d-block mb-2">Kategori Wilayah</label>
+                            <div class="d-flex flex-wrap gap-2" id="kategoriLokasiGroup">
+                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Dalam Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Dalam Kota</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Pinggiran Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Pinggiran Kota</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Kota</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Negeri')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Negeri</button>
+                            </div>
+                            <input type="hidden" name="kategori_lokasi" id="inputKategoriLokasi" value="">
                         </div>
 
                         <div class="mb-4">
@@ -539,32 +570,245 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- ================= JAVASCRIPT UNTUK UPDATE TEXT BUTTON ================= -->
+    <!-- ================= JAVASCRIPT UNTUK DYNAMIC KOMPETENSI & RUANG LINGKUP ================= -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.ruang-lingkup-checkbox');
-            const selectedText = document.getElementById('selected-text');
+        const dataRuangLingkup = {
+            lspro: [
+                "Peralatan Permesinan Lainnya (04.99)",
+                "Hasil pertanian dan perkebunan (biji kopi, beras) (12.02)",
+                "Produk pertanian dan perkebunan lainnya (12.99)",
+                "Kopi, teh, kakao, cokelat (15.06)",
+                "Gula, Produk Gula (15.03)",
+                "Minyak Nabati, Lemak, Minyak Sayur (15.09)",
+                "Daging, produk daging, produk ikan dan produk hewani lain dan turunannya (16.02)",
+                "Produk hewan dan turunan lainnya (16.99)",
+                "Minuman (17.01)",
+                "Rempah dan Bumbu (17.02)",
+                "Produk Pangan Lainnya (17.99)",
+                "Produk Kimia Dasar (18.01)",
+                "Pupuk (18.07)",
+                "Semen (18.09)",
+                "Produk Logam Lembaran (19.04)",
+                "Genteng (22.04)",
+                "Karet/SIR (23.01)",
+                "Pipa/Selang (23.03)",
+                "Tangki Air (23.04)",
+                "Produk Karet dan Plastik Lainnya (23.99)",
+                "Bahan Bangunan, Konstruksi, dan Teknik Sipil Lainnya (25.99)",
+                "Mainan Anak (26.01)"
+            ],
+            lssm: [
+                "Pertanian, Kehutanan, dan Perikanan (01)",
+                "Produk makanan, minuman, dan tembakau (03)",
+                "Kimia, produk kimia dan serat (12)",
+                "Karet dan produk plastik (14)",
+                "Beton, semen, kapur, plester, dll (16)",
+                "Jasa Lainnya (35)"
+            ],
+            lssml: [
+                "Produk makanan, minuman, dan tembakau (03)",
+                "Karet dan produk plastik (14)"
+            ],
+            lsih: [
+                "Karet / Crumb Rubber",
+                "Pengasapan Karet (RSS)",
+                "Minyak Goreng Kelapa Sawit",
+                "Air mineral",
+                "Biskuit dan produk roti kering lainnya",
+                "Semen portland",
+                "Pupuk NPK",
+                "Baja Lapis Seng (BjLS)",
+                "Pupuk Urea",
+                "Pupuk Amonium Sulfat"
+            ],
+            lssmkp: [
+                "Pengolahan produk hewan mudah rusak (C I)",
+                "Pengolahan produk tanaman mudah rusak (C II)",
+                "Pengolahan produk hewan dan tanaman mudah rusak (produk campuran) (C III)",
+                "Pengolahan produk yang stabil pada suhu ruang (C IV)"
+            ],
+            lph: [
+                "Makanan",
+                "Minuman",
+                "Produk Kimiawi",
+                "Produk Biologi",
+                "Barang Gunaan",
+                "Jasa Pengolahan",
+                "Jasa Penyimpanan",
+                "Jasa Pengemasan",
+                "Jasa Pendistribusian",
+                "Jasa Penjualan",
+                "Jasa Penyajian"
+            ],
+            lshaccp: [
+                "Lemak, minyak dan emulsi minyak (02.0)",
+                "Buah dan Sayur (04.0)",
+                "Kembang Gula/Permen dan Coklat (05.0)",
+                "Serealia dan produk serealia (06.0)",
+                "Produk bakeri (07.0)",
+                "Daging dan produk daging (08.0)",
+                "Ikan dan produk perikanan (09.0)",
+                "Gula dan pemanis termasuk madu (11.0)",
+                "Garam, rempah, sup, saus, salad, produk protein (12.0)",
+                "Minuman, tidak termasuk produk susu (14.0)",
+                "Jasa Boga/Pelayanan Pangan (19.0)"
+            ],
+            lssmk3: [
+                "Karet dan produk plastik (14)"
+            ]
+        };
 
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    // Cari semua checkbox yang sedang dicentang
-                    const checkedValues = Array.from(checkboxes)
-                        .filter(cb => cb.checked)
-                        .map(cb => cb.value);
+        const listKompetensi = {};
 
-                    // Update tulisan di tombol select
-                    if (checkedValues.length > 0) {
-                        selectedText.textContent = checkedValues.join(', ');
-                        selectedText.classList.remove('text-secondary');
-                        selectedText.classList.add('text-dark');
-                    } else {
-                        selectedText.textContent = 'Pilih Ruang Lingkup';
-                        selectedText.classList.remove('text-dark');
-                        selectedText.classList.add('text-secondary');
-                    }
-                });
+        function loadRuangLingkup() {
+            const select = document.getElementById('selectLembaga');
+            const container = document.getElementById('ruangLingkupContainer');
+            const searchInput = document.getElementById('searchRuangLingkup');
+            const val = select.value;
+
+            if (!val) {
+                container.innerHTML = '<span class="text-muted">Silakan pilih lembaga terlebih dahulu.</span>';
+                searchInput.style.display = 'none';
+                return;
+            }
+
+            const items = dataRuangLingkup[val] || [];
+            if (items.length === 0) {
+                container.innerHTML = '<span class="text-muted">Tidak ada ruang lingkup tersedia.</span>';
+                searchInput.style.display = 'none';
+                return;
+            }
+
+            // Tampilkan kotak pencarian
+            searchInput.style.display = 'block';
+            searchInput.value = '';
+
+            let html = '';
+            items.forEach((item, index) => {
+                html += `
+                    <div class="form-check mb-2 choice-item">
+                        <input class="form-check-input check-lingkup" type="checkbox" value="${item}" id="chk_${index}" onchange="toggleAddButton()">
+                        <label class="form-check-label w-100" for="chk_${index}">
+                            ${item}
+                        </label>
+                    </div>
+                `;
             });
-        });
+            container.innerHTML = html;
+            toggleAddButton();
+        }
+
+        function filterChoices() {
+            const query = document.getElementById('searchRuangLingkup').value.toLowerCase();
+            const items = document.querySelectorAll('.choice-item');
+            items.forEach(item => {
+                const label = item.querySelector('label').textContent.toLowerCase();
+                if (label.indexOf(query) > -1) {
+                    item.style.setProperty('display', 'block', 'important');
+                } else {
+                    item.style.setProperty('display', 'none', 'important');
+                }
+            });
+        }
+
+        function toggleAddButton() {
+            const checks = document.querySelectorAll('.check-lingkup:checked');
+            const btn = document.getElementById('btnTambahKompetensi');
+            if (checks.length > 0) {
+                btn.removeAttribute('disabled');
+            } else {
+                btn.setAttribute('disabled', 'true');
+            }
+        }
+
+        function tambahKompetensi() {
+            const select = document.getElementById('selectLembaga');
+            const lembagaId = select.value;
+            const lembagaText = select.options[select.selectedIndex].text;
+            
+            const checks = document.querySelectorAll('.check-lingkup:checked');
+            const scopes = [];
+            checks.forEach(cb => scopes.push(cb.value));
+
+            if (scopes.length === 0) return;
+
+            // Buat atau gabungkan ruang lingkup lembaga
+            if (!listKompetensi[lembagaId]) {
+                listKompetensi[lembagaId] = {
+                    name: lembagaText,
+                    scopes: []
+                };
+            }
+
+            scopes.forEach(sc => {
+                if (!listKompetensi[lembagaId].scopes.includes(sc)) {
+                    listKompetensi[lembagaId].scopes.push(sc);
+                }
+            });
+
+            // Tampilkan kembali daftar terpilih
+            renderKompetensiList();
+
+            // Reset input
+            select.value = '';
+            loadRuangLingkup();
+        }
+
+        function hapusKompetensi(lembagaId) {
+            delete listKompetensi[lembagaId];
+            renderKompetensiList();
+        }
+
+        function renderKompetensiList() {
+            const listDiv = document.getElementById('daftarKompetensiTerpilih');
+            const keys = Object.keys(listKompetensi);
+
+            if (keys.length === 0) {
+                listDiv.innerHTML = `
+                    <div class="text-muted text-center py-3 border rounded-3 bg-white" id="emptyKompetensiText" style="font-size: 14px;">
+                        Belum ada kompetensi yang ditambahkan.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            keys.forEach(k => {
+                const item = listKompetensi[k];
+                html += `
+                    <div class="card mb-3 p-3 border rounded-3 bg-white kompetensi-card" id="card_${k}" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.03);">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="fw-bold text-primary mb-1" style="font-size: 14px;">${item.name}</h6>
+                                <small class="text-secondary d-block mt-1" style="font-size: 13px;">
+                                    <strong>Ruang Lingkup:</strong> ${item.scopes.join(', ')}
+                                </small>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" onclick="hapusKompetensi('${k}')" style="width: 32px; height: 32px; border-radius: 8px; border-color: #EF4444; color: #EF4444; background: transparent; transition: none;">
+                                <i class="far fa-trash-can" style="font-size: 13px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            listDiv.innerHTML = html;
+        }
+
+        function selectKategoriLokasi(btn, value) {
+            // Hapus kelas aktif dari semua tombol kategori lokasi
+            const buttons = document.querySelectorAll('.location-btn');
+            buttons.forEach(b => {
+                b.classList.remove('btn-primary');
+                b.classList.add('btn-outline-primary');
+            });
+            
+            // Tambahkan kelas aktif pada tombol yang diklik
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-primary');
+            
+            // Set nilai ke input hidden
+            document.getElementById('inputKategoriLokasi').value = value;
+        }
     </script>
 </body>
 

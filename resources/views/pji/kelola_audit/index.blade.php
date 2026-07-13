@@ -332,20 +332,8 @@ Buat Audit
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>AUD-001</strong></td>
-                            <td>PT ABC Indonesia</td>
-                            <td>LSPRO</td>
-                            <td>10 Jul 2026</td>
-                            <td>Popy Marlina</td>
-                            <td>
-                                <span class="badge" style="background-color: #FEF3C7; color: #D97706; font-weight: 600; padding: 6px 12px; border-radius: 8px;">
-                                    Menunggu
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailAuditModal" style="border-radius: 8px; padding: 6px 10px; transition: none;">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                            <td colspan="7" class="text-center text-secondary py-4" style="font-size: 14px;">
+                                <i class="fas fa-info-circle me-1"></i> Belum ada data audit.
                             </td>
                         </tr>
                     </tbody>

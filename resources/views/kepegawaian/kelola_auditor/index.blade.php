@@ -456,55 +456,42 @@ color:#EF4444;
     </div>
 
     <ul class="menu">
-
         <li>
-
-            <a href="#">
-
+            <a href="/dashboard-kepegawaian">
                 <i class="fas fa-house"></i>
-
                 Dashboard
-
             </a>
-
         </li>
-
         <li>
-
-            <a href="#" class="active">
-
+            <a href="/kepegawaian/auditor" class="active">
                 <i class="fas fa-users"></i>
-
                 Kelola Auditor
-
             </a>
-
         </li>
-
         <li>
-
-            <a href="#">
-
+            <a href="/kepegawaian/lembaga">
+                <i class="fas fa-landmark"></i>
+                Kelola Lembaga
+            </a>
+        </li>
+        <li>
+            <a href="/kepegawaian/ruang-lingkup">
+                <i class="fas fa-circle-nodes"></i>
+                Kelola Ruang Lingkup
+            </a>
+        </li>
+        <li>
+            <a href="/kepegawaian/profil">
                 <i class="fas fa-user"></i>
-
                 Profil
-
             </a>
-
         </li>
-
         <li>
-
-            <a href="#">
-
+            <a href="/login">
                 <i class="fas fa-right-from-bracket"></i>
-
                 Logout
-
             </a>
-
         </li>
-
     </ul>
 
 </div>

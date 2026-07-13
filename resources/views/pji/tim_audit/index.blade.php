@@ -450,7 +450,7 @@
                     <div class="stat-card">
                         <div>
                             <h6>Total Tim</h6>
-                            <h2>4</h2>
+                            <h2>0</h2>
                         </div>
                         <div class="stat-icon bg-blue">
                             <i class="fas fa-users"></i>
@@ -459,7 +459,7 @@
                     <div class="stat-card">
                         <div>
                             <h6>Sedang Review</h6>
-                            <h2>2</h2>
+                            <h2>0</h2>
                         </div>
                         <div class="stat-icon bg-orange">
                             <i class="fas fa-rotate"></i>
@@ -468,7 +468,7 @@
                     <div class="stat-card">
                         <div>
                             <h6>Aktif / Selesai</h6>
-                            <h2>2</h2>
+                            <h2>0</h2>
                         </div>
                         <div class="stat-icon bg-green">
                             <i class="fas fa-clipboard-check"></i>
@@ -491,49 +491,9 @@
                     </div>
                 </div>
 
-                <!-- ================= MAIN AUDIT CARD (1 Dummy Data) ================= -->
-                <div class="audit-card">
-                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                        <div>
-                            <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="card-title-code">AUD-2026-001</span>
-                                <span class="badge bg-warning-subtle text-warning" style="font-weight: 600; padding: 6px 12px; border-radius: 8px;">Review</span>
-                            </div>
-                            <h4 class="fw-bold text-dark mt-2 mb-1" style="font-size: 20px;">PT ABC Indonesia</h4>
-                            <div class="audit-info-row">
-                                <span><i class="far fa-building"></i> LSSM</span>
-                                <span><i class="far fa-calendar"></i> 25 Jun – 27 Jun 2026</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-outline-secondary px-3" data-bs-toggle="modal" data-bs-target="#detailTimModal">
-                            <i class="far fa-eye me-1"></i> Detail Tim
-                        </button>
-                    </div>
-
-                    <!-- Horizontal Avatars Team -->
-                    <div class="border-top pt-3 mt-3 d-flex flex-wrap gap-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="avatar-circle bg-avatar-blue">PM</div>
-                            <div>
-                                <div class="fw-semibold text-dark" style="font-size: 14px; line-height: 1.2;">Popy Marlina</div>
-                                <small class="text-muted" style="font-size: 12px;">Lead Auditor</small>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="avatar-circle bg-avatar-purple">AS</div>
-                            <div>
-                                <div class="fw-semibold text-dark" style="font-size: 14px; line-height: 1.2;">Andi Saputra</div>
-                                <small class="text-muted" style="font-size: 12px;">Auditor 1</small>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="avatar-circle bg-avatar-green">MR</div>
-                            <div>
-                                <div class="fw-semibold text-dark" style="font-size: 14px; line-height: 1.2;">Muhammad Rizki</div>
-                                <small class="text-muted" style="font-size: 12px;">Auditor 2</small>
-                            </div>
-                        </div>
-                    </div>
+                <!-- ================= EMPTY STATE ================= -->
+                <div class="audit-card text-center py-4 text-secondary" style="font-size: 14px;">
+                    <i class="fas fa-info-circle me-1"></i> Belum ada data tim audit.
                 </div>
 
             </div>
