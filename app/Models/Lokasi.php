@@ -15,8 +15,11 @@ class Lokasi extends Model
         'keterangan',
     ];
 
-    public function audits()
+    public $timestamps = true;
+
+    // Relasi ke Jadwal Audit
+    public function jadwalAudits()
     {
-        return $this->hasMany(Audit::class, 'id_lokasi', 'id_lokasi');
+        return $this->hasMany(JadwalAudit::class, 'id_lokasi', 'id_lokasi');
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->foreignId('id_user')
-                ->constrained('users')
+                ->constrained('users', 'id_user')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 

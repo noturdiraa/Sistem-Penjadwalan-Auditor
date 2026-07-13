@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jadwal_audits', function (Blueprint $table) {
-            $table->id('id_jadwal_audit');
+
+            $table->id('id_jadwal');
 
             $table->foreignId('id_audit')
                 ->constrained('audits', 'id_audit')
@@ -25,18 +26,15 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->date('tanggal_mulai');
+
             $table->date('tanggal_selesai');
 
-            $table->time('jam_mulai')->nullable();
-            $table->time('jam_selesai')->nullable();
-
-            $table->enum('status', [
-                'Draft',
-                'Diajukan',
-                'Revisi',
+            $table->enum('status_jadwal', [
+                'Menunggu',
                 'Disetujui',
+                'Ditolak',
                 'Selesai'
-            ])->default('Draft');
+            ])->default('Menunggu');
 
             $table->text('keterangan')->nullable();
 

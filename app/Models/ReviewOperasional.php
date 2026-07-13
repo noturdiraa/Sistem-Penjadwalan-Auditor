@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TimAudit extends Model
+class ReviewTeknis extends Model
 {
-    protected $table = 'tim_audits';
+    protected $table = 'review_teknis';
 
-    protected $primaryKey = 'id_tim';
+    protected $primaryKey = 'id_review_teknis';
 
     protected $fillable = [
         'id_jadwal',
-        'id_auditor',
-        'peran',
+        'id_user',
+        'status_review',
+        'catatan',
     ];
 
     public $timestamps = true;
@@ -24,9 +25,9 @@ class TimAudit extends Model
         return $this->belongsTo(JadwalAudit::class, 'id_jadwal', 'id_jadwal');
     }
 
-    // Relasi ke Auditor
-    public function auditor()
+    // Relasi ke User
+    public function user()
     {
-        return $this->belongsTo(Auditor::class, 'id_auditor', 'id_auditor');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }

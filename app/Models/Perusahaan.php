@@ -19,6 +19,7 @@ class Perusahaan extends Model
 
     public $timestamps = true;
 
+    // Relasi ke Audit
     public function audits()
     {
         return $this->hasMany(Audit::class, 'id_perusahaan', 'id_perusahaan');

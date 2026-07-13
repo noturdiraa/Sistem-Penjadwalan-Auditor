@@ -17,13 +17,21 @@ class RuangLingkup extends Model
 
     public $timestamps = true;
 
+    // Relasi ke Lembaga
     public function lembaga()
     {
         return $this->belongsTo(Lembaga::class, 'id_lembaga', 'id_lembaga');
     }
 
+    // Relasi ke Detail Auditor
     public function detailAuditors()
     {
         return $this->hasMany(DetailAuditor::class, 'id_ruang_lingkup', 'id_ruang_lingkup');
+    }
+
+    // Relasi ke Audit
+    public function audits()
+    {
+        return $this->hasMany(Audit::class, 'id_ruang_lingkup', 'id_ruang_lingkup');
     }
 }

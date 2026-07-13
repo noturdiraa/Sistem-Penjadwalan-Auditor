@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tim_audits', function (Blueprint $table) {
+
             $table->id('id_tim');
 
             $table->foreignId('id_jadwal')
-                ->constrained('jadwal_audits', 'id_jadwal_audit')
+                ->constrained('jadwal_audits', 'id_jadwal')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
@@ -24,7 +25,10 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->enum('peran', ['Lead Auditor', 'Auditor']);
+            $table->enum('peran', [
+                'Lead Auditor',
+                'Auditor'
+            ]);
 
             $table->timestamps();
         });

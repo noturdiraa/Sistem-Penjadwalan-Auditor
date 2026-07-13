@@ -9,10 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('alasan_penolakans', function (Blueprint $table) {
+
             $table->id('id_penolakan');
 
-            $table->foreignId('id_review_teknis')
-                ->constrained('review_teknis', 'id_review_teknis')
+            $table->foreignId('id_review_operasional')
+                ->constrained('review_operasionals', 'id_review_operasional')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 

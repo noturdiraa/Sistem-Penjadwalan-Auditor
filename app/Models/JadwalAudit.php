@@ -6,5 +6,54 @@ use Illuminate\Database\Eloquent\Model;
 
 class JadwalAudit extends Model
 {
-    //
+    protected $table = 'jadwal_audits';
+
+    protected $primaryKey = 'id_jadwal';
+
+    protected $fillable = [
+        'id_audit',
+        'id_lokasi',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'status_jadwal',
+        'keterangan',
+    ];
+
+    public $timestamps = true;
+
+    // Relasi ke Audit
+    public function audit()
+    {
+        return $this->belongsTo(Audit::class, 'id_audit', 'id_audit');
+    }
+
+    // Relasi ke Lokasi
+    public function lokasi()
+    {
+        return $this->belongsTo(Lokasi::class, 'id_lokasi', 'id_lokasi');
+    }
+
+    // Relasi ke Tim Audit
+    public function timAudits()
+    {
+        return $this->hasMany(TimAudit::class, 'id_jadwal', 'id_jadwal');
+    }
+
+    // Relasi ke Review Katim PJI
+    public function reviewKatimPjis()
+    {
+        return $this->hasMany(ReviewKatimPji::class, 'id_jadwal', 'id_jadwal');
+    }
+
+    // Relasi ke Review Teknis
+    public function reviewTeknis()
+    {
+        return $this->hasMany(ReviewTeknis::class, 'id_jadwal', 'id_jadwal');
+    }
+
+    // Relasi ke Riwayat Auditor
+    public function riwayatAuditors()
+    {
+        return $this->hasMany(RiwayatAuditor::class, 'id_jadwal', 'id_jadwal');
+    }
 }
