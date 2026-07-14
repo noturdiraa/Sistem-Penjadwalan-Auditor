@@ -382,7 +382,14 @@
                 Selamat Datang di Sistem Penjadwalan Auditor
             </p>
 
-            <form>
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
+
+                @if ($errors->any())
+                    <div class="alert alert-danger py-2 px-3 mb-3" style="font-size: 13px; border-radius: 12px; background-color: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.2); color: #fff;">
+                        <i class="fas fa-exclamation-circle me-1"></i> {{ $errors->first() }}
+                    </div>
+                @endif
 
                 <div class="mb-3">
 
@@ -393,13 +400,16 @@
                     <div class="input-group">
 
                         <span class="input-group-text">
-                            <i class="fas fa-envelope"></i>
+                            <i class="fas fa-user"></i>
                         </span>
 
                         <input
-                            type="email"
+                            type="text"
+                            name="username"
+                            value="{{ old('username') }}"
                             class="form-control"
-                            placeholder="Masukkan Username">
+                            placeholder="Masukkan Username"
+                            required>
 
                     </div>
 
@@ -419,9 +429,11 @@
 
                         <input
                             type="password"
+                            name="password"
                             id="password"
                             class="form-control"
-                            placeholder="Masukkan Password">
+                            placeholder="Masukkan Password"
+                            required>
 
                         <button
                             type="button"
@@ -430,7 +442,7 @@
                             title="Tampilkan / Sembunyikan password"
                             onclick="lihatPassword()">
 
-                            <i id="eye" class="fas fa-eye"></i>
+                            <i id="eye" class="fas fa-eye-slash"></i>
 
                         </button>
 
@@ -444,9 +456,11 @@
 
                         <input
                             class="form-check-input"
-                            type="checkbox">
+                            type="checkbox"
+                            name="remember"
+                            id="remember">
 
-                        <label class="form-check-label">
+                        <label class="form-check-label" for="remember">
 
                             Ingat Saya
 
@@ -463,6 +477,7 @@
                 </div>
 
                 <button
+                    type="submit"
                     class="btn btn-primary btn-login w-100">
 
                     <i class="fas fa-right-to-bracket me-2"></i>
@@ -472,6 +487,8 @@
                 </button>
 
             </form>
+
+
 
             <div class="footer-text">
 
@@ -495,17 +512,17 @@
 
             password.type = "text";
 
-            eye.classList.remove("fa-eye");
+            eye.classList.remove("fa-eye-slash");
 
-            eye.classList.add("fa-eye-slash");
+            eye.classList.add("fa-eye");
 
         }else{
 
             password.type = "password";
 
-            eye.classList.remove("fa-eye-slash");
+            eye.classList.remove("fa-eye");
 
-            eye.classList.add("fa-eye");
+            eye.classList.add("fa-eye-slash");
 
         }
 

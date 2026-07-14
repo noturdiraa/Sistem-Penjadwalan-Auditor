@@ -324,10 +324,13 @@ Profil
 </li>
 
 <li>
-<a href="#">
-<i class="fas fa-right-from-bracket"></i>
-Logout
-</a>
+    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+        @csrf
+        <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1;">
+            <i class="fas fa-right-from-bracket"></i>
+            Logout
+        </button>
+    </form>
 </li>
 
 </ul>
