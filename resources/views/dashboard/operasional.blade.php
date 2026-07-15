@@ -289,35 +289,35 @@ margin:10px 0 12px;
 <ul class="menu">
 
 <li>
-<a href="#" class="active">
+<a href="/dashboard-operasional" class="active">
 <i class="fas fa-house"></i>
 Dashboard
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/operasional/review-jadwal">
 <i class="fas fa-calendar-check"></i>
 Review Jadwal Audit
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/operasional/input-auditor">
 <i class="fas fa-user-plus"></i>
 Input Auditor Manual
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/operasional/riwayat-review">
 <i class="fas fa-clock-rotate-left"></i>
 Riwayat Review
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/operasional/profil">
 <i class="fas fa-user"></i>
 Profil
 </a>

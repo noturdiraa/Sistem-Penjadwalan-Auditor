@@ -244,10 +244,13 @@
                 </a>
             </li>
             <li>
-                <a href="/login">
-                    <i class="fas fa-right-from-bracket"></i>
-                    Logout
-                </a>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1;">
+                        <i class="fas fa-right-from-bracket"></i>
+                        Logout
+                    </button>
+                </form>
             </li>
         </ul>
     </div>
@@ -284,12 +287,16 @@
 
                 <div class="row">
                     <div class="col-md-6 info">
-                        <label>NIP</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly>
+                        <label>Nama Lengkap</label>
+                        <input type="text" class="form-control" value="{{ auth()->user()->nama_user }}" readonly>
                     </div>
                     <div class="col-md-6 info">
+                        <label>Username</label>
+                        <input type="text" class="form-control" value="{{ auth()->user()->username }}" readonly>
+                    </div>
+                    <div class="col-md-12 info mt-3">
                         <label>Role</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly>
+                        <input type="text" class="form-control" value="{{ auth()->user()->role }}" readonly>
                     </div>
                 </div>
 

@@ -324,42 +324,42 @@ color:#777;
 <ul class="menu">
 
 <li>
-<a href="#" class="active">
+<a href="/dashboard-kepala-balai" class="active">
 <i class="fas fa-house"></i>
 Dashboard
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepalabalai/monitoring">
 <i class="fas fa-chart-line"></i>
 Monitoring
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepalabalai/approval-jadwal">
 <i class="fas fa-circle-check"></i>
 Approval Jadwal
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepalabalai/kalender-audit">
 <i class="fas fa-calendar-days"></i>
 Kalender Audit
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepalabalai/grafik-beban-kerja">
 <i class="fas fa-chart-column"></i>
 Grafik Beban Kerja
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepalabalai/profil">
 <i class="fas fa-user"></i>
 Profil
 </a>

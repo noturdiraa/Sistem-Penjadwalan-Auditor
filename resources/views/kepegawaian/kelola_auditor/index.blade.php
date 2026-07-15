@@ -487,10 +487,13 @@ color:#EF4444;
             </a>
         </li>
         <li>
-            <a href="/login">
-                <i class="fas fa-right-from-bracket"></i>
-                Logout
-            </a>
+            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1;">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Logout
+                </button>
+            </form>
         </li>
     </ul>
 
@@ -585,7 +588,7 @@ placeholder="Cari Nama Auditor atau NIP">
 
 <div class="col-md-3 text-end">
 
-<a href="#" class="btn btn-primary w-100 w-md-auto">
+<a href="{{ route('kepegawaian.auditor.create') }}" class="btn btn-primary w-100 w-md-auto">
 
 <i class="fas fa-plus"></i>
 

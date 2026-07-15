@@ -243,10 +243,13 @@
                 </a>
             </li>
             <li>
-                <a href="/login">
-                    <i class="fas fa-right-from-bracket"></i>
-                    Logout
-                </a>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1;">
+                        <i class="fas fa-right-from-bracket"></i>
+                        Logout
+                    </button>
+                </form>
             </li>
         </ul>
     </div>
@@ -293,26 +296,32 @@
                     </div>
 
                     <div class="row">
-                        <!-- NIP -->
+                        <!-- Nama Lengkap -->
                         <div class="col-md-6 info">
-                            <label>NIP</label>
-                            <input type="text" class="form-control" name="nip" value="" placeholder="Masukkan NIP">
+                            <label>Nama Lengkap</label>
+                            <input type="text" class="form-control" name="nama_user" value="{{ auth()->user()->nama_user }}" placeholder="Masukkan Nama Lengkap" required>
+                        </div>
+                        
+                        <!-- Username -->
+                        <div class="col-md-6 info">
+                            <label>Username</label>
+                            <input type="text" class="form-control" name="username" value="{{ auth()->user()->username }}" placeholder="Masukkan Username" required>
                         </div>
                         
                         <!-- Role -->
-                        <div class="col-md-6 info">
+                        <div class="col-md-12 info mt-1">
                             <label>Role</label>
-                            <input type="text" class="form-control" name="role" value="" placeholder="Belum diatur" readonly>
+                            <input type="text" class="form-control" value="{{ auth()->user()->role }}" readonly>
                         </div>
                         
                         <!-- Password Baru -->
-                        <div class="col-md-6 info">
+                        <div class="col-md-6 info mt-3">
                             <label>Password Baru</label>
                             <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak diubah">
                         </div>
                         
                         <!-- Konfirmasi Password -->
-                        <div class="col-md-6 info">
+                        <div class="col-md-6 info mt-3">
                             <label>Konfirmasi Password</label>
                             <input type="password" class="form-control" name="password_confirmation" placeholder="Ulangi Password Baru">
                         </div>
