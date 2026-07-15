@@ -437,7 +437,7 @@
             // Load Avatar
             const savedAvatar = localStorage.getItem('kepalabalai_avatar');
             if (savedAvatar) {
-                previewDiv.innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                previewDiv.innerHTML = '<img src="' + savedAvatar + '" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">';
                 deleteBtnContainer.style.display = 'block';
                 const profileImg = document.querySelector('.profile img');
                 if (profileImg) {
@@ -465,7 +465,7 @@
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const avatarData = e.target.result;
-                        previewDiv.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                        previewDiv.innerHTML = '<img src="' + avatarData + '" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">';
                         deleteBtnContainer.style.display = 'block';
                         deleteInput.value = '0';
                         tempAvatarData = avatarData;

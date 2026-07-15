@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
 
 // ================= LOGIN & AUTHENTICATION =================
 
@@ -27,12 +26,12 @@ Route::redirect('/home', '/');
 
 // Hanya bisa diakses oleh Guest (user yang belum login)
 Route::middleware(['guest'])->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/login', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login');
+    Route::post('/login', 'App\Http\Controllers\Auth\LoginController@login');
 });
 
 // Logout (Hanya untuk user yang sudah login)
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout')->middleware('auth');
 
 // ================= GROUP ROUTE TERPROTEKSI LOGIN =================
 Route::middleware(['auth'])->group(function () {

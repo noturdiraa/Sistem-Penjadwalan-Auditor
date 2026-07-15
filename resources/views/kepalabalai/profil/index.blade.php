@@ -312,7 +312,7 @@
             if (savedAvatar) {
                 const avatarCircle = document.querySelector('.avatar-large-circle');
                 if (avatarCircle) {
-                    avatarCircle.innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                    avatarCircle.innerHTML = '<img src="' + savedAvatar + '" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">';
                 }
                 const profileImg = document.querySelector('.profile img');
                 if (profileImg) {
