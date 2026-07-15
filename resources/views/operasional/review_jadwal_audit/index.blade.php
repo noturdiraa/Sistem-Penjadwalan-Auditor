@@ -496,23 +496,33 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
             Jadwal Perlu Review
         </h4>
 
-        <!-- PT ABC Indonesia -->
-        <div class="card mb-0 p-3 border rounded-3 bg-white" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.03); border-color: #E2E8F0 !important;">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-warning text-dark fw-semibold" style="font-size: 12px; padding: 6px 12px; border-radius: 6px;">Menunggu Review</span>
+        @php
+            $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Menunggu Review')->get();
+        @endphp
+        @if($jadwals->count() > 0)
+            @foreach($jadwals as $jadwal)
+                <div class="card mb-3 p-3 border rounded-3 bg-white" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.03); border-color: #E2E8F0 !important;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-warning text-dark fw-semibold" style="font-size: 12px; padding: 6px 12px; border-radius: 6px;">{{ $jadwal->status_jadwal }}</span>
+                            </div>
+                            <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</h5>
+                        </div>
+                        <div class="d-flex align-items-center gap-4 flex-wrap">
+                            <span class="text-secondary" style="font-size: 14px;">
+                                <i class="far fa-calendar me-1"></i> {{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}
+                            </span>
+                            <a href="/operasional/review-jadwal/review" class="btn btn-primary" style="border-radius: 10px; padding: 8px 24px; font-size: 14px; font-weight: 500; height: 38px; display: inline-flex; align-items: center; justify-content: center; transition: none;">Review</a>
+                        </div>
                     </div>
-                    <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">PT ABC Indonesia</h5>
                 </div>
-                <div class="d-flex align-items-center gap-4 flex-wrap">
-                    <span class="text-secondary" style="font-size: 14px;">
-                        <i class="far fa-calendar me-1"></i> 29 Juni 2026
-                    </span>
-                    <a href="/operasional/review-jadwal/review" class="btn btn-primary" style="border-radius: 10px; padding: 8px 24px; font-size: 14px; font-weight: 500; height: 38px; display: inline-flex; align-items: center; justify-content: center; transition: none;">Review</a>
-                </div>
+            @endforeach
+        @else
+            <div class="text-center text-secondary py-4">
+                Tidak ada jadwal yang perlu direview.
             </div>
-        </div>
+        @endif
 
     </div>
 

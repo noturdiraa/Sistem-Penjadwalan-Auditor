@@ -402,12 +402,19 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
 <div class="stats-row cards-row">
 
+    @php
+        $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu Review')->count();
+        $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
+        $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Dikembalikan')->count();
+        $countTotal = \App\Models\JadwalAudit::count();
+    @endphp
+
     <!-- Menunggu Review -->
     <div class="stat-card-col">
         <div class="card-stat">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-0 fw-bold text-dark">3</h2>
+                    <h2 class="mb-0 fw-bold text-dark">{{ $countMenunggu }}</h2>
                     <small class="text-secondary mt-1">
                         Menunggu Review
                     </small>
@@ -424,7 +431,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
         <div class="card-stat">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-0 fw-bold text-dark">8</h2>
+                    <h2 class="mb-0 fw-bold text-dark">{{ $countDisetujui }}</h2>
                     <small class="text-secondary mt-1">
                         Disetujui
                     </small>
@@ -441,7 +448,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
         <div class="card-stat">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-0 fw-bold text-dark">4</h2>
+                    <h2 class="mb-0 fw-bold text-dark">{{ $countDikembalikan }}</h2>
                     <small class="text-secondary mt-1">
                         Dikembalikan
                     </small>
@@ -458,7 +465,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
         <div class="card-stat">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="mb-0 fw-bold text-dark">15</h2>
+                    <h2 class="mb-0 fw-bold text-dark">{{ $countTotal }}</h2>
                     <small class="text-secondary mt-1">
                         Total Review
                     </small>
@@ -505,22 +512,23 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
         </thead>
 
         <tbody>
-            @if(isset($jadwals) && $jadwals->count())
+            @php
+                $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Menunggu Review')->take(5)->get();
+            @endphp
+            @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
                     <tr>
-                        <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review" class="kode-link">{{ $jadwal->perusahaan->nama ?? $jadwal->perusahaan ?? '-' }}</a></td>
-                        <td class="text-center"><span class="badge-light-blue">{{ $jadwal->lembaga ?? $jadwal->lembaga_sertifikasi ?? '-' }}</span></td>
-                        <td class="text-center">{{ isset($jadwal->tanggal_audit) ? \Carbon\Carbon::parse($jadwal->tanggal_audit)->format('d M Y') : (isset($jadwal->tanggal) ? \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y') : '-') }}</td>
-                        <td class="text-center"><span class="badge bg-warning text-dark">{{ $jadwal->status ?? '-' }}</span></td>
+                        <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
+                        <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
+                        <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
+                        <td class="text-center"><span class="badge bg-warning text-dark">{{ $jadwal->status_jadwal ?? '-' }}</span></td>
                     </tr>
                 @endforeach
             @else
-                <!-- Dummy row for clean visual presentation -->
                 <tr>
-                    <td class="text-start text-start-cell fw-semibold"><a href="/operasional/review-jadwal/review" class="kode-link text-decoration-none">PT ABC Indonesia</a></td>
-                    <td class="text-center"><span class="badge-light-blue">LSSM</span></td>
-                    <td class="text-center">29 Jun 2026</td>
-                    <td class="text-center"><span class="badge bg-warning text-dark">Menunggu Review</span></td>
+                    <td colspan="4" class="text-center text-secondary py-4">
+                        Tidak ada jadwal audit yang menunggu review.
+                    </td>
                 </tr>
             @endif
         </tbody>

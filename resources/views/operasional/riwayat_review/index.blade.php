@@ -441,31 +441,71 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Dummy data according to Figma and User Request (Dikembalikan / Disetujui) - ONLY 1 ITEM
-        const dbRiwayat = [
-            {
-                id: "AUD-2025-018",
-                perusahaan: "CV Berkah Mandiri",
-                tanggal: "25 Jul 2025",
-                reviewer: "Sari Dewi",
-                keputusan: "Disetujui",
-                catatan: "Jadwal sesuai dan terverifikasi dengan baik",
-                status: "Selesai",
-                jenisAudit: "Sertifikasi",
-                lembaga: "LSSM",
-                ruangLingkup: "Sistem Manajemen Mutu (ISO 9001)",
-                tanggalMulai: "23 Jul 2025",
-                tanggalSelesai: "25 Jul 2025",
-                lokasi: "Jl. Jend. Sudirman No. 45, Palembang",
-                kategoriWilayah: "Dalam Kota",
-                timAudit: {
-                    ketua: { name: "Popy Marlina", role: "Lead Auditor", NIP: "197805152003122001", jenisAudit: "Sertifikasi", point: 0 },
-                    anggota: [
-                        { name: "Andi Saputra", role: "Auditor", NIP: "19890102012011003", jenisAudit: "Sertifikasi", point: 2 }
-                    ]
+    @php
+        $reviews = \App\Models\ReviewTeknis::with([
+            'jadwalAudit.audit.perusahaan',
+            'jadwalAudit.audit.ruangLingkup',
+            'jadwalAudit.lokasi',
+            'jadwalAudit.timAudits.auditor',
+            'user'
+        ])->get();
+
+        $formattedReviews = [];
+        foreach ($reviews as $rev) {
+            $jadwal = $rev->jadwalAudit;
+            $audit = $jadwal->audit ?? null;
+            $perusahaan = $audit->perusahaan ?? null;
+            $ruangLingkup = $audit->ruangLingkup ?? null;
+            $lokasi = $jadwal->lokasi ?? null;
+            $user = $rev->user;
+
+            $ketua = null;
+            $anggotaList = [];
+            if ($jadwal && $jadwal->timAudits) {
+                foreach ($jadwal->timAudits as $tim) {
+                    $auditor = $tim->auditor;
+                    if ($auditor) {
+                        $item = [
+                            'name' => $auditor->nama_auditor ?? '',
+                            'role' => $tim->jabatan ?? 'Auditor',
+                            'NIP' => $auditor->nip ?? '',
+                            'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
+                            'point' => 0
+                        ];
+                        if (strtolower($tim->jabatan) === 'ketua' || strtolower($tim->jabatan) === 'lead auditor') {
+                            $ketua = $item;
+                        } else {
+                            $anggotaList[] = $item;
+                        }
+                    }
                 }
             }
-        ];
+
+            $formattedReviews[] = [
+                'id' => 'AUD-' . ($jadwal->id_jadwal ?? $rev->id_review_teknis),
+                'perusahaan' => $perusahaan->nama_perusahaan ?? 'Belum diatur',
+                'tanggal' => $rev->created_at ? $rev->created_at->format('d M Y') : '-',
+                'reviewer' => $user->nama_user ?? 'Reviewer',
+                'keputusan' => $rev->status_review ?? 'Selesai',
+                'catatan' => $rev->catatan ?? '-',
+                'status' => 'Selesai',
+                'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
+                'lembaga' => $audit->jenis_audit ?? 'LSSM',
+                'ruangLingkup' => $ruangLingkup->nama_ruang_lingkup ?? '-',
+                'tanggalMulai' => $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-',
+                'tanggalSelesai' => $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d M Y') : '-',
+                'lokasi' => $lokasi->nama_lokasi ?? '-',
+                'kategoriWilayah' => $lokasi->kategori_wilayah ?? '-',
+                'timAudit' => [
+                    'ketua' => $ketua,
+                    'anggota' => $anggotaList
+                ]
+            ];
+        }
+    @endphp
+    <script>
+        // Dynamic data from database
+        const dbRiwayat = {!! json_encode($formattedReviews) !!};
 
         // Filter and display logic
         function filterData() {
