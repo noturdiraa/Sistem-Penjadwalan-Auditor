@@ -364,12 +364,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
             </a>
         </li>
 
-        <li>
-            <a href="/login">
-                <i class="fas fa-right-from-bracket"></i>
-                Logout
-            </a>
-        </li>
+                    <li>
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1; cursor: pointer;">
+                        <i class="fas fa-right-from-bracket"></i>
+                        Logout
+                    </button>
+                </form>
+            </li>
 
     </ul>
 
