@@ -482,7 +482,7 @@
             }
 
             $formattedReviews[] = [
-                'id' => 'AUD-' . ($jadwal->id_jadwal ?? $rev->id_review_teknis),
+                'id' => 'AUD-' . ($jadwal->id_jadwal ?? $rev->id_review_operasional),
                 'perusahaan' => $perusahaan->nama_perusahaan ?? 'Belum diatur',
                 'tanggal' => $rev->created_at ? $rev->created_at->format('d M Y') : '-',
                 'reviewer' => $user->nama_user ?? 'Reviewer',

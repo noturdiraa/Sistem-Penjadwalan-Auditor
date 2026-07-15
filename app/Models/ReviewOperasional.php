@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReviewOperasional extends Model
 {
-    protected $table = 'review_teknis';
+    protected $table = 'review_operasionals';
 
-    protected $primaryKey = 'id_review_teknis';
+    protected $primaryKey = 'id_review_operasional';
 
     protected $fillable = [
         'id_jadwal',
