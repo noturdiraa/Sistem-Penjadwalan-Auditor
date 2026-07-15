@@ -439,7 +439,6 @@
             }
         }
     @endphp
-    <script>
         // Data Jadwal Audit (Key format: YYYY-MM-DD)
         const audits = {!! json_encode($events) !!};
 
