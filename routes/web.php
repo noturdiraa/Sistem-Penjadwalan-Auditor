@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 // ================= LOGIN & AUTHENTICATION =================
 
 // Halaman utama: jika sudah login arahkan ke dashboard masing-masing, jika belum arahkan ke login
