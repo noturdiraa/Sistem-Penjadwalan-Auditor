@@ -30,6 +30,10 @@ return new class extends Migration
                 'Auditor'
             ]);
 
+            // Mencegah auditor yang sama masuk dua kali
+            // dalam satu jadwal audit
+            $table->unique(['id_jadwal', 'id_auditor']);
+
             $table->timestamps();
         });
     }
