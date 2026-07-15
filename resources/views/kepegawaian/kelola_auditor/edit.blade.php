@@ -289,7 +289,7 @@ color:#777;
         <li>
             <a href="/kepegawaian/lembaga">
                 <i class="fas fa-landmark"></i>
-                Kelola Lembaga
+                Kelola Jenis Audit
             </a>
         </li>
         <li>

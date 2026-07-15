@@ -161,7 +161,6 @@
             flex-grow: 1;
         }
 
-        /* ================= HEADER CARD ================= */
         .header-card {
             background: linear-gradient(180deg, #ffffff, #fbfdff);
             border-radius: 14px;
@@ -171,6 +170,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .header-card .title {
@@ -186,13 +188,15 @@
             font-size: 15px;
         }
 
-        /* ================= STEP PROGRESS ================= */
         .step-card {
             background: white;
             border-radius: 14px;
             padding: 20px;
             box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);
             margin-bottom: 22px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .step-wrapper {
@@ -243,12 +247,14 @@
             background: #E5E7EB;
         }
 
-        /* ================= FORM CARD ================= */
         .form-card {
             background: #fff;
             border-radius: 14px;
             padding: 25px;
             box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .form-card h3 {
@@ -459,33 +465,62 @@
                     <h3>Informasi Dasar Audit</h3>
 
                     <form>
-                        <div class="mb-4">
-                            <label class="form-label">Perusahaan yang Diaudit</label>
-                            <select class="form-select">
-                                <option selected disabled>Pilih Perusahaan</option>
-                            </select>
+                        <div class="row">
+                            <!-- Perusahaan yang Diaudit -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Perusahaan yang Diaudit</label>
+                                <select class="form-select">
+                                    <option selected disabled>Pilih Perusahaan</option>
+                                </select>
+                            </div>
+
+                            <!-- Lokasi -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Lokasi</label>
+                                <input type="text" class="form-control" placeholder="Masukkan detail lokasi audit (contoh: Palembang)">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Tanggal Mulai -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <!-- Tanggal Selesai -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Tanggal Selesai</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Kategori Wilayah -->
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">Kategori Wilayah</label>
+                                <div class="d-flex flex-wrap gap-2" id="kategoriLokasiGroup">
+                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Dalam Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Dalam Kota</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Pinggiran Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Pinggiran Kota</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Kota</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Negeri')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Negeri</button>
+                                </div>
+                                <input type="hidden" name="kategori_lokasi" id="inputKategoriLokasi" value="">
+                            </div>
                         </div>
 
                         <!-- ================= KOMPETENSI LEMBAGA & RUANG LINGKUP (LAYOUT GAMBAR 2) ================= -->
                         <div class="card p-4 border border-light shadow-sm rounded-4 mb-4" style="background-color: #F8FAFC;">
                             <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
-                                <i class="fas fa-landmark me-2"></i>Kompetensi Lembaga & Ruang Lingkup
+                                <i class="fas fa-landmark me-2"></i>Jenis Audit & Ruang Lingkup
                             </h5>
                             
                             <div class="row">
-                                <!-- Pilih Lembaga -->
+                                <!-- Pilih Jenis Audit -->
                                 <div class="col-md-5 mb-3">
-                                    <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Lembaga</label>
+                                    <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Jenis Audit</label>
                                     <select class="form-select" id="selectLembaga" onchange="loadRuangLingkup()">
-                                        <option value="" disabled selected>Pilih Lembaga...</option>
-                                        <option value="lspro">LSPro (Lembaga Sertifikasi Produk)</option>
-                                        <option value="lssm">LSSM (Lembaga Sertifikasi Sistem Manajemen)</option>
-                                        <option value="lssml">LSSML (Sistem Manajemen Lingkungan)</option>
-                                        <option value="lsih">LSIH (Industri Hijau)</option>
-                                        <option value="lssmkp">LSSMKP (Sistem Keamanan Pangan)</option>
-                                        <option value="lph">LPH (Pemeriksa Halal)</option>
-                                        <option value="lshaccp">LSHACCP (Analisis Bahaya Titik Kendali)</option>
-                                        <option value="lssmk3">LSSMK3 (Sistem Manajemen K3)</option>
+                                        <option value="" disabled selected>Pilih Jenis Audit</option>
+                                        <option value="" disabled>Belum ada data jenis audit di database</option>
                                     </select>
                                 </div>
                                 
@@ -495,7 +530,7 @@
                                     <!-- Search input inside choice box -->
                                     <input type="text" class="form-control form-control-sm mb-2" id="searchRuangLingkup" placeholder="Cari ruang lingkup..." onkeyup="filterChoices()" style="display: none;">
                                     <div class="border rounded p-3 bg-white" id="ruangLingkupContainer" style="max-height: 180px; overflow-y: auto; font-size: 14px;">
-                                        <span class="text-muted">Silakan pilih lembaga terlebih dahulu.</span>
+                                        <span class="text-muted">Belum ada data ruang lingkup di database.</span>
                                     </div>
                                 </div>
                             </div>
@@ -517,33 +552,10 @@
                         <!-- ======================================================================================= -->
 
                         <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tanggal Mulai</label>
-                                <input type="date" class="form-control">
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">Keterangan</label>
+                                <textarea class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
                             </div>
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tanggal Selesai</label>
-                                <input type="date" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Lokasi</label>
-                            <input type="text" class="form-control mb-3" placeholder="Masukkan detail lokasi audit (contoh: Palembang)">
-                            
-                            <label class="form-label text-muted small d-block mb-2">Kategori Wilayah</label>
-                            <div class="d-flex flex-wrap gap-2" id="kategoriLokasiGroup">
-                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Dalam Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Dalam Kota</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Pinggiran Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Pinggiran Kota</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Kota</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Negeri')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Negeri</button>
-                            </div>
-                            <input type="hidden" name="kategori_lokasi" id="inputKategoriLokasi" value="">
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Keterangan</label>
-                            <textarea class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 mt-4">
@@ -571,92 +583,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- ================= JAVASCRIPT UNTUK DYNAMIC KOMPETENSI & RUANG LINGKUP ================= -->
-    <script>
-        const dataRuangLingkup = {
-            lspro: [
-                "Peralatan Permesinan Lainnya (04.99)",
-                "Hasil pertanian dan perkebunan (biji kopi, beras) (12.02)",
-                "Produk pertanian dan perkebunan lainnya (12.99)",
-                "Kopi, teh, kakao, cokelat (15.06)",
-                "Gula, Produk Gula (15.03)",
-                "Minyak Nabati, Lemak, Minyak Sayur (15.09)",
-                "Daging, produk daging, produk ikan dan produk hewani lain dan turunannya (16.02)",
-                "Produk hewan dan turunan lainnya (16.99)",
-                "Minuman (17.01)",
-                "Rempah dan Bumbu (17.02)",
-                "Produk Pangan Lainnya (17.99)",
-                "Produk Kimia Dasar (18.01)",
-                "Pupuk (18.07)",
-                "Semen (18.09)",
-                "Produk Logam Lembaran (19.04)",
-                "Genteng (22.04)",
-                "Karet/SIR (23.01)",
-                "Pipa/Selang (23.03)",
-                "Tangki Air (23.04)",
-                "Produk Karet dan Plastik Lainnya (23.99)",
-                "Bahan Bangunan, Konstruksi, dan Teknik Sipil Lainnya (25.99)",
-                "Mainan Anak (26.01)"
-            ],
-            lssm: [
-                "Pertanian, Kehutanan, dan Perikanan (01)",
-                "Produk makanan, minuman, dan tembakau (03)",
-                "Kimia, produk kimia dan serat (12)",
-                "Karet dan produk plastik (14)",
-                "Beton, semen, kapur, plester, dll (16)",
-                "Jasa Lainnya (35)"
-            ],
-            lssml: [
-                "Produk makanan, minuman, dan tembakau (03)",
-                "Karet dan produk plastik (14)"
-            ],
-            lsih: [
-                "Karet / Crumb Rubber",
-                "Pengasapan Karet (RSS)",
-                "Minyak Goreng Kelapa Sawit",
-                "Air mineral",
-                "Biskuit dan produk roti kering lainnya",
-                "Semen portland",
-                "Pupuk NPK",
-                "Baja Lapis Seng (BjLS)",
-                "Pupuk Urea",
-                "Pupuk Amonium Sulfat"
-            ],
-            lssmkp: [
-                "Pengolahan produk hewan mudah rusak (C I)",
-                "Pengolahan produk tanaman mudah rusak (C II)",
-                "Pengolahan produk hewan dan tanaman mudah rusak (produk campuran) (C III)",
-                "Pengolahan produk yang stabil pada suhu ruang (C IV)"
-            ],
-            lph: [
-                "Makanan",
-                "Minuman",
-                "Produk Kimiawi",
-                "Produk Biologi",
-                "Barang Gunaan",
-                "Jasa Pengolahan",
-                "Jasa Penyimpanan",
-                "Jasa Pengemasan",
-                "Jasa Pendistribusian",
-                "Jasa Penjualan",
-                "Jasa Penyajian"
-            ],
-            lshaccp: [
-                "Lemak, minyak dan emulsi minyak (02.0)",
-                "Buah dan Sayur (04.0)",
-                "Kembang Gula/Permen dan Coklat (05.0)",
-                "Serealia dan produk serealia (06.0)",
-                "Produk bakeri (07.0)",
-                "Daging dan produk daging (08.0)",
-                "Ikan dan produk perikanan (09.0)",
-                "Gula dan pemanis termasuk madu (11.0)",
-                "Garam, rempah, sup, saus, salad, produk protein (12.0)",
-                "Minuman, tidak termasuk produk susu (14.0)",
-                "Jasa Boga/Pelayanan Pangan (19.0)"
-            ],
-            lssmk3: [
-                "Karet dan produk plastik (14)"
-            ]
-        };
+    <script>        const dataRuangLingkup = {};;
 
         const listKompetensi = {};
 

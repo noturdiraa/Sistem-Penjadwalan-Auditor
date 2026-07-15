@@ -359,7 +359,10 @@
                                 </label>
                                 <input type="file" id="fotoInput" name="foto_profil" class="d-none" accept="image/*">
                             </div>
-                            <small class="text-muted mt-3">Format: JPG, PNG. Maks: 2MB</small>
+                            <small class="text-muted mt-3 mb-2">Format: JPG, PNG. Maks: 2MB</small>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="btnDeletePhoto" onclick="deleteAvatar(event)" style="display: none; border-radius: 8px; height: 34px; padding: 0 16px;">
+                                <i class="far fa-trash-can me-1"></i> Hapus Foto
+                            </button>
                         </div>
 
                         <div class="row">
@@ -423,21 +426,66 @@
         const fotoInput = document.getElementById('fotoInput');
         const avatarPreview = document.getElementById('avatarPreview');
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedAvatar = localStorage.getItem('pji_avatar');
+            if (savedAvatar) {
+                avatarPreview.innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                const profileImg = document.querySelector('.profile img');
+                if (profileImg) {
+                    profileImg.src = savedAvatar;
+                }
+                const btnDelete = document.getElementById('btnDeletePhoto');
+                if (btnDelete) {
+                    btnDelete.style.display = 'inline-block';
+                }
+            }
+        });
+
         fotoInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    avatarPreview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                    const avatarData = e.target.result;
+                    localStorage.setItem('pji_avatar', avatarData);
+                    avatarPreview.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                    const profileImg = document.querySelector('.profile img');
+                    if (profileImg) {
+                        profileImg.src = avatarData;
+                    }
+                    const btnDelete = document.getElementById('btnDeletePhoto');
+                    if (btnDelete) {
+                        btnDelete.style.display = 'inline-block';
+                    }
                 }
                 reader.readAsDataURL(file);
             }
         });
 
+        function deleteAvatar(event) {
+            event.stopPropagation();
+            localStorage.removeItem('pji_avatar');
+            avatarPreview.innerHTML = 'A';
+            const profileImg = document.querySelector('.profile img');
+            if (profileImg) {
+                profileImg.src = "{{ asset('images/logo.png') }}";
+            }
+            const btnDelete = document.getElementById('btnDeletePhoto');
+            if (btnDelete) {
+                btnDelete.style.display = 'none';
+            }
+            fotoInput.value = '';
+        }
+
         // Reset preview saat form di-reset
         document.querySelector('form').addEventListener('reset', function() {
             setTimeout(() => {
-                avatarPreview.innerHTML = 'A';
+                const savedAvatar = localStorage.getItem('pji_avatar');
+                if (savedAvatar) {
+                    avatarPreview.innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                } else {
+                    avatarPreview.innerHTML = 'A';
+                }
             }, 50);
         });
     </script>

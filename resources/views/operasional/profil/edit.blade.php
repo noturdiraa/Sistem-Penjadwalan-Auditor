@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya</title>
+    <title>Edit Profil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -174,6 +174,12 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 35px;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
         }
 
         .avatar-circle {
@@ -190,6 +196,28 @@
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
         }
 
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2563EB;
+            color: white;
+            border: 2px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .avatar-upload-btn:hover {
+            background: #1d4ed8;
+        }
+
         .card-profil label {
             font-weight: 600;
             font-size: 14px;
@@ -199,12 +227,56 @@
         }
 
         .card-profil .form-control {
-            background: #f8fafc;
             height: 48px;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
-            color: #64748b;
-            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .card-profil .form-control:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-action-cancel {
+            background: #64748b;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-action-cancel:hover {
+            background: #475569;
+            color: white;
+        }
+
+        .btn-action-reset {
+            background: #eab308;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border: none;
+        }
+
+        .btn-action-reset:hover {
+            background: #ca8a04;
+        }
+
+        .btn-action-submit {
+            background: #2563EB;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border: none;
+        }
+
+        .btn-action-submit:hover {
+            background: #1d4ed8;
         }
 
         .footer {
@@ -295,34 +367,60 @@
 
         <div class="main">
             <div class="header-card">
-                <h2 class="title" style="font-size: 26px;">Profil Saya</h2>
-                <p class="subtitle" style="font-size: 14px;">Kelola informasi akun dan keamanan Anda.</p>
+                <h2 class="title" style="font-size: 26px;">Edit Profil</h2>
+                <p class="subtitle" style="font-size: 14px;">Perbarui informasi akun Anda.</p>
             </div>
 
             <!-- PROFILE CARD -->
             <div class="card-profil">
-                <div class="avatar-container">
-                    <div class="avatar-circle">
-                        O
+                <form action="/operasional/profil" method="GET" id="editProfilForm">
+                    <input type="file" id="avatarFile" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+                    <div class="avatar-container">
+                        <div class="avatar-wrapper" onclick="document.getElementById('avatarFile').click()" style="cursor: pointer;">
+                            <div class="avatar-circle">
+                                O
+                            </div>
+                            <div class="avatar-upload-btn">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 fw-semibold" id="btnDeletePhoto" onclick="deleteAvatar(event)" style="border-radius: 8px; font-size: 11px; display: none; padding: 4px 12px;">Hapus Foto</button>
+                        <small class="text-secondary mt-2 d-block" style="font-size: 12px; font-weight: 500;">Format: JPG, PNG. Maks: 2MB</small>
                     </div>
-                </div>
-                
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                        <label>NIP</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly disabled>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="inputNip">NIP</label>
+                            <input type="text" class="form-control text-dark" id="inputNip" value="" placeholder="Masukkan NIP" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inputRole">Role</label>
+                            <input type="text" class="form-control bg-light text-secondary" id="inputRole" value="" placeholder="Belum diatur" readonly disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inputPassword">Password Baru</label>
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Kosongkan jika tidak diubah">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="inputConfirmPassword">Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Ulangi Password Baru">
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Role</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly disabled>
-                    </div>
-                </div>
 
-                <div class="text-end">
-                    <a href="/operasional/profil/edit" class="btn btn-primary px-4 py-2 fw-semibold" style="border-radius: 10px;">
-                        <i class="far fa-pen-to-square me-1"></i> Edit Profil
-                    </a>
-                </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/operasional/profil" class="btn-action-cancel">
+                            <i class="fas fa-arrow-left me-1"></i> Kembali
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn-action-reset" onclick="resetForm()">
+                                <i class="fas fa-rotate-right me-1"></i> Reset
+                            </button>
+                            <button type="submit" class="btn-action-submit">
+                                <i class="fas fa-floppy-disk me-1"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -348,7 +446,65 @@
                 if (profileImg) {
                     profileImg.src = savedAvatar;
                 }
+                const btnDelete = document.getElementById('btnDeletePhoto');
+                if (btnDelete) {
+                    btnDelete.style.display = 'inline-block';
+                }
             }
+        });
+
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarData = e.target.result;
+                    localStorage.setItem('operasional_avatar', avatarData);
+                    const avatarCircle = document.querySelector('.avatar-circle');
+                    if (avatarCircle) {
+                        avatarCircle.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                    }
+                    const profileImg = document.querySelector('.profile img');
+                    if (profileImg) {
+                        profileImg.src = avatarData;
+                    }
+                    const btnDelete = document.getElementById('btnDeletePhoto');
+                    if (btnDelete) {
+                        btnDelete.style.display = 'inline-block';
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteAvatar(event) {
+            event.stopPropagation();
+            localStorage.removeItem('operasional_avatar');
+            const avatarCircle = document.querySelector('.avatar-circle');
+            if (avatarCircle) {
+                avatarCircle.innerHTML = 'O';
+            }
+            const profileImg = document.querySelector('.profile img');
+            if (profileImg) {
+                profileImg.src = "{{ asset('images/logo.png') }}";
+            }
+            const btnDelete = document.getElementById('btnDeletePhoto');
+            if (btnDelete) {
+                btnDelete.style.display = 'none';
+            }
+            document.getElementById('avatarFile').value = '';
+        }
+
+        function resetForm() {
+            document.getElementById('inputNip').value = "";
+            document.getElementById('inputPassword').value = "";
+            document.getElementById('inputConfirmPassword').value = "";
+        }
+
+        document.getElementById('editProfilForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Sukses! Perubahan profil Anda berhasil disimpan.');
+            window.location.href = '/operasional/profil';
         });
     </script>
 </body>

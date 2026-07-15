@@ -25,83 +25,98 @@ box-sizing:border-box;
 font-family:'Poppins',sans-serif;
 }
 
+html {
+    overflow-y: scroll;
+}
+
 body{
 background:#f4f7fc;
 overflow-x:hidden;
 }
 
-.sidebar{
-position:fixed;
-left:0;
-top:0;
-width:270px;
-height:100vh;
-background:#0F3D91;
-color:white;
-padding:14px 18px;
-overflow-y:visible;
+/* ================= SIDEBAR ================= */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 270px;
+    height: 100vh;
+    background: #0F3D91;
+    color: white;
+    padding: 14px 18px;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
-.logo{
-text-align:center;
-margin-bottom:18px;
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 
-.logo img{
-width:70px;
-margin-bottom:8px;
+.sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.logo h4{
-font-weight:700;
-margin:0;
+.logo {
+    text-align: center;
+    margin-bottom: 18px;
 }
 
-.logo p{
-font-size:13px;
-opacity:.8;
+.logo img {
+    width: 70px;
+    margin-bottom: 8px;
 }
 
-.menu{
-list-style:none;
-padding:0;
+.logo h4 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 20px;
 }
 
-.menu li{
-margin-bottom:10px;
+.logo p {
+    font-size: 13px;
+    opacity: .8;
+    margin: 5px 0 0 0;
 }
 
-.menu li a{
-display:flex;
-align-items:center;
-gap:15px;
-padding:14px 18px;
-border-radius:12px;
-color:white;
-text-decoration:none;
-transition:.3s;
-white-space:normal;
-font-size:15px;
-line-height:1.1;
+.menu {
+    list-style: none;
+    padding: 0;
 }
 
-.sidebar::-webkit-scrollbar{
-display:none;
+.menu li {
+    margin-bottom: 10px;
 }
 
-.sidebar{
--ms-overflow-style:none;
-scrollbar-width:none;
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    white-space: normal;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 1.1;
+    transition: none;
 }
 
 .menu li a:hover,
-.menu li a.active{
-background:#2563EB;
+.menu li a.active {
+    background: #2563EB;
 }
 
-.content{
-margin-left:270px;
-min-height:100vh;
+.menu li i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* ================= CONTENT ================= */
+.content {
+    margin-left: 270px;
+    min-height: 100vh;
 }
 
 .navbar-custom{
@@ -276,61 +291,64 @@ margin:10px 0 12px;
 
 <div class="sidebar">
 
-<div class="logo">
+    <div class="logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo BSPJI">
+        <h4>BSPJI</h4>
+        <p>Operasional</p>
+    </div>
 
-<img src="{{ asset('images/logo.png') }}" alt="Logo BSPJI">
+    <ul class="menu">
 
-<h4>BSPJI</h4>
+        <li>
+            <a href="/dashboard-operasional" class="active">
+                <i class="fas fa-house"></i>
+                Dashboard
+            </a>
+        </li>
 
-<p>OPERASIONAL</p>
+        <li>
+            <a href="/operasional/review-jadwal">
+                <i class="fas fa-calendar-check"></i>
+                Review Jadwal Audit
+            </a>
+        </li>
 
-</div>
+        <li>
+            <a href="/operasional/input-auditor">
+                <i class="fas fa-user-plus"></i>
+                Input Auditor Manual
+            </a>
+        </li>
 
-<ul class="menu">
+        <li>
+            <a href="/operasional/riwayat-review">
+                <i class="fas fa-clock-rotate-left"></i>
+                Riwayat Review
+            </a>
+        </li>
 
-<li>
-<a href="#" class="active">
-<i class="fas fa-house"></i>
-Dashboard
-</a>
-</li>
+        <li>
+            <a href="/operasional/kalender-audit">
+                <i class="fas fa-calendar-days"></i>
+                Kalender Audit
+            </a>
+        </li>
 
-<li>
-<a href="#">
-<i class="fas fa-calendar-check"></i>
-Review Jadwal Audit
-</a>
-</li>
+        <li>
+            <a href="/operasional/profil">
+                <i class="fas fa-user"></i>
+                Profil
+            </a>
+        </li>
 
-<li>
-<a href="#">
-<i class="fas fa-user-plus"></i>
-Input Auditor Manual
-</a>
-</li>
+        <li>
+            <a href="/login">
+                <i class="fas fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </li>
 
-<li>
-<a href="#">
-<i class="fas fa-clock-rotate-left"></i>
-Riwayat Review
-</a>
-</li>
-
-<li>
-<a href="#">
-<i class="fas fa-user"></i>
-Profil
-</a>
-</li>
-
-<li>
-<a href="#">
-<i class="fas fa-right-from-bracket"></i>
-Logout
-</a>
-</li>
-
-</ul>
+    </ul>
 
 </div>
 
@@ -383,110 +401,70 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
     <!-- Menunggu Review -->
     <div class="stat-card-col">
-
         <div class="card-stat">
-
             <div class="d-flex justify-content-between align-items-center">
-
                 <div>
-
-                    <small class="text-secondary">
+                    <h2 class="mb-0 fw-bold text-dark">3</h2>
+                    <small class="text-secondary mt-1">
                         Menunggu Review
                     </small>
-
                 </div>
-
                 <div class="icon-box bg-orange">
-
                     <i class="fas fa-hourglass-half"></i>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- Disetujui -->
     <div class="stat-card-col">
-
         <div class="card-stat">
-
             <div class="d-flex justify-content-between align-items-center">
-
                 <div>
-
-                    <small class="text-secondary">
+                    <h2 class="mb-0 fw-bold text-dark">8</h2>
+                    <small class="text-secondary mt-1">
                         Disetujui
                     </small>
-
                 </div>
-
                 <div class="icon-box bg-green">
-
                     <i class="fas fa-circle-check"></i>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-    <!-- Ditolak -->
+    <!-- Dikembalikan -->
     <div class="stat-card-col">
-
         <div class="card-stat">
-
             <div class="d-flex justify-content-between align-items-center">
-
                 <div>
-
-                    <small class="text-secondary">
-                        Ditolak
+                    <h2 class="mb-0 fw-bold text-dark">4</h2>
+                    <small class="text-secondary mt-1">
+                        Dikembalikan
                     </small>
-
                 </div>
-
                 <div class="icon-box bg-red">
-
                     <i class="fas fa-circle-xmark"></i>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- Total Review -->
     <div class="stat-card-col">
-
         <div class="card-stat">
-
             <div class="d-flex justify-content-between align-items-center">
-
                 <div>
-
-                    <small class="text-secondary">
+                    <h2 class="mb-0 fw-bold text-dark">15</h2>
+                    <small class="text-secondary mt-1">
                         Total Review
                     </small>
-
                 </div>
-
                 <div class="icon-box bg-blue">
-
                     <i class="fas fa-clipboard-list"></i>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
 </div>
@@ -501,7 +479,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
             Jadwal Menunggu Tindakan
         </h4>
 
-        <a href="#" class="text-primary fw-semibold">Lihat Semua</a>
+        <a href="/operasional/review-jadwal" class="text-primary fw-semibold">Lihat Semua</a>
 
     </div>
 
@@ -510,8 +488,6 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
         <thead class="table-primary">
 
             <tr>
-
-                <th class="text-center">KODE AUDIT</th>
 
                 <th class="text-start">PERUSAHAAN</th>
 
@@ -529,16 +505,19 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
             @if(isset($jadwals) && $jadwals->count())
                 @foreach($jadwals as $jadwal)
                     <tr>
-                        <td class="text-center"><a href="{{ url('audit/'.$jadwal->id ?? '#') }}" class="kode-link">{{ $jadwal->kode_audit ?? $jadwal->kode ?? '-' }}</a></td>
-                        <td class="text-start text-start-cell">{{ $jadwal->perusahaan->nama ?? $jadwal->perusahaan ?? '-' }}</td>
+                        <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review" class="kode-link">{{ $jadwal->perusahaan->nama ?? $jadwal->perusahaan ?? '-' }}</a></td>
                         <td class="text-center"><span class="badge-light-blue">{{ $jadwal->lembaga ?? $jadwal->lembaga_sertifikasi ?? '-' }}</span></td>
                         <td class="text-center">{{ isset($jadwal->tanggal_audit) ? \Carbon\Carbon::parse($jadwal->tanggal_audit)->format('d M Y') : (isset($jadwal->tanggal) ? \Carbon\Carbon::parse($jadwal->tanggal)->format('d M Y') : '-') }}</td>
-                        <td class="text-center"><span class="badge @if(isset($jadwal->status) && Str::lower($jadwal->status) == 'perlu revisi') bg-danger @else bg-warning text-dark @endif">{{ $jadwal->status ?? '-' }}</span></td>
+                        <td class="text-center"><span class="badge bg-warning text-dark">{{ $jadwal->status ?? '-' }}</span></td>
                     </tr>
                 @endforeach
             @else
+                <!-- Dummy row for clean visual presentation -->
                 <tr>
-                    <td colspan="5" class="text-center text-secondary py-5">Belum ada data jadwal review</td>
+                    <td class="text-start text-start-cell fw-semibold"><a href="/operasional/review-jadwal/review" class="kode-link text-decoration-none">PT ABC Indonesia</a></td>
+                    <td class="text-center"><span class="badge-light-blue">LSSM</span></td>
+                    <td class="text-center">29 Jun 2026</td>
+                    <td class="text-center"><span class="badge bg-warning text-dark">Menunggu Review</span></td>
                 </tr>
             @endif
         </tbody>

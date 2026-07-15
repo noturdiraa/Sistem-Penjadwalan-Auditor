@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Lembaga</title>
+    <title>Kelola Jenis Audit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -194,7 +194,7 @@
             <li>
                 <a href="/kepegawaian/lembaga" class="active">
                     <i class="fas fa-landmark"></i>
-                    Kelola Lembaga
+                    Kelola Jenis Audit
                 </a>
             </li>
             <li>
@@ -233,48 +233,48 @@
 
         <div class="main">
             <div class="page-header">
-                <h2>Kelola Lembaga</h2>
-                <p>Manajemen data lembaga sertifikasi resmi pada BSPJI Palembang.</p>
+                <h2>Kelola Jenis Audit</h2>
+                <p>Manajemen data jenis audit sertifikasi resmi pada BSPJI Palembang.</p>
             </div>
 
             <div class="row">
-                <!-- Form Tambah Lembaga -->
+                <!-- Form Tambah Jenis Audit -->
                 <div class="col-lg-5 mb-4">
                     <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
                         <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
-                            <i class="fas fa-plus-circle me-2"></i>Tambah Lembaga
+                            <i class="fas fa-plus-circle me-2"></i>Tambah Jenis Audit
                         </h5>
-                        <form action="#" method="POST" id="formLembaga">
+                        <form action="#" method="POST" id="formJenisAudit">
                             <div class="mb-4">
-                                <label class="form-label fw-semibold" style="font-size: 14px;">Nama Lembaga</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama lembaga (contoh: LSPRO)" required>
+                                <label class="form-label fw-semibold" style="font-size: 14px;">Nama Jenis Audit</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nama jenis audit (contoh: LSPRO)" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; height: 48px; font-weight: 600;">
-                                <i class="fas fa-floppy-disk me-1"></i> Simpan Lembaga
+                                <i class="fas fa-floppy-disk me-1"></i> Simpan Jenis Audit
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <!-- Daftar Lembaga -->
+                <!-- Daftar Jenis Audit -->
                 <div class="col-lg-7 mb-4">
                     <div class="card p-4 border-0 shadow-sm rounded-4 bg-white" style="min-height: 250px;">
                         <h5 class="fw-bold mb-3 text-dark" style="font-size: 16px;">
-                            <i class="fas fa-landmark me-2"></i>Daftar Lembaga
+                            <i class="fas fa-landmark me-2"></i>Daftar Jenis Audit
                         </h5>
                         <div class="table-responsive">
                             <table class="table align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Nama Lembaga</th>
+                                        <th>Nama Jenis Audit</th>
                                         <th width="100" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="lembagaTableBody">
+                                <tbody id="jenisAuditTableBody">
                                     <tr>
                                         <td colspan="2" class="text-center py-5 text-secondary" style="font-size: 14px;">
                                             <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                                            <span>Belum ada data lembaga.</span>
+                                            <span>Belum ada data jenis audit.</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -296,13 +296,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('formLembaga').addEventListener('submit', function(e) {
+        document.getElementById('formJenisAudit').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = this.querySelector('input[type="text"]');
             const val = input.value.trim().toUpperCase();
             if (!val) return;
 
-            const tbody = document.getElementById('lembagaTableBody');
+            const tbody = document.getElementById('jenisAuditTableBody');
             
             // Hapus baris empty state jika ada
             const emptyRow = tbody.querySelector('td[colspan="2"]');
@@ -325,13 +325,13 @@
         });
 
         function checkEmptyTable() {
-            const tbody = document.getElementById('lembagaTableBody');
+            const tbody = document.getElementById('jenisAuditTableBody');
             if (tbody.children.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="2" class="text-center py-5 text-secondary" style="font-size: 14px;">
                             <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                            <span>Belum ada data lembaga.</span>
+                            <span>Belum ada data jenis audit.</span>
                         </td>
                     </tr>
                 `;

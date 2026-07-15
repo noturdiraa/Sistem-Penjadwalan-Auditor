@@ -44,8 +44,12 @@ Route::view('/operasional/input-auditor', 'operasional.input_auditor_manual.inde
 // Riwayat Review
 Route::view('/operasional/riwayat-review', 'operasional.riwayat_review.index');
 
+// Kalender Audit
+Route::view('/operasional/kalender-audit', 'operasional.kalender_audit.index');
+
 // Profil
 Route::view('/operasional/profil', 'operasional.profil.index');
+Route::view('/operasional/profil/edit', 'operasional.profil.edit');
 
 // ================= PJI =================
 
@@ -73,3 +77,11 @@ Route::view('/pji/review-katim/review', 'pji.review_katim_pji.review');
 // Profil
 Route::view('/pji/profil', 'pji.profil.index');
 Route::view('/pji/profil/edit', 'pji.profil.edit');
+
+// ================= KEPALA BALAI =================
+Route::view('/kepala-balai/monitoring', 'kepalabalai.monitoring.index');
+Route::view('/kepala-balai/monitoring/detail', 'kepalabalai.monitoring.detail');
+Route::view('/kepala-balai/kalender-audit', 'kepalabalai.kalender_audit.index');
+Route::view('/kepala-balai/grafik-penugasan', 'kepalabalai.grafik_penugasan.index');
+Route::view('/kepala-balai/profil', 'kepalabalai.profil.index');
+Route::view('/kepala-balai/profil/edit', 'kepalabalai.profil.edit');

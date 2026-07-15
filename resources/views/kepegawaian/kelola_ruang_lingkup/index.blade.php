@@ -195,7 +195,7 @@
             <li>
                 <a href="/kepegawaian/lembaga">
                     <i class="fas fa-landmark"></i>
-                    Kelola Lembaga
+                    Kelola Jenis Audit
                 </a>
             </li>
             <li>
@@ -247,17 +247,10 @@
                         </h5>
                         <form action="#" method="POST" id="formRuangLingkup">
                             <div class="mb-3">
-                                <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Lembaga</label>
-                                <select class="form-select" id="selectLembaga" required>
-                                    <option value="" disabled selected>Pilih Lembaga...</option>
-                                    <option value="LSPRO">LSPRO</option>
-                                    <option value="LSSM">LSSM</option>
-                                    <option value="LSSML">LSSML</option>
-                                    <option value="LSIH">LSIH</option>
-                                    <option value="LSSMKP">LSSMKP</option>
-                                    <option value="LPH">LPH</option>
-                                    <option value="LSHACCP">LSHACCP</option>
-                                    <option value="LSSMK3">LSSMK3</option>
+                                <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Jenis Audit</label>
+                                <select class="form-select" id="selectLembaga" required disabled>
+                                    <option value="" disabled selected>Pilih Jenis Audit...</option>
+                                    <option value="" disabled>Belum ada data jenis audit di database</option>
                                 </select>
                             </div>
                             <div class="mb-4">
@@ -282,7 +275,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nama Ruang Lingkup</th>
-                                        <th>Lembaga</th>
+                                        <th>Jenis Audit</th>
                                         <th width="100" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>

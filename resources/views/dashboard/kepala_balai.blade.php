@@ -42,18 +42,19 @@ width:270px;
 height:100vh;
 background:#0F3D91;
 color:white;
-padding:15px 18px;
-overflow-y:visible;
+padding:14px 18px;
+overflow-y:auto;
+z-index:1000;
 }
 
 .logo{
 text-align:center;
-margin-bottom:20px;
+margin-bottom:18px;
 }
 
 .logo img{
 width:70px;
-margin-bottom:10px;
+margin-bottom:8px;
 }
 
 .logo h4{
@@ -79,11 +80,14 @@ margin-bottom:10px;
 display:flex;
 align-items:center;
 gap:15px;
-padding:14px 18px;
 border-radius:12px;
 color:white;
 text-decoration:none;
-transition:.3s;
+white-space:normal;
+padding:10px 12px;
+font-size:15px;
+line-height:1.1;
+transition:none;
 }
 
 .menu li a:hover,
@@ -317,56 +321,49 @@ color:#777;
 
 <h4>BSPJI</h4>
 
-<p>KEPALA BALAI</p>
+<p>Kepala Balai</p>
 
 </div>
 
 <ul class="menu">
 
 <li>
-<a href="#" class="active">
+<a href="/dashboard-kepala-balai" class="active">
 <i class="fas fa-house"></i>
 Dashboard
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepala-balai/monitoring">
 <i class="fas fa-chart-line"></i>
 Monitoring
 </a>
 </li>
 
 <li>
-<a href="#">
-<i class="fas fa-circle-check"></i>
-Approval Jadwal
-</a>
-</li>
-
-<li>
-<a href="#">
+<a href="/kepala-balai/kalender-audit">
 <i class="fas fa-calendar-days"></i>
 Kalender Audit
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepala-balai/grafik-penugasan">
 <i class="fas fa-chart-column"></i>
-Grafik Beban Kerja
+Grafik Penugasan
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/kepala-balai/profil">
 <i class="fas fa-user"></i>
 Profil
 </a>
 </li>
 
 <li>
-<a href="#">
+<a href="/login">
 <i class="fas fa-right-from-bracket"></i>
 Logout
 </a>
@@ -378,28 +375,21 @@ Logout
 
 <!-- ================= CONTENT ================= -->
 
-<div class="content">
+    <div class="content">
+        <div class="navbar-custom">
+            <div class="search-box-container" style="position: relative; width: 320px;">
+                <input type="text" class="form-control" placeholder="Cari..." style="height: 38px; border-radius: 20px; padding-left: 35px; font-size: 14px; border: 1px solid #E2E8F0; background-color: #F8FAFC;">
+                <i class="fas fa-search text-secondary" style="position: absolute; left: 12px; top: 12px; font-size: 14px;"></i>
+            </div>
 
-<div class="navbar-custom">
+            <div class="profile">
+                <i class="far fa-bell fs-5 me-3" style="cursor: pointer; color: #6B7280;"></i>
+                <img src="{{ asset('images/logo.png') }}">
+                <strong>Kepala Balai</strong>
+            </div>
+        </div>
 
-<input
-type="text"
-class="form-control search"
-placeholder="Cari...">
-
-<div class="profile">
-
-<i class="far fa-bell fs-5"></i>
-
-<img src="{{ asset('images/logo.png') }}">
-
-<strong>Kepala Balai</strong>
-
-</div>
-
-</div>
-
-<div class="main">
+        <div class="main">
 
 <div class="header-card">
 
@@ -407,7 +397,7 @@ placeholder="Cari...">
 
 <p>
 Selamat datang di Sistem Penjadwalan Auditor BSPJI Palembang.
-Pantau seluruh aktivitas audit, lakukan approval jadwal audit, dan lihat statistik pelaksanaan audit secara real-time.
+Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real-time.
 </p>
 
 </div>
@@ -418,7 +408,7 @@ Pantau seluruh aktivitas audit, lakukan approval jadwal audit, dan lihat statist
 <div class="row">
 
     <!-- Total Audit Bulan Ini -->
-    <div class="col-lg-3 mb-4">
+    <div class="col-lg-4 mb-4">
 
         <div class="card-stat text-center">
 
@@ -445,7 +435,7 @@ Pantau seluruh aktivitas audit, lakukan approval jadwal audit, dan lihat statist
     </div>
 
     <!-- Audit Selesai -->
-    <div class="col-lg-3 mb-4">
+    <div class="col-lg-4 mb-4">
 
         <div class="card-stat text-center">
 
@@ -472,7 +462,7 @@ Pantau seluruh aktivitas audit, lakukan approval jadwal audit, dan lihat statist
     </div>
 
     <!-- Audit Berlangsung -->
-    <div class="col-lg-3 mb-4">
+    <div class="col-lg-4 mb-4">
 
         <div class="card-stat text-center">
 
@@ -489,33 +479,6 @@ Pantau seluruh aktivitas audit, lakukan approval jadwal audit, dan lihat statist
                 <div class="icon-box bg-orange">
 
                     <i class="fas fa-spinner"></i>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Rata-rata Skor Audit -->
-    <div class="col-lg-3 mb-4">
-
-        <div class="card-stat text-center">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-
-                    <small class="text-secondary">
-                        Rata-rata Skor Audit
-                    </small>
-
-                </div>
-
-                <div class="icon-box bg-red">
-
-                    <i class="fas fa-star"></i>
 
                 </div>
 
@@ -631,6 +594,17 @@ menu.forEach(item => {
 
 </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedAvatar = localStorage.getItem('kepalabalai_avatar');
+            if (savedAvatar) {
+                const profileImg = document.querySelector('.profile img');
+                if (profileImg) {
+                    profileImg.src = savedAvatar;
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

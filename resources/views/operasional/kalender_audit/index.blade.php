@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Audit - Kepala Balai</title>
+    <title>Kalender Audit - Operasional</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,67 +28,86 @@
             overflow-x: hidden;
         }
 
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 270px;
-            height: 100vh;
-            background: #0F3D91;
-            color: white;
-            padding: 14px 18px;
-            overflow-y: auto;
-            z-index: 1000;
-        }
+        /* ================= SIDEBAR ================= */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 270px;
+    height: 100vh;
+    background: #0F3D91;
+    color: white;
+    padding: 14px 18px;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 18px;
-        }
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
 
-        .logo img {
-            width: 70px;
-            margin-bottom: 8px;
-        }
+.sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 
-        .logo h4 {
-            font-weight: 700;
-            margin: 0;
-        }
+.logo {
+    text-align: center;
+    margin-bottom: 18px;
+}
 
-        .logo p {
-            font-size: 13px;
-            opacity: .8;
-        }
+.logo img {
+    width: 70px;
+    margin-bottom: 8px;
+}
 
-        .menu {
-            list-style: none;
-            padding: 0;
-        }
+.logo h4 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 20px;
+}
 
-        .menu li {
-            margin-bottom: 10px;
-        }
+.logo p {
+    font-size: 13px;
+    opacity: .8;
+    margin: 5px 0 0 0;
+}
 
-        .menu li a {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            white-space: normal;
-            padding: 10px 12px;
-            font-size: 15px;
-            line-height: 1.1;
-            transition: none;
-        }
+.menu {
+    list-style: none;
+    padding: 0;
+}
 
-        .menu li a:hover,
-        .menu li a.active {
-            background: #2563EB;
-        }
+.menu li {
+    margin-bottom: 10px;
+}
 
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    white-space: normal;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 1.1;
+    transition: none;
+}
+
+.menu li a:hover,
+.menu li a.active {
+    background: #2563EB;
+}
+
+.menu li i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+        /* ================= CONTENT ================= */
         .content {
             margin-left: 270px;
             min-height: 100vh;
@@ -104,17 +123,26 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
         }
 
+        .search {
+            width: 350px;
+        }
+
         .profile {
             display: flex;
             align-items: center;
             gap: 15px;
-            white-space: nowrap;
         }
 
         .profile img {
             width: 45px;
             height: 45px;
             border-radius: 50%;
+        }
+
+        .profile span {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1F2937;
         }
 
         .main {
@@ -246,38 +274,44 @@
     <!-- ================= SIDEBAR ================= -->
     <div class="sidebar">
         <div class="logo">
-            <img src="{{ asset('images/logo.png') }}">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo BSPJI">
             <h4>BSPJI</h4>
-            <p>Kepala Balai</p>
+            <p>Operasional</p>
         </div>
 
         <ul class="menu">
             <li>
-                <a href="/dashboard-kepala-balai">
+                <a href="/dashboard-operasional">
                     <i class="fas fa-house"></i>
                     Dashboard
                 </a>
             </li>
             <li>
-                <a href="/kepala-balai/monitoring">
-                    <i class="fas fa-chart-line"></i>
-                    Monitoring
+                <a href="/operasional/review-jadwal">
+                    <i class="fas fa-calendar-check"></i>
+                    Review Jadwal Audit
                 </a>
             </li>
             <li>
-                <a href="/kepala-balai/kalender-audit" class="active">
+                <a href="/operasional/input-auditor">
+                    <i class="fas fa-user-plus"></i>
+                    Input Auditor Manual
+                </a>
+            </li>
+            <li>
+                <a href="/operasional/riwayat-review">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    Riwayat Review
+                </a>
+            </li>
+            <li>
+                <a href="/operasional/kalender-audit" class="active">
                     <i class="fas fa-calendar-days"></i>
                     Kalender Audit
                 </a>
             </li>
             <li>
-                <a href="/kepala-balai/grafik-penugasan">
-                    <i class="fas fa-chart-column"></i>
-                    Grafik Penugasan
-                </a>
-            </li>
-            <li>
-                <a href="/kepala-balai/profil">
+                <a href="/operasional/profil">
                     <i class="fas fa-user"></i>
                     Profil
                 </a>
@@ -292,17 +326,14 @@
     </div>
 
     <!-- ================= CONTENT ================= -->
-        <div class="content">
+    <div class="content">
         <div class="navbar-custom">
-            <div class="search-box-container" style="position: relative; width: 320px;">
-                <input type="text" class="form-control" placeholder="Cari..." style="height: 38px; border-radius: 20px; padding-left: 35px; font-size: 14px; border: 1px solid #E2E8F0; background-color: #F8FAFC;">
-                <i class="fas fa-search text-secondary" style="position: absolute; left: 12px; top: 12px; font-size: 14px;"></i>
-            </div>
+            <input type="text" class="form-control search" placeholder="Cari...">
 
             <div class="profile">
-                <i class="far fa-bell fs-5 me-3" style="cursor: pointer; color: #6B7280;"></i>
-                <img src="{{ asset('images/logo.png') }}">
-                <strong>Kepala Balai</strong>
+                <i class="far fa-bell fs-5"></i>
+                <img src="{{ asset('images/logo.png') }}" alt="Profil">
+                <span>Operasional</span>
             </div>
         </div>
 
@@ -584,17 +615,6 @@
                 resetDetailPanel();
             }
         }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedAvatar = localStorage.getItem('kepalabalai_avatar');
-            if (savedAvatar) {
-                const profileImg = document.querySelector('.profile img');
-                if (profileImg) {
-                    profileImg.src = savedAvatar;
-                }
-            }
-        });
     </script>
 </body>
 

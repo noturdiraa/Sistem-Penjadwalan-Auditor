@@ -375,6 +375,21 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedAvatar = localStorage.getItem('pji_avatar');
+            if (savedAvatar) {
+                const avatarCircle = document.querySelector('.avatar');
+                if (avatarCircle) {
+                    avatarCircle.innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+                const profileImg = document.querySelector('.profile img');
+                if (profileImg) {
+                    profileImg.src = savedAvatar;
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -393,8 +393,8 @@
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
                 <div class="modal-header" style="border-bottom: 1px solid #F3F4F6; padding: 20px 24px;">
                     <div>
-                        <h5 class="modal-title fw-bold text-dark mb-1" id="reviewModalLabel" style="font-size: 20px;">Review Jadwal Audit — AUD-2026-001</h5>
-                        <small class="text-secondary" style="font-size: 14px;">PT ABC Indonesia</small>
+                        <h5 class="modal-title fw-bold text-dark mb-1" id="reviewModalLabel" style="font-size: 20px;">Review Jadwal Audit</h5>
+                        <small class="text-secondary" id="reviewPerusahaanName" style="font-size: 14px;">-</small>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="transition: none;"></button>
                 </div>
@@ -403,27 +403,27 @@
                     <div class="p-3 mb-4 rounded-3" style="background-color: #EFF6FF; border: 1px solid #BFDBFE; font-size: 14px;">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-primary" style="font-weight: 500;">ID Audit:</span>
-                            <strong class="text-primary">AUD-2026-001</strong>
+                            <strong class="text-primary" id="reviewAuditId">-</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-primary" style="font-weight: 500;">Perusahaan:</span>
-                            <strong class="text-primary">PT ABC Indonesia</strong>
+                            <strong class="text-primary" id="reviewPerusahaan">-</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-primary" style="font-weight: 500;">Ruang Lingkup:</span>
-                            <strong class="text-primary">Sertifikasi</strong>
+                            <strong class="text-primary" id="reviewRuangLingkup">-</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-primary" style="font-weight: 500;">Lokasi:</span>
-                            <strong class="text-primary">Palembang</strong>
+                            <strong class="text-primary" id="reviewLokasi">-</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-primary" style="font-weight: 500;">Ketua Tim:</span>
-                            <strong class="text-primary">Popy Marlina</strong>
+                            <span class="text-primary" style="font-weight: 500;">Lead Auditor:</span>
+                            <strong class="text-primary" id="reviewLeadAuditor">-</strong>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="text-primary" style="font-weight: 500;">Tanggal:</span>
-                            <strong class="text-primary">25 Jun – 27 Jun 2026</strong>
+                            <strong class="text-primary" id="reviewTanggal">-</strong>
                         </div>
                     </div>
 

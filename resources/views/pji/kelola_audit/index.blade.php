@@ -206,6 +206,39 @@ padding:25px;
 box-shadow:0 6px 18px rgba(15,61,145,0.06);
 }
 
+/* ================= TABLE DESIGN ================= */
+.table th {
+    font-weight: 600;
+    color: #4B5563;
+    border-bottom: 2px solid #F3F4F6;
+    padding: 16px 12px;
+    font-size: 14px;
+}
+
+.table td {
+    padding: 18px 12px;
+    font-size: 14px;
+    color: #1F2937;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.btn-outline-primary {
+    border-color: #E5E7EB;
+    color: #2563EB;
+    border-radius: 8px;
+    padding: 6px 10px;
+    transition: none;
+}
+
+.btn-outline-primary:hover {
+    background-color: #2563EB;
+    border-color: #2563EB;
+    color: #fff;
+}
 </style>
 
 </head>
@@ -304,7 +337,7 @@ Buat Audit
             <!-- ================= SEARCH ================= -->
             <div class="row mb-4">
                 <div class="col-md-8 mb-3 mb-md-0">
-                    <input type="text" class="form-control table-search-input" placeholder="🔍 Cari perusahaan atau kode audit...">
+                    <input type="text" class="form-control table-search-input" placeholder="🔍 Cari perusahaan...">
                 </div>
                 <div class="col-md-4">
                     <select class="form-select status-filter-select">
@@ -321,19 +354,18 @@ Buat Audit
                 <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th>Kode Audit</th>
-                            <th>Perusahaan</th>
-                            <th>Ruang Lingkup</th>
-                            <th>Tanggal Audit</th>
-                            <th>Ketua Tim</th>
-                            <th>Status</th>
-                            <th width="120">Aksi</th>
+                            <th class="text-center" style="width: 35%; white-space: nowrap; vertical-align: middle;">Perusahaan</th>
+                            <th class="text-center" style="width: 20%; white-space: nowrap; vertical-align: middle;">Tanggal Audit</th>
+                            <th class="text-center" style="width: 25%; white-space: nowrap; vertical-align: middle;">Lead Auditor</th>
+                            <th class="text-center" style="width: 12%; white-space: nowrap; vertical-align: middle;">Status</th>
+                            <th class="text-center" style="width: 8%; white-space: nowrap; vertical-align: middle;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="7" class="text-center text-secondary py-4" style="font-size: 14px;">
-                                <i class="fas fa-info-circle me-1"></i> Belum ada data audit.
+                            <td colspan="5" class="text-center py-5 text-secondary" style="font-size: 14px;">
+                                <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
+                                <span>Belum ada data audit.</span>
                             </td>
                         </tr>
                     </tbody>
@@ -350,30 +382,50 @@ Buat Audit
                     <h5 class="modal-title fw-bold text-dark" id="detailAuditModalLabel">Detail Data Audit</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="transition: none;"></button>
                 </div>
-                <div class="modal-body" style="padding: 24px; font-size: 15px;">
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-secondary">Kode Audit</span>
-                        <strong class="text-dark">AUD-001</strong>
+                <div class="modal-body" style="padding: 24px; font-size: 14px;">
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">ID Audit</span>
+                        <strong class="text-dark text-end" id="detailAuditId">-</strong>
                     </div>
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-secondary">Perusahaan</span>
-                        <strong class="text-dark">PT ABC Indonesia</strong>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Perusahaan</span>
+                        <strong class="text-dark text-end" id="detailPerusahaan">-</strong>
                     </div>
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-secondary">Ruang Lingkup</span>
-                        <strong class="text-dark">LSPRO</strong>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Jenis Audit</span>
+                        <strong class="text-dark text-end" id="detailJenisAudit">-</strong>
                     </div>
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-secondary">Tanggal Audit</span>
-                        <strong class="text-dark">10 Jul 2026</strong>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Ruang Lingkup</span>
+                        <strong class="text-dark text-end" id="detailRuangLingkup">-</strong>
                     </div>
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-secondary">Ketua Tim</span>
-                        <strong class="text-dark">Popy Marlina</strong>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Tanggal Mulai</span>
+                        <strong class="text-dark text-end" id="detailTglMulai">-</strong>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Tanggal Selesai</span>
+                        <strong class="text-dark text-end" id="detailTglSelesai">-</strong>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Lead Auditor</span>
+                        <strong class="text-dark text-end" id="detailLeadAuditor">-</strong>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Anggota</span>
+                        <strong class="text-dark text-end" id="detailAnggota">-</strong>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Lokasi</span>
+                        <strong class="text-dark text-end" id="detailLokasi">-</strong>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <span class="text-secondary me-3" style="min-width: 120px;">Kategori Wilayah</span>
+                        <strong class="text-dark text-end" id="detailKategoriWilayah">-</strong>
                     </div>
                     <div class="mb-0 d-flex justify-content-between align-items-center">
-                        <span class="text-secondary">Status</span>
-                        <span class="badge" style="background-color: #FEF3C7; color: #D97706; font-weight: 600; padding: 6px 12px; border-radius: 8px;">Menunggu</span>
+                        <span class="text-secondary me-3" style="min-width: 120px;">Status</span>
+                        <span class="badge" id="detailStatus" style="background-color: #E2E8F0; color: #475569; font-weight: 600; padding: 6px 12px; border-radius: 8px;">-</span>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">

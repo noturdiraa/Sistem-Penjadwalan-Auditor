@@ -228,7 +228,7 @@
             <li>
                 <a href="/kepegawaian/lembaga">
                     <i class="fas fa-landmark"></i>
-                    Kelola Lembaga
+                    Kelola Jenis Audit
                 </a>
             </li>
             <li>
@@ -312,6 +312,21 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedAvatar = localStorage.getItem('kepegawaian_avatar');
+            if (savedAvatar) {
+                const avatarCircle = document.querySelector('.avatar');
+                if (avatarCircle) {
+                    avatarCircle.innerHTML = `<img src="${savedAvatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+                const profileImg = document.querySelector('.profile img');
+                if (profileImg) {
+                    profileImg.src = savedAvatar;
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

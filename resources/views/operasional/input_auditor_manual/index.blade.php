@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Auditor Manual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            background: #f4f7fc;
+            overflow-x: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 270px;
+    height: 100vh;
+    background: #0F3D91;
+    color: white;
+    padding: 14px 18px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.logo img {
+    width: 70px;
+    margin-bottom: 8px;
+}
+
+.logo h4 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 20px;
+}
+
+.logo p {
+    font-size: 13px;
+    opacity: .8;
+    margin: 5px 0 0 0;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    margin-bottom: 10px;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    white-space: normal;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 1.1;
+    transition: none;
+}
+
+.menu li a:hover,
+.menu li a.active {
+    background: #2563EB;
+}
+
+.menu li i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+        /* ================= CONTENT ================= */
+        .content {
+            margin-left: 270px;
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            height: 80px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 35px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
+        }
+
+        .search {
+            width: 350px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .main {
+            padding: 35px;
+        }
+
+        .header-card {
+            background: linear-gradient(180deg, #ffffff, #fbfdff);
+            border-radius: 14px;
+            padding: 20px 24px;
+            box-shadow: 0 6px 18px rgba(15, 61, 145, .06);
+            margin-bottom: 22px;
+        }
+
+        .header-card .title {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .header-card .subtitle {
+            color: #6b7280;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .form-control,
+        .form-select {
+            height: 46px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #2563EB;
+        }
+
+        .footer {
+            color: #6b7280;
+            padding: 14px 0;
+            text-align: center;
+        }
+
+        .footer hr {
+            border: none;
+            border-top: 1px solid rgba(0, 0, 0, .08);
+            margin: 10px 0 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo BSPJI">
+            <h4>BSPJI</h4>
+            <p>Operasional</p>
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="/dashboard-operasional">
+                    <i class="fas fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/operasional/review-jadwal">
+                    <i class="fas fa-calendar-check"></i>
+                    Review Jadwal Audit
+                </a>
+            </li>
+            <li>
+                <a href="/operasional/input-auditor" class="active">
+                    <i class="fas fa-user-plus"></i>
+                    Input Auditor Manual
+                </a>
+            </li>
+            <li>
+                <a href="/operasional/riwayat-review">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    Riwayat Review
+                </a>
+            </li>
+
+        <li>
+            <a href="/operasional/kalender-audit">
+                <i class="fas fa-calendar-days"></i>
+                Kalender Audit
+            </a>
+        </li>
+            <li>
+                <a href="/operasional/profil">
+                    <i class="fas fa-user"></i>
+                    Profil
+                </a>
+            </li>
+            <li>
+                <a href="/login">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <div class="navbar-custom">
+            <!-- Search bar on left of navbar -->
+            <input type="text" class="form-control search" placeholder="Cari...">
+            
+            <div class="right-menu d-flex align-items-center gap-3">
+                <i class="far fa-bell fs-5 cursor-pointer"></i>
+                <div class="profile">
+                    <img src="{{ asset('images/logo.png') }}">
+                    <span>Operasional</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main">
+            <!-- Header Title -->
+            <div class="header-card">
+                <div>
+                    <h2 class="title mb-0" style="font-size: 26px;">Input Auditor Manual</h2>
+                    <p class="subtitle mb-0" style="font-size: 14px;">Pilih dan tetapkan auditor secara manual untuk jadwal audit</p>
+                </div>
+            </div>
+
+            <!-- Target Audit Card -->
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
+                <h6 class="fw-bold text-primary mb-4" style="font-size: 16px;">
+                    <i class="far fa-calendar-check me-2"></i>Jadwal Audit
+                </h6>
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <!-- Perusahaan -->
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="far fa-building"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Perusahaan</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">PT Nusantara Teknologi</span>
+                            </div>
+                        </div>
+                        <!-- Jenis Audit -->
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="fas fa-list-check"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Jenis Audit</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">LSPRO</span>
+                            </div>
+                        </div>
+                        <!-- Tanggal Mulai -->
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="far fa-calendar"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Tanggal Mulai</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">15 Juli 2026</span>
+                            </div>
+                        </div>
+                        <!-- Ruang Lingkup -->
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="fas fa-circle-nodes"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Ruang Lingkup</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">Air Mineral</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <!-- Lokasi -->
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="fas fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block" style="font-size: 12px; font-weight: 500;">Lokasi</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">Jl. Jend. Sudirman No. 45, Palembang</span>
+                            </div>
+                        </div>
+                        <!-- Kategori Wilayah -->
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="fas fa-map-pin"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block" style="font-size: 12px; font-weight: 500;">Kategori Wilayah</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">Dalam Kota</span>
+                            </div>
+                        </div>
+                        <!-- Tanggal Selesai -->
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <div class="field-icon-box text-secondary" style="font-size: 20px; width: 24px; text-align: center;">
+                                <i class="far fa-calendar"></i>
+                            </div>
+                            <div>
+                                <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Tanggal Selesai</small>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">17 Juli 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Workspace -->
+            <div class="row">
+                <!-- Left Side: Auditor Selection List -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
+                        <!-- Filters -->
+                        <div class="row g-2 mb-4">
+                            <div class="col-md-5">
+                                <div class="position-relative">
+                                    <i class="fas fa-search position-absolute text-secondary" style="left: 14px; top: 15px; font-size: 14px;"></i>
+                                    <input type="text" class="form-control ps-5" id="searchAuditor" placeholder="Cari nama / NIP auditor...">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <select class="form-select" id="filterLembaga" disabled>
+                                    <option value="" selected>Pilih Jenis Audit...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <select class="form-select" id="filterRuangLingkup" disabled>
+                                    <option value="" selected>Pilih Ruang Lingkup...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Auditor Cards Container -->
+                        <div id="auditorCardsContainer">
+                            <!-- Dummy cards are generated by Javascript for interactive selection/filtering -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Selected Team -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-white position-sticky" style="top: 20px;">
+                        <h5 class="fw-bold mb-1 text-dark" style="font-size: 16px;">Tim Audit Dipilih</h5>
+                        <small class="text-secondary d-block mb-4" id="selectedCountText">0 auditor dipilih</small>
+
+                        <!-- Selected Auditor List -->
+                        <div id="selectedAuditorsList" class="mb-4" style="min-height: 120px;">
+                            <!-- Empty State -->
+                            <div class="text-center py-5 text-secondary border rounded-3 bg-light-subtle d-flex flex-column align-items-center" id="selectedEmptyState" style="border-style: dashed !important; border-color: #cbd5e1 !important;">
+                                <i class="fas fa-user-plus fa-2x mb-3 text-secondary" style="opacity: 0.5;"></i>
+                                <span style="font-size: 13px;">Belum ada auditor dipilih</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button class="btn btn-primary w-100 py-3 fw-bold disabled" id="btnSimpanTeam" style="border-radius: 12px;" onclick="simpanTetapkan()">
+                            <i class="fas fa-floppy-disk me-1"></i> Simpan & Tetapkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <hr>
+            <p class="mb-0">
+                © 2026 Sistem Penjadwalan Auditor BSPJI Palembang
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Ruang Lingkup mappings based on Lembaga
+        const ruangLingkupByLembaga = {};
+
+        // Auditor Dummy Data
+        const dbAuditors = [
+            {
+                id: 1,
+                name: "Popy Marlina",
+                nip: "197805152003122001",
+                role: "Lead Auditor",
+                subrole: "Lead Auditor",
+                lembaga: "LSSM",
+                ruangLingkup: "Sistem Manajemen Mutu (ISO 9001)",
+                point: 0,
+                totalAudit: 48,
+                lokasi: "Dalam Kota",
+                status: "Tersedia", // Available
+                badges: ["LSPRO", "LSSM"]
+            },
+            {
+                id: 2,
+                name: "Andi Saputra",
+                nip: "19890102012011003",
+                role: "Auditor",
+                subrole: "Auditor",
+                lembaga: "LSPRO",
+                ruangLingkup: "Semen Portland",
+                point: 2,
+                totalAudit: 30,
+                lokasi: "Luar Kota",
+                status: "Sedang Audit", // Busy/Ongoing Audit (Cannot be chosen)
+                badges: ["LSPRO"]
+            },
+            {
+                id: 3,
+                name: "Rina Wijaya",
+                nip: "198506142010122002",
+                role: "Lead Auditor",
+                subrole: "Lead Auditor",
+                lembaga: "LSSML",
+                ruangLingkup: "Sistem Manajemen Lingkungan (ISO 14001)",
+                point: 0,
+                totalAudit: 40,
+                lokasi: "Dalam Kota",
+                status: "Tersedia", // Available
+                badges: ["LSSM", "LSSML"]
+            },
+            {
+                id: 4,
+                name: "Hendra Kusuma",
+                nip: "199203112018081001",
+                role: "Auditor",
+                subrole: "Auditor",
+                lembaga: "LSPRO",
+                ruangLingkup: "Air Mineral",
+                point: 4,
+                totalAudit: 15,
+                lokasi: "Pinggiran Kota",
+                status: "Sedang Audit", // Busy/Ongoing Audit (Cannot be chosen)
+                badges: ["LSPRO", "LSHACCP"]
+            },
+            {
+                id: 5,
+                name: "Siti Aminah",
+                nip: "198007242005012003",
+                role: "Lead Auditor",
+                subrole: "Lead Auditor",
+                lembaga: "LSPRO",
+                ruangLingkup: "Air Mineral",
+                point: 0,
+                totalAudit: 52,
+                lokasi: "Dalam Kota",
+                status: "Tersedia", // Available
+                badges: ["LSPRO"]
+            }
+        ];
+
+        let selectedAuditorIds = [];
+
+        // Cascading Dropdown Logic
+        function updateRuangLingkupOptions() {
+            const lembagaSelect = document.getElementById('filterLembaga');
+            const ruangSelect = document.getElementById('filterRuangLingkup');
+            const selectedLembaga = lembagaSelect.value;
+
+            // Reset Ruang Lingkup Select
+            ruangSelect.innerHTML = '<option value="" selected>Pilih Ruang Lingkup...</option>';
+
+            if (selectedLembaga === "") {
+                ruangSelect.disabled = true;
+            } else {
+                ruangSelect.disabled = false;
+                const options = ruangLingkupByLembaga[selectedLembaga] || [];
+                options.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt;
+                    el.innerText = opt;
+                    ruangSelect.appendChild(el);
+                });
+            }
+
+            renderAuditors();
+        }
+
+        // Render functions
+        function renderAuditors() {
+            const container = document.getElementById('auditorCardsContainer');
+            const searchVal = document.getElementById('searchAuditor').value.toLowerCase().trim();
+            const filterLembaga = document.getElementById('filterLembaga').value;
+            const filterRuang = document.getElementById('filterRuangLingkup').value;
+
+            // Filter data
+            const filtered = dbAuditors.filter(item => {
+                // Search term
+                const matchSearch = item.name.toLowerCase().includes(searchVal) || item.nip.includes(searchVal);
+                // Lembaga
+                const matchLembaga = filterLembaga === "" || item.lembaga === filterLembaga || item.badges.includes(filterLembaga);
+                // Ruang Lingkup
+                const matchRuang = filterRuang === "" || item.ruangLingkup === filterRuang;
+
+                return matchSearch && matchLembaga && matchRuang;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 text-secondary border rounded-3 bg-light-subtle">
+                        <i class="fas fa-magnifying-glass fa-2x mb-3 text-secondary" style="opacity: 0.5;"></i>
+                        <p class="mb-0" style="font-size: 14px;">Auditor tidak ditemukan dengan kriteria tersebut.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(item => {
+                const isSelected = selectedAuditorIds.includes(item.id);
+                const isBusy = item.status === "Sedang Audit";
+
+                // Action buttons and badges depending on availability
+                let btnHtml = '';
+                let statusBadgeHtml = '';
+
+                if (isBusy) {
+                    statusBadgeHtml = `<span class="badge bg-danger-subtle text-danger fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">Sedang Audit</span>`;
+                    btnHtml = `<button class="btn btn-secondary btn-sm px-3 disabled" style="border-radius: 8px; font-weight: 600; opacity: 0.6;"><i class="fas fa-ban"></i> Sibuk</button>`;
+                } else if (isSelected) {
+                    statusBadgeHtml = `<span class="badge bg-success-subtle text-success fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">Tersedia</span>`;
+                    btnHtml = `<button class="btn btn-outline-secondary btn-sm px-3 disabled" style="border-radius: 8px; font-weight: 600;"><i class="fas fa-check"></i> Terpilih</button>`;
+                } else {
+                    statusBadgeHtml = `<span class="badge bg-success-subtle text-success fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">Tersedia</span>`;
+                    btnHtml = `<button class="btn btn-primary btn-sm px-3" style="border-radius: 8px; font-weight: 600;" onclick="selectAuditor(${item.id})"><i class="fas fa-plus"></i> Pilih</button>`;
+                }
+
+                // Render matching Figma: Card enclosed in border "kotak"
+                html += `
+                    <div class="card p-3 border rounded-3 bg-white mb-3" style="border-color: #E2E8F0 !important; box-shadow: 0 4px 12px rgba(15, 61, 145, 0.02); opacity: ${isBusy ? '0.75' : '1'};">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-start gap-3">
+                                <!-- Initial Circle Avatar -->
+                                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width: 48px; height: 48px; font-size: 18px; flex-shrink: 0;">
+                                    ${item.name.charAt(0)}
+                                </div>
+                                <!-- Auditor details -->
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">${item.name}</h6>
+                                        <span class="badge" style="background: #FAF5FF; color: #7E3AF2; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">${item.role}</span>
+                                    </div>
+                                    <small class="text-secondary d-block mb-2" style="font-size: 12px;">${item.nip} · ${item.subrole}</small>
+                                    
+                                    <div class="d-flex gap-4 flex-wrap text-secondary" style="font-size: 12px;">
+                                        <div>Jenis Audit: <strong class="text-dark">${item.lembaga}</strong></div>
+                                        <div>Total Audit: <strong class="text-dark">${item.totalAudit}</strong></div>
+                                        <div>Point: <strong class="text-dark">${item.point}</strong></div>
+                                        <div>Lokasi: <strong class="text-dark">${item.lokasi}</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action and Availability on right side -->
+                            <div class="text-end flex-shrink-0 d-flex flex-column align-items-end gap-3" style="min-width: 100px;">
+                                ${statusBadgeHtml}
+                                ${btnHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function selectAuditor(id) {
+            if (selectedAuditorIds.includes(id)) return;
+            selectedAuditorIds.push(id);
+            updateSelectedList();
+            renderAuditors();
+        }
+
+        // Action when deselecting auditor
+        function deselectAuditor(id) {
+            selectedAuditorIds = selectedAuditorIds.filter(itemId => itemId !== id);
+            updateSelectedList();
+            renderAuditors();
+        }
+
+        function updateSelectedList() {
+            const listContainer = document.getElementById('selectedAuditorsList');
+            const countText = document.getElementById('selectedCountText');
+            const emptyState = document.getElementById('selectedEmptyState');
+            const btnSave = document.getElementById('btnSimpanTeam');
+
+            countText.innerText = `${selectedAuditorIds.length} auditor dipilih`;
+
+            if (selectedAuditorIds.length === 0) {
+                emptyState.classList.remove('d-none');
+                btnSave.classList.add('disabled');
+                
+                // Clear any rendered items
+                const items = listContainer.querySelectorAll('.selected-item-row');
+                items.forEach(el => el.remove());
+                return;
+            }
+
+            emptyState.classList.add('d-none');
+            btnSave.classList.remove('disabled');
+
+            // Clear old elements before rendering new ones
+            const items = listContainer.querySelectorAll('.selected-item-row');
+            items.forEach(el => el.remove());
+
+            selectedAuditorIds.forEach(id => {
+                const item = dbAuditors.find(aud => aud.id === id);
+                const div = document.createElement('div');
+                div.className = 'selected-item-row card p-3 border rounded-3 bg-white mb-2';
+                div.style.borderColor = '#e2e8f0';
+
+                // Determine default selected based on role
+                const isLead = item.role.toLowerCase().includes('lead');
+                const roleSelectHtml = `
+                    <select class="form-select form-select-sm mt-2" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
+                        <option value="Ketua Tim" ${isLead ? 'selected' : ''}>Ketua Tim</option>
+                        <option value="Anggota" ${!isLead ? 'selected' : ''}>Anggota</option>
+                    </select>
+                `;
+
+                div.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary fw-bold" style="width: 36px; height: 36px; font-size: 14px; flex-shrink: 0;">
+                                ${item.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">${item.name}</h6>
+                                <small class="text-secondary" style="font-size: 11px;">${item.role}</small>
+                                ${roleSelectHtml}
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" onclick="deselectAuditor(${item.id})" style="width: 28px; height: 28px; border-radius: 6px; border-color: #EF4444; color: #EF4444; background: transparent; transition: none; flex-shrink: 0; margin-left: 10px;">
+                            <i class="far fa-trash-can" style="font-size: 12px;"></i>
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function simpanTetapkan() {
+            alert('Sukses! Tim audit manual berhasil disimpan dan ditetapkan.');
+            window.location.href = '/dashboard-operasional';
+        }
+
+        // Event listeners
+        document.getElementById('searchAuditor').addEventListener('input', renderAuditors);
+        document.getElementById('filterRuangLingkup').addEventListener('change', renderAuditors);
+
+        // Initial render
+        renderAuditors();
+    </script>
+</body>
+
+</html>

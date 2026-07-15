@@ -450,7 +450,7 @@
                     <div class="stat-card">
                         <div>
                             <h6>Total Tim</h6>
-                            <h2>0</h2>
+                            <h2 id="statTotalTim">0</h2>
                         </div>
                         <div class="stat-icon bg-blue">
                             <i class="fas fa-users"></i>
@@ -459,7 +459,7 @@
                     <div class="stat-card">
                         <div>
                             <h6>Sedang Review</h6>
-                            <h2>0</h2>
+                            <h2 id="statSedangReview">0</h2>
                         </div>
                         <div class="stat-icon bg-orange">
                             <i class="fas fa-rotate"></i>
@@ -468,7 +468,7 @@
                     <div class="stat-card">
                         <div>
                             <h6>Aktif / Selesai</h6>
-                            <h2>0</h2>
+                            <h2 id="statAktifSelesai">0</h2>
                         </div>
                         <div class="stat-icon bg-green">
                             <i class="fas fa-clipboard-check"></i>
@@ -479,10 +479,10 @@
                 <!-- ================= FILTER ROW ================= -->
                 <div class="row filter-row align-items-center">
                     <div class="col-md-8 mb-3 mb-md-0">
-                        <input type="text" class="form-control table-search-input" placeholder="🔍 Cari ID Audit atau Perusahaan...">
+                        <input type="text" class="form-control table-search-input" onkeyup="filterTeams()" placeholder="🔍 Cari ID Audit atau Perusahaan...">
                     </div>
                     <div class="col-md-4">
-                        <select class="form-select status-filter-select">
+                        <select class="form-select status-filter-select" onchange="filterTeams()">
                             <option selected>Semua Status</option>
                             <option>Review</option>
                             <option>Aktif</option>
@@ -491,9 +491,9 @@
                     </div>
                 </div>
 
-                <!-- ================= EMPTY STATE ================= -->
-                <div class="audit-card text-center py-4 text-secondary" style="font-size: 14px;">
-                    <i class="fas fa-info-circle me-1"></i> Belum ada data tim audit.
+                <!-- ================= CONTAINER TIM AUDIT ================= -->
+                <div id="timAuditContainer">
+                    <!-- Dynamic list / empty state will be here -->
                 </div>
 
             </div>
@@ -513,8 +513,8 @@
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
                 <div class="modal-header" style="border-bottom: 1px solid #F3F4F6; padding: 20px 24px;">
                     <div>
-                        <h5 class="modal-title fw-bold text-dark mb-1" id="detailTimModalLabel" style="font-size: 20px;">Detail Tim — AUD-2026-001</h5>
-                        <small class="text-secondary" style="font-size: 14px;">PT ABC Indonesia</small>
+                        <h5 class="modal-title fw-bold text-dark mb-1" id="detailTimModalLabel" style="font-size: 20px;">Detail Tim</h5>
+                        <small class="text-secondary" id="modalPerusahaanName" style="font-size: 14px;">-</small>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="transition: none;"></button>
                 </div>
@@ -523,19 +523,19 @@
                     <div class="p-3 mb-4 d-flex flex-wrap justify-content-between rounded-3" style="background-color: #EFF6FF; border: 1px solid #BFDBFE;">
                         <div class="me-3 mb-2 mb-md-0">
                             <span class="text-primary d-block" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">ID Audit</span>
-                            <strong class="text-primary" style="font-size: 14px;">AUD-2026-001</strong>
+                            <strong class="text-primary" id="modalHeaderAuditCode" style="font-size: 14px;">-</strong>
                         </div>
                         <div class="me-3 mb-2 mb-md-0">
                             <span class="text-primary d-block" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Perusahaan</span>
-                            <strong class="text-primary" style="font-size: 14px;">PT ABC Indonesia</strong>
+                            <strong class="text-primary" id="modalHeaderPerusahaan" style="font-size: 14px;">-</strong>
                         </div>
                         <div class="me-3 mb-2 mb-md-0">
-                            <span class="text-primary d-block" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Lembaga</span>
-                            <strong class="text-primary" style="font-size: 14px;">LSSM</strong>
+                            <span class="text-primary d-block" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Jenis Audit</span>
+                            <strong class="text-primary" id="modalHeaderLembaga" style="font-size: 14px;">-</strong>
                         </div>
                         <div>
                             <span class="text-primary d-block" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Tanggal</span>
-                            <strong class="text-primary" style="font-size: 14px;">25 Jun – 27 Jun 2026</strong>
+                            <strong class="text-primary" id="modalHeaderTanggal" style="font-size: 14px;">-</strong>
                         </div>
                     </div>
 
@@ -543,117 +543,8 @@
                     <h5 class="fw-bold text-dark mb-3" style="font-size: 16px;">Anggota Tim Audit</h5>
 
                     <!-- Members Cards Row -->
-                    <div class="row">
-                        <!-- Lead Auditor -->
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="modal-member-card">
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="avatar-circle bg-avatar-blue" style="width: 45px; height: 45px; font-size: 16px;">PM</div>
-                                    <div>
-                                        <div class="fw-bold text-dark" style="font-size: 14px;">Popy Marlina</div>
-                                        <span class="badge bg-purple-subtle text-purple fs-7" style="padding: 2px 6px; font-size: 10px;"><i class="far fa-star"></i> Lead</span>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Kompetensi:</small>
-                                    <div class="d-flex flex-wrap gap-1 mt-1">
-                                        <span class="modal-badge-competence">LSPRO</span>
-                                        <span class="modal-badge-competence">LSSM</span>
-                                        <span class="modal-badge-competence">LSSML</span>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Lembaga:</small>
-                                    <div class="mt-1">
-                                        <span class="modal-badge-lembaga">LSSM</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Ruang Lingkup:</small>
-                                    <div class="d-flex flex-wrap gap-1 mt-1">
-                                        <span class="modal-badge-scope">ISO 9001</span>
-                                        <span class="modal-badge-scope">ISO 14001</span>
-                                    </div>
-                                </div>
-                                <div class="border-top pt-2 d-flex justify-content-between align-items-center">
-                                    <span class="text-success fw-semibold" style="font-size: 12px;"><i class="fas fa-circle fs-8 me-1"></i> Aktif</span>
-                                    <span class="fw-bold text-dark" style="font-size: 13px;">Point: 0</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Auditor 1 -->
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="modal-member-card">
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="avatar-circle bg-avatar-purple" style="width: 45px; height: 45px; font-size: 16px;">AS</div>
-                                    <div>
-                                        <div class="fw-bold text-dark" style="font-size: 14px;">Andi Saputra</div>
-                                        <span class="badge bg-secondary-subtle text-secondary fs-7" style="padding: 2px 6px; font-size: 10px;">Auditor</span>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Kompetensi:</small>
-                                    <div class="d-flex flex-wrap gap-1 mt-1">
-                                        <span class="modal-badge-competence">LSPRO</span>
-                                        <span class="modal-badge-competence">LSSM</span>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Lembaga:</small>
-                                    <div class="mt-1">
-                                        <span class="modal-badge-lembaga">LSSM</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Ruang Lingkup:</small>
-                                    <div class="d-flex flex-wrap gap-1 mt-1">
-                                        <span class="modal-badge-scope">ISO 9001</span>
-                                    </div>
-                                </div>
-                                <div class="border-top pt-2 d-flex justify-content-between align-items-center">
-                                    <span class="text-success fw-semibold" style="font-size: 12px;"><i class="fas fa-circle fs-8 me-1"></i> Aktif</span>
-                                    <span class="fw-bold text-dark" style="font-size: 13px;">Point: 2</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Auditor 2 -->
-                        <div class="col-md-4">
-                            <div class="modal-member-card">
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="avatar-circle bg-avatar-green" style="width: 45px; height: 45px; font-size: 16px;">MR</div>
-                                    <div>
-                                        <div class="fw-bold text-dark" style="font-size: 14px;">Muhammad Rizki</div>
-                                        <span class="badge bg-secondary-subtle text-secondary fs-7" style="padding: 2px 6px; font-size: 10px;">Auditor</span>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Kompetensi:</small>
-                                    <div class="d-flex flex-wrap gap-1 mt-1">
-                                        <span class="modal-badge-competence">LSSM</span>
-                                        <span class="modal-badge-competence">LSMK3</span>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Lembaga:</small>
-                                    <div class="mt-1">
-                                        <span class="modal-badge-lembaga">LSSM</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block" style="font-size: 11px;">Ruang Lingkup:</small>
-                                    <div class="d-flex flex-wrap gap-1 mt-1">
-                                        <span class="modal-badge-scope">ISO 9001</span>
-                                        <span class="modal-badge-scope">ISO 50001</span>
-                                    </div>
-                                </div>
-                                <div class="border-top pt-2 d-flex justify-content-between align-items-center">
-                                    <span class="text-success fw-semibold" style="font-size: 12px;"><i class="fas fa-circle fs-8 me-1"></i> Aktif</span>
-                                    <span class="fw-bold text-dark" style="font-size: 13px;">Point: 1</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row" id="modalMembersRow">
+                        <!-- Dynamic member cards will be rendered here -->
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
@@ -666,18 +557,142 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ================= SEARCH =================
-        const search = document.querySelector(".table-search-input");
-        const cards = document.querySelectorAll(".audit-card");
+        // Data Tim Audit (Dapat dihubungkan ke Database)
+        const dbAuditTeams = [];
 
-        search.addEventListener("keyup", function(){
-            let keyword = this.value.toLowerCase();
-            cards.forEach(function(card){
-                card.style.display = card.innerText.toLowerCase().includes(keyword)
-                    ? ""
-                    : "none";
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTeams();
         });
+
+        function renderTeams() {
+            const container = document.getElementById('timAuditContainer');
+            const searchVal = document.querySelector(".table-search-input").value.toLowerCase().trim();
+            const filterVal = document.querySelector(".status-filter-select").value;
+
+            // Filter
+            const filtered = dbAuditTeams.filter(team => {
+                const matchSearch = team.auditCode.toLowerCase().includes(searchVal) || team.perusahaan.toLowerCase().includes(searchVal);
+                const matchStatus = filterVal === "Semua Status" || team.status === filterVal;
+                return matchSearch && matchStatus;
+            });
+
+            // Update stats
+            document.getElementById('statTotalTim').innerText = dbAuditTeams.length;
+            document.getElementById('statSedangReview').innerText = dbAuditTeams.filter(t => t.status === 'Review').length;
+            document.getElementById('statAktifSelesai').innerText = dbAuditTeams.filter(t => t.status === 'Aktif' || t.status === 'Selesai').length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="audit-card text-center py-4 text-secondary" style="font-size: 14px;">
+                        <i class="fas fa-info-circle me-1"></i> Belum ada data tim audit.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(team => {
+                let badgeClass = 'bg-warning-subtle text-warning';
+                if (team.status === 'Aktif') badgeClass = 'bg-success-subtle text-success';
+                if (team.status === 'Selesai') badgeClass = 'bg-primary-subtle text-primary';
+
+                html += `
+                    <div class="audit-card">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="card-title-code">${team.auditCode}</span>
+                                    <span class="badge ${badgeClass}" style="font-weight: 600; padding: 6px 12px; border-radius: 8px;">${team.status}</span>
+                                </div>
+                                <h4 class="fw-bold text-dark mt-2 mb-1" style="font-size: 20px;">${team.perusahaan}</h4>
+                                <div class="audit-info-row">
+                                    <span><i class="far fa-building"></i> ${team.lembaga}</span>
+                                    <span><i class="far fa-calendar"></i> ${team.tanggal}</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary px-3" onclick="showTeamDetail('${team.auditCode}')" style="height: 38px; border-radius: 8px;">
+                                <i class="far fa-eye me-1"></i> Detail Tim
+                            </button>
+                        </div>
+
+                        <!-- Horizontal Avatars Team -->
+                        <div class="border-top pt-3 mt-3 d-flex flex-wrap gap-4">
+                            ${team.members.map(m => `
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="avatar-circle ${m.avatarBg}">${m.initials}</div>
+                                <div>
+                                    <div class="fw-semibold text-dark" style="font-size: 14px; line-height: 1.2;">${m.name}</div>
+                                    <small class="text-muted" style="font-size: 12px;">${m.role}</small>
+                                </div>
+                            </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterTeams() {
+            renderTeams();
+        }
+
+        function showTeamDetail(auditCode) {
+            const team = dbAuditTeams.find(t => t.auditCode === auditCode);
+            if (!team) return;
+
+            document.getElementById('detailTimModalLabel').innerText = `Detail Tim — ${team.auditCode}`;
+            document.getElementById('modalPerusahaanName').innerText = team.perusahaan;
+            document.getElementById('modalHeaderAuditCode').innerText = team.auditCode;
+            document.getElementById('modalHeaderPerusahaan').innerText = team.perusahaan;
+            document.getElementById('modalHeaderLembaga').innerText = team.lembaga;
+            document.getElementById('modalHeaderTanggal').innerText = team.tanggal;
+
+            let membersHtml = '';
+            team.members.forEach(m => {
+                membersHtml += `
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="modal-member-card">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="avatar-circle ${m.avatarBg}" style="width: 45px; height: 45px; font-size: 16px;">${m.initials}</div>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 14px;">${m.name}</div>
+                                    <span class="badge bg-purple-subtle text-purple fs-7" style="padding: 2px 6px; font-size: 10px;"><i class="far fa-star"></i> ${m.role}</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted d-block" style="font-size: 11px;">Kompetensi:</small>
+                                <div class="d-flex flex-wrap gap-1 mt-1">
+                                    ${m.competencies.map(c => `<span class="modal-badge-competence">${c}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted d-block" style="font-size: 11px;">Jenis Audit:</small>
+                                <div class="mt-1">
+                                    <span class="modal-badge-lembaga">${m.lembaga}</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted d-block" style="font-size: 11px;">Ruang Lingkup:</small>
+                                <div class="d-flex flex-wrap gap-1 mt-1">
+                                    ${m.scopes.map(s => `<span class="modal-badge-scope">${s}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="border-top pt-2 d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-semibold" style="font-size: 12px;"><i class="fas fa-circle fs-8 me-1"></i> ${m.status}</span>
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Point: ${m.point}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modalMembersRow').innerHTML = membersHtml;
+
+            // Trigger modal
+            const modal = new bootstrap.Modal(document.getElementById('detailTimModal'));
+            modal.show();
+        }
     </script>
 </body>
 
