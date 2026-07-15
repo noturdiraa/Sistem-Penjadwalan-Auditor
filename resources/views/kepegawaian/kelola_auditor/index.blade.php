@@ -588,7 +588,7 @@ placeholder="Cari Nama Auditor atau NIP">
 
 <div class="col-md-3 text-end">
 
-<a href="#" class="btn btn-primary w-100 w-md-auto">
+<a href="{{ route('kepegawaian.auditor.create') }}" class="btn btn-primary w-100 w-md-auto">
 
 <i class="fas fa-plus"></i>
 
