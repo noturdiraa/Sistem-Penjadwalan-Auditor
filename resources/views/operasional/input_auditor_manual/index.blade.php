@@ -437,6 +437,16 @@
                 </div>
             </div>
         </div>
+        @else
+        <!-- Empty State -->
+        <div class="card p-5 border-0 shadow-sm rounded-4 bg-white text-center mb-4">
+            <div class="py-5">
+                <i class="fas fa-calendar-times fa-3x mb-3 text-secondary" style="opacity: 0.5;"></i>
+                <h4 class="fw-bold mb-2">Tidak Ada Jadwal Audit</h4>
+                <p class="text-secondary mb-0">Belum ada jadwal audit yang membutuhkan penetapan auditor manual saat ini.</p>
+            </div>
+        </div>
+        @endif
 
         <!-- FOOTER -->
         <div class="footer">
