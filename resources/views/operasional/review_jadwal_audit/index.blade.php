@@ -414,6 +414,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
         <!-- ================= CARD STATISTIK ================= -->
 
+        @php
+            $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu Review')->count();
+            $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
+            $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Dikembalikan')->count();
+            $countTotal = \App\Models\JadwalAudit::count();
+        @endphp
+
         <div class="stats-row cards-row mb-5">
 
             <!-- Menunggu Review -->
@@ -421,7 +428,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 <div class="card-stat">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="mb-0 fw-bold text-dark">3</h2>
+                            <h2 class="mb-0 fw-bold text-dark">{{ $countMenunggu }}</h2>
                             <small class="text-secondary mt-1">
                                 Menunggu Review
                             </small>
@@ -438,7 +445,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 <div class="card-stat">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="mb-0 fw-bold text-dark">8</h2>
+                            <h2 class="mb-0 fw-bold text-dark">{{ $countDisetujui }}</h2>
                             <small class="text-secondary mt-1">
                                 Disetujui
                             </small>
@@ -455,7 +462,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 <div class="card-stat">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="mb-0 fw-bold text-dark">4</h2>
+                            <h2 class="mb-0 fw-bold text-dark">{{ $countDikembalikan }}</h2>
                             <small class="text-secondary mt-1">
                                 Ditolak
                             </small>
@@ -472,7 +479,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 <div class="card-stat">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="mb-0 fw-bold text-dark">15</h2>
+                            <h2 class="mb-0 fw-bold text-dark">{{ $countTotal }}</h2>
                             <small class="text-secondary mt-1">
                                 Total Review
                             </small>
