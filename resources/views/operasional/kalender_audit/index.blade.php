@@ -415,65 +415,33 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+    @php
+        $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'timAudits.auditor'])->get();
+
+        $events = [];
+        foreach ($jadwals as $j) {
+            $dateKey = $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('Y-m-d') : null;
+            if ($dateKey) {
+                $auditorNames = [];
+                foreach ($j->timAudits as $t) {
+                    if ($t->auditor) {
+                        $auditorNames[] = $t->auditor->nama_auditor;
+                    }
+                }
+                $auditorString = count($auditorNames) > 0 ? implode(', ', $auditorNames) : 'Belum ditentukan';
+
+                $events[$dateKey][] = [
+                    'perusahaan' => $j->audit->perusahaan->nama_perusahaan ?? 'Belum diatur',
+                    'ruang_lingkup' => $j->audit->jenis_audit ?? 'Sertifikasi',
+                    'waktu' => '08:00 - 16:00 WIB',
+                    'auditor' => $auditorString
+                ];
+            }
+        }
+    @endphp
+    <script>
         // Data Jadwal Audit (Key format: YYYY-MM-DD)
-        const audits = {
-            "2026-07-03": [
-                {
-                    perusahaan: "PT Maju Jaya",
-                    ruang_lingkup: "LSPRO",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Popy Marlina, Andi Saputra"
-                }
-            ],
-            "2026-07-07": [
-                {
-                    perusahaan: "PT ABC Indonesia",
-                    ruang_lingkup: "LSSM",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Popy Marlina, Andi Saputra"
-                }
-            ],
-            "2026-07-10": [
-                {
-                    perusahaan: "PT ABC Indonesia",
-                    ruang_lingkup: "LSSM",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Popy Marlina, Andi Saputra"
-                }
-            ],
-            "2026-07-14": [
-                {
-                    perusahaan: "PT ABC Indonesia",
-                    ruang_lingkup: "LSSM",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Popy Marlina, Andi Saputra"
-                }
-            ],
-            "2026-07-17": [
-                {
-                    perusahaan: "CV XYZ Palembang",
-                    ruang_lingkup: "LSSM",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Muhammad Rizki, Andi Saputra"
-                }
-            ],
-            "2026-07-21": [
-                {
-                    perusahaan: "CV XYZ Palembang",
-                    ruang_lingkup: "LSSM",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Muhammad Rizki, Andi Saputra"
-                }
-            ],
-            "2026-07-25": [
-                {
-                    perusahaan: "CV XYZ Palembang",
-                    ruang_lingkup: "LSSM",
-                    waktu: "08:00 - 16:00 WIB",
-                    auditor: "Muhammad Rizki, Andi Saputra"
-                }
-            ]
-        };
+        const audits = {!! json_encode($events) !!};
 
         let currentYear = 2026;
         let currentMonth = 6; // Juli (0-indexed)

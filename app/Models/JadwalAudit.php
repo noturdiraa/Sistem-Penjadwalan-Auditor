@@ -48,7 +48,7 @@ class JadwalAudit extends Model
     // Relasi ke Review Teknis
     public function reviewTeknis()
     {
-        return $this->hasMany(ReviewTeknis::class, 'id_jadwal', 'id_jadwal');
+        return $this->hasMany(ReviewOperasional::class, 'id_jadwal', 'id_jadwal');
     }
 
     // Relasi ke Riwayat Auditor

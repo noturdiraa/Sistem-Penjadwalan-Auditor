@@ -1,3 +1,26 @@
+@php
+    $jadwal = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'lokasi'])->first();
+    $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup'])->get();
+
+    $dbAuditors = [];
+    foreach ($auditors as $aud) {
+        $rlingkup = $aud->detailAuditors->first()->ruangLingkup->nama_ruang_lingkup ?? 'Umum';
+        $dbAuditors[] = [
+            'id' => $aud->id_auditor,
+            'name' => $aud->nama_auditor,
+            'nip' => $aud->nip,
+            'role' => $aud->jenis_auditor,
+            'subrole' => $aud->jenis_auditor,
+            'lembaga' => 'LSPRO',
+            'ruangLingkup' => $rlingkup,
+            'point' => 0,
+            'totalAudit' => $aud->timAudits()->count(),
+            'lokasi' => 'Dalam Kota',
+            'status' => 'Tersedia',
+            'badges' => ['LSPRO']
+        ];
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -273,6 +296,7 @@
                 </div>
             </div>
 
+            @if($jadwal)
             <!-- Target Audit Card -->
             <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
                 <h6 class="fw-bold text-primary mb-4" style="font-size: 16px;">
@@ -288,7 +312,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Perusahaan</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">PT Nusantara Teknologi</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</span>
                             </div>
                         </div>
                         <!-- Jenis Audit -->
@@ -298,7 +322,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Jenis Audit</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">LSPRO</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->jenis_audit ?? '-' }}</span>
                             </div>
                         </div>
                         <!-- Tanggal Mulai -->
@@ -308,7 +332,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Tanggal Mulai</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">15 Juli 2026</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</span>
                             </div>
                         </div>
                         <!-- Ruang Lingkup -->
@@ -318,7 +342,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Ruang Lingkup</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">Air Mineral</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -331,7 +355,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block" style="font-size: 12px; font-weight: 500;">Lokasi</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">Jl. Jend. Sudirman No. 45, Palembang</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->lokasi->nama_lokasi ?? '-' }}</span>
                             </div>
                         </div>
                         <!-- Kategori Wilayah -->
@@ -341,7 +365,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block" style="font-size: 12px; font-weight: 500;">Kategori Wilayah</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">Dalam Kota</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->lokasi->kategori_wilayah ?? '-' }}</span>
                             </div>
                         </div>
                         <!-- Tanggal Selesai -->
@@ -351,7 +375,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Tanggal Selesai</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">17 Juli 2026</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d M Y') : '-' }}</span>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ReviewTeknis extends Model
+class ReviewOperasional extends Model
 {
     protected $table = 'review_teknis';
 

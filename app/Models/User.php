@@ -41,6 +41,6 @@ class User extends Authenticatable
     // Relasi ke Review Teknis
     public function reviewTeknis()
     {
-        return $this->hasMany(ReviewTeknis::class, 'id_user', 'id_user');
+        return $this->hasMany(ReviewOperasional::class, 'id_user', 'id_user');
     }
 }
