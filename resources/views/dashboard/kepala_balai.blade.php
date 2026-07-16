@@ -408,6 +408,12 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 <!-- ================= LANJUT KE BAGIAN 2 ================= -->
 <!-- ================= CARD STATISTIK ================= -->
 
+@php
+    $totalAudit = \App\Models\JadwalAudit::count();
+    $auditSelesai = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
+    $auditBerlangsung = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu Review')->count();
+@endphp
+
 <div class="row">
 
     <!-- Total Audit Bulan Ini -->
@@ -419,6 +425,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark text-start">{{ $totalAudit }}</h3>
                     <small class="text-secondary">
                         Total Audit Bulan Ini
                     </small>
@@ -446,6 +453,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark text-start">{{ $auditSelesai }}</h3>
                     <small class="text-secondary">
                         Audit Selesai
                     </small>
@@ -473,6 +481,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark text-start">{{ $auditBerlangsung }}</h3>
                     <small class="text-secondary">
                         Audit Berlangsung
                     </small>

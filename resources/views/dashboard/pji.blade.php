@@ -473,6 +473,13 @@ padding:.45em .7em;
 
 </style>
 
+@php
+    $totalPerusahaan = \App\Models\Perusahaan::count();
+    $jadwalAudit = \App\Models\JadwalAudit::count();
+    $menungguReview = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu Review')->count();
+    $auditAktif = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
+@endphp
+
 <div class="row">
 
     <div class="col-lg-3 mb-4">
@@ -483,6 +490,7 @@ padding:.45em .7em;
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark">{{ $totalPerusahaan }}</h3>
                     <small class="text-secondary">
                         Total Perusahaan
                     </small>
@@ -509,6 +517,7 @@ padding:.45em .7em;
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark">{{ $jadwalAudit }}</h3>
                     <small class="text-secondary">
                         Jadwal Audit
                     </small>
@@ -535,6 +544,7 @@ padding:.45em .7em;
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark">{{ $menungguReview }}</h3>
                     <small class="text-secondary">
                         Menunggu Review
                     </small>
@@ -561,6 +571,7 @@ padding:.45em .7em;
 
                 <div>
 
+                    <h3 class="fw-bold mb-0 text-dark">{{ $auditAktif }}</h3>
                     <small class="text-secondary">
                         Audit Aktif
                     </small>
