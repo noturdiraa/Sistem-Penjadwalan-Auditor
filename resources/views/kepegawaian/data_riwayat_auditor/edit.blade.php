@@ -394,10 +394,20 @@
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Jenis Audit</label>
                             <select name="jenis_audit" id="jenis_audit" required>
-                                <option value="Sertifikasi" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Sertifikasi') ? 'selected' : '' }}>Sertifikasi</option>
-                                <option value="Surveilan 1" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Surveilan 1') ? 'selected' : '' }}>Surveilan 1</option>
-                                <option value="Surveilan 2" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Surveilan 2') ? 'selected' : '' }}>Surveilan 2</option>
-                                <option value="Re-Sertifikasi" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Re-Sertifikasi') ? 'selected' : '' }}>Re-Sertifikasi</option>
+                                <option value="" disabled>Cari / Pilih Jenis Audit...</option>
+                                @php
+                                    $currentVal = old('jenis_audit', $riwayat->audit->jenis_audit ?? '');
+                                    $hasCurrent = false;
+                                @endphp
+                                @foreach($jenisAudits as $ja)
+                                    @if($ja == $currentVal)
+                                        @php $hasCurrent = true; @endphp
+                                    @endif
+                                    <option value="{{ $ja }}" {{ $currentVal == $ja ? 'selected' : '' }}>{{ $ja }}</option>
+                                @endforeach
+                                @if(!$hasCurrent && $currentVal)
+                                    <option value="{{ $currentVal }}" selected>{{ $currentVal }}</option>
+                                @endif
                             </select>
                             @error('jenis_audit')
                                 <div class="text-danger mt-1 small">{{ $message }}</div>

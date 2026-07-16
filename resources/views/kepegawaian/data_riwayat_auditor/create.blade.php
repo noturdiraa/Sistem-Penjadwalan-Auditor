@@ -397,10 +397,9 @@
                             <label class="form-label">Jenis Audit</label>
                             <select name="jenis_audit" id="jenis_audit" required>
                                 <option value="" selected disabled>Cari / Pilih Jenis Audit...</option>
-                                <option value="Sertifikasi" {{ old('jenis_audit') == 'Sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                                <option value="Surveilan 1" {{ old('jenis_audit') == 'Surveilan 1' ? 'selected' : '' }}>Surveilan 1</option>
-                                <option value="Surveilan 2" {{ old('jenis_audit') == 'Surveilan 2' ? 'selected' : '' }}>Surveilan 2</option>
-                                <option value="Re-Sertifikasi" {{ old('jenis_audit') == 'Re-Sertifikasi' ? 'selected' : '' }}>Re-Sertifikasi</option>
+                                @foreach($jenisAudits as $ja)
+                                    <option value="{{ $ja }}" {{ old('jenis_audit') == $ja ? 'selected' : '' }}>{{ $ja }}</option>
+                                @endforeach
                             </select>
                             @error('jenis_audit')
                                 <div class="text-danger mt-1 small">{{ $message }}</div>

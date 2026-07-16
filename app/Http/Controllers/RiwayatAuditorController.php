@@ -28,8 +28,9 @@ class RiwayatAuditorController extends Controller
         $auditors = Auditor::all();
         $perusahaans = \App\Models\Perusahaan::all();
         $lembagas = \App\Models\Lembaga::all();
+        $jenisAudits = Audit::select('jenis_audit')->distinct()->pluck('jenis_audit');
 
-        return view('kepegawaian.data_riwayat_auditor.create', compact('auditors', 'perusahaans', 'lembagas'));
+        return view('kepegawaian.data_riwayat_auditor.create', compact('auditors', 'perusahaans', 'lembagas', 'jenisAudits'));
     }
 
     /**
@@ -124,8 +125,9 @@ class RiwayatAuditorController extends Controller
         $auditors = Auditor::all();
         $perusahaans = \App\Models\Perusahaan::all();
         $lembagas = \App\Models\Lembaga::all();
+        $jenisAudits = Audit::select('jenis_audit')->distinct()->pluck('jenis_audit');
 
-        return view('kepegawaian.data_riwayat_auditor.edit', compact('riwayat', 'auditors', 'perusahaans', 'lembagas'));
+        return view('kepegawaian.data_riwayat_auditor.edit', compact('riwayat', 'auditors', 'perusahaans', 'lembagas', 'jenisAudits'));
     }
 
     /**
