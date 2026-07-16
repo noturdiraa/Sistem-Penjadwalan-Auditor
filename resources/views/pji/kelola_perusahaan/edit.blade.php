@@ -377,6 +377,17 @@
                                 @enderror
                             </div>
 
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Status Perusahaan</label>
+                                <select name="status" class="form-select @error('status') is-invalid @enderror" required style="height: 48px; border-radius: 8px;">
+                                    <option value="Aktif" {{ old('status', $perusahaan->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="Tidak Aktif" {{ old('status', $perusahaan->status) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="col-12 mb-4">
                                 <label class="form-label fw-semibold">Alamat</label>
                                 <textarea name="alamat" class="form-control @error('alamat') is-invalid @enderror" placeholder="Masukkan alamat lengkap" required>{{ old('alamat', $perusahaan->alamat) }}</textarea>
