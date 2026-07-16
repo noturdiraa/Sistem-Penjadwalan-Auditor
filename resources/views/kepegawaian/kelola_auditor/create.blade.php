@@ -393,19 +393,19 @@ color:#777;
 
         <!-- Jabatan -->
         <div class="col-md-4 mb-4">
-
-            <label class="form-label">
+            <label class="form-label d-block">
                 Jabatan
             </label>
-
-            <select name="jabatan" class="form-select" required>
-
-                <option value="" selected disabled>Pilih Jabatan</option>
-                <option value="Lead Auditor">Lead Auditor</option>
-                <option value="Auditor">Auditor</option>
-
-            </select>
-
+            <div class="d-flex gap-3 align-items-center" style="height: 48px;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="jabatan[]" value="Lead Auditor" id="jabatan_la">
+                    <label class="form-check-label fw-medium text-dark" for="jabatan_la" style="font-size: 14px;">Lead Auditor</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="jabatan[]" value="Auditor" id="jabatan_auditor">
+                    <label class="form-check-label fw-medium text-dark" for="jabatan_auditor" style="font-size: 14px;">Auditor</label>
+                </div>
+            </div>
         </div>
 
         <!-- Posisi -->
@@ -418,11 +418,9 @@ color:#777;
             <select name="posisi" class="form-select" required>
 
                 <option value="" selected disabled>Pilih Posisi</option>
-                <option value="Fungsional">Fungsional</option>
-                <option value="AMI">AMI</option>
-                <option value="Non AMI">Non AMI</option>
+                <option value="AMMI">AMMI</option>
+                <option value="Non AMMI">Non AMMI</option>
                 <option value="Subkon">Subkon</option>
-                <option value="Non Subkon">Non Subkon</option>
 
             </select>
 

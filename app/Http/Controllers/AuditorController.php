@@ -36,7 +36,7 @@ class AuditorController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'nip' => 'required|string|max:255|unique:auditors,nip',
-            'jabatan' => 'required|string|max:255',
+            'jabatan' => 'required|array|min:1',
             'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
@@ -45,7 +45,7 @@ class AuditorController extends Controller
             'nama_auditor' => $request->nama,
             'nip' => $request->nip,
             'jenis_auditor' => $request->posisi == 'Subkon' ? 'Subkontrak' : 'Pegawai',
-            'jabatan' => $request->jabatan,
+            'jabatan' => implode(', ', $request->jabatan),
             'posisi' => $request->posisi,
             'status' => $request->status,
         ]);
@@ -101,7 +101,7 @@ class AuditorController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'nip' => 'required|string|max:255|unique:auditors,nip,' . $id . ',id_auditor',
-            'jabatan' => 'required|string|max:255',
+            'jabatan' => 'required|array|min:1',
             'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
@@ -112,7 +112,7 @@ class AuditorController extends Controller
             'nama_auditor' => $request->nama,
             'nip' => $request->nip,
             'jenis_auditor' => $request->posisi == 'Subkon' ? 'Subkontrak' : 'Pegawai',
-            'jabatan' => $request->jabatan,
+            'jabatan' => implode(', ', $request->jabatan),
             'posisi' => $request->posisi,
             'status' => $request->status,
         ]);

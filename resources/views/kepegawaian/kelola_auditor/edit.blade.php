@@ -396,19 +396,22 @@ color:#777;
 
         <!-- Jabatan -->
         <div class="col-md-4 mb-4">
-
-            <label class="form-label">
+            <label class="form-label d-block">
                 Jabatan
             </label>
-
-            <select name="jabatan" class="form-select" required>
-
-                <option value="" disabled {{ empty($auditor) ? 'selected' : '' }}>Pilih Jabatan</option>
-                <option value="Lead Auditor" {{ (!empty($auditor) && $auditor->jabatan == 'Lead Auditor') ? 'selected' : '' }}>Lead Auditor</option>
-                <option value="Auditor" {{ (!empty($auditor) && $auditor->jabatan == 'Auditor') ? 'selected' : '' }}>Auditor</option>
-
-            </select>
-
+            <div class="d-flex gap-3 align-items-center" style="height: 48px;">
+                @php
+                    $current_jabatans = explode(', ', $auditor->jabatan ?? '');
+                @endphp
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="jabatan[]" value="Lead Auditor" id="jabatan_la" {{ in_array('Lead Auditor', $current_jabatans) ? 'checked' : '' }}>
+                    <label class="form-check-label fw-medium text-dark" for="jabatan_la" style="font-size: 14px;">Lead Auditor</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="jabatan[]" value="Auditor" id="jabatan_auditor" {{ in_array('Auditor', $current_jabatans) ? 'checked' : '' }}>
+                    <label class="form-check-label fw-medium text-dark" for="jabatan_auditor" style="font-size: 14px;">Auditor</label>
+                </div>
+            </div>
         </div>
 
         <!-- Posisi -->
@@ -421,11 +424,9 @@ color:#777;
             <select name="posisi" class="form-select" required>
 
                 <option value="" disabled {{ empty($auditor) ? 'selected' : '' }}>Pilih Posisi</option>
-                <option value="Fungsional" {{ (!empty($auditor) && $auditor->posisi == 'Fungsional') ? 'selected' : '' }}>Fungsional</option>
-                <option value="AMI" {{ (!empty($auditor) && $auditor->posisi == 'AMI') ? 'selected' : '' }}>AMI</option>
-                <option value="Non AMI" {{ (!empty($auditor) && $auditor->posisi == 'Non AMI') ? 'selected' : '' }}>Non AMI</option>
+                <option value="AMMI" {{ (!empty($auditor) && $auditor->posisi == 'AMMI') ? 'selected' : '' }}>AMMI</option>
+                <option value="Non AMMI" {{ (!empty($auditor) && $auditor->posisi == 'Non AMMI') ? 'selected' : '' }}>Non AMMI</option>
                 <option value="Subkon" {{ (!empty($auditor) && $auditor->posisi == 'Subkon') ? 'selected' : '' }}>Subkon</option>
-                <option value="Non Subkon" {{ (!empty($auditor) && $auditor->posisi == 'Non Subkon') ? 'selected' : '' }}>Non Subkon</option>
 
             </select>
 
