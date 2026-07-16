@@ -228,7 +228,7 @@
             <li>
                 <a href="/kepegawaian/lembaga">
                     <i class="fas fa-landmark"></i>
-                    Kelola Jenis Audit
+                    Kelola Lembaga
                 </a>
             </li>
             <li>

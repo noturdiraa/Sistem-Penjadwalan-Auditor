@@ -220,22 +220,22 @@
 
         <div class="main">
             <div class="page-header">
-                <h2>Edit Jenis Audit</h2>
-                <p>Perbarui nama data jenis audit sertifikasi resmi pada BSPJI Palembang.</p>
+                <h2>Edit Lembaga</h2>
+                <p>Perbarui nama data lembaga sertifikasi resmi pada BSPJI Palembang.</p>
             </div>
 
             <div class="row">
                 <div class="col-lg-6">
                     <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
                         <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
-                            <i class="fas fa-pen-to-square me-2"></i>Edit Nama Jenis Audit
+                            <i class="fas fa-pen-to-square me-2"></i>Edit Nama Lembaga
                         </h5>
                         <form action="{{ route('kepegawaian.lembaga.update', $lembaga->id_lembaga) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="mb-4">
-                                <label class="form-label fw-semibold" style="font-size: 14px;">Nama Jenis Audit</label>
-                                <input type="text" class="form-control" name="nama_lembaga" value="{{ $lembaga->nama_lembaga }}" placeholder="Masukkan nama jenis audit" required>
+                                <label class="form-label fw-semibold" style="font-size: 14px;">Nama Lembaga</label>
+                                <input type="text" class="form-control" name="nama_lembaga" value="{{ $lembaga->nama_lembaga }}" placeholder="Masukkan nama lembaga" required>
                             </div>
                             
                             <div class="d-flex gap-2">

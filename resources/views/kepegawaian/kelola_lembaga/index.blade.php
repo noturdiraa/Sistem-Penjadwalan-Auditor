@@ -194,7 +194,7 @@
             <li>
                 <a href="/kepegawaian/lembaga" class="active">
                     <i class="fas fa-landmark"></i>
-                    Kelola Jenis Audit
+                    Kelola Lembaga
                 </a>
             </li>
             <li>
@@ -236,8 +236,8 @@
 
         <div class="main">
             <div class="page-header">
-                <h2>Kelola Jenis Audit</h2>
-                <p>Manajemen data jenis audit sertifikasi resmi pada BSPJI Palembang.</p>
+                <h2>Kelola Lembaga</h2>
+                <p>Manajemen data lembaga sertifikasi resmi pada BSPJI Palembang.</p>
             </div>
 
             @if(session('success'))
@@ -248,36 +248,36 @@
             @endif
 
             <div class="row">
-                <!-- Form Tambah Jenis Audit -->
+                <!-- Form Tambah Lembaga -->
                 <div class="col-lg-5 mb-4">
                     <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
                         <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
-                            <i class="fas fa-plus-circle me-2"></i>Tambah Jenis Audit
+                            <i class="fas fa-plus-circle me-2"></i>Tambah Lembaga
                         </h5>
                         <form action="{{ route('kepegawaian.lembaga.store') }}" method="POST">
                             @csrf
                             <div class="mb-4">
-                                <label class="form-label fw-semibold" style="font-size: 14px;">Nama Jenis Audit</label>
-                                <input type="text" class="form-control" name="nama_lembaga" placeholder="Masukkan nama jenis audit (contoh: LSPRO)" required>
+                                <label class="form-label fw-semibold" style="font-size: 14px;">Nama Lembaga</label>
+                                <input type="text" class="form-control" name="nama_lembaga" placeholder="Masukkan nama lembaga (contoh: LSPRO)" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; height: 48px; font-weight: 600;">
-                                <i class="fas fa-floppy-disk me-1"></i> Simpan Jenis Audit
+                                <i class="fas fa-floppy-disk me-1"></i> Simpan Lembaga
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <!-- Daftar Jenis Audit -->
+                <!-- Daftar Lembaga -->
                 <div class="col-lg-7 mb-4">
                     <div class="card p-4 border-0 shadow-sm rounded-4 bg-white" style="min-height: 250px;">
                         <h5 class="fw-bold mb-3 text-dark" style="font-size: 16px;">
-                            <i class="fas fa-landmark me-2"></i>Daftar Jenis Audit
+                            <i class="fas fa-landmark me-2"></i>Daftar Lembaga
                         </h5>
                         <div class="table-responsive">
                             <table class="table align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Nama Jenis Audit</th>
+                                        <th>Nama Lembaga</th>
                                         <th width="120" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -290,7 +290,7 @@
                                                     <a href="{{ route('kepegawaian.lembaga.edit', $lembaga->id_lembaga) }}" class="btn btn-outline-warning btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
                                                         <i class="fas fa-pen-to-square" style="font-size: 13px;"></i>
                                                     </a>
-                                                    <form action="{{ route('kepegawaian.lembaga.destroy', $lembaga->id_lembaga) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jenis audit ini?');" style="display: inline;">
+                                                    <form action="{{ route('kepegawaian.lembaga.destroy', $lembaga->id_lembaga) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus lembaga ini?');" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
@@ -304,7 +304,7 @@
                                         <tr>
                                             <td colspan="2" class="text-center py-5 text-secondary" style="font-size: 14px;">
                                                 <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                                                <span>Belum ada data jenis audit.</span>
+                                                <span>Belum ada data lembaga.</span>
                                             </td>
                                         </tr>
                                     @endforelse

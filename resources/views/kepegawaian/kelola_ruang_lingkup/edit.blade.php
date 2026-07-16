@@ -179,7 +179,7 @@
             <li>
                 <a href="/kepegawaian/lembaga">
                     <i class="fas fa-landmark"></i>
-                    Kelola Jenis Audit
+                    Kelola Lembaga
                 </a>
             </li>
             <li>
@@ -236,9 +236,9 @@
                             @method('PUT')
                             
                             <div class="mb-3">
-                                <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Jenis Audit</label>
+                                <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Lembaga</label>
                                 <select class="form-select" name="id_lembaga" required>
-                                    <option value="" disabled>Pilih Jenis Audit...</option>
+                                    <option value="" disabled>Pilih Lembaga...</option>
                                     @foreach($lembagas as $lembaga)
                                         <option value="{{ $lembaga->id_lembaga }}" {{ $ruangLingkup->id_lembaga == $lembaga->id_lembaga ? 'selected' : '' }}>
                                             {{ $lembaga->nama_lembaga }}

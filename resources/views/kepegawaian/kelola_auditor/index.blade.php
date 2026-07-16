@@ -471,7 +471,7 @@ color:#EF4444;
         <li>
             <a href="/kepegawaian/lembaga">
                 <i class="fas fa-landmark"></i>
-                Kelola Jenis Audit
+                Kelola Lembaga
             </a>
         </li>
         <li>
@@ -566,16 +566,11 @@ placeholder="Cari Nama Auditor atau NIP">
 
 <select class="form-select">
 
-<option selected>Kompetensi</option>
+<option value="" disabled selected>Kompetensi</option>
 
-<option>LSPRO</option>
-<option>LSSM</option>
-<option>LSSML</option>
-<option>LSIH</option>
-<option>LSSMKP</option>
-<option>LPH</option>
-<option>LSHACCP</option>
-<option>LSSMK3</option>
+@foreach($lembagas as $lembaga)
+    <option value="{{ $lembaga->id_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
+@endforeach
 </select>
 
 </div>
@@ -584,11 +579,10 @@ placeholder="Cari Nama Auditor atau NIP">
 
 <select class="form-select">
 
-<option selected>Status</option>
+<option value="" disabled selected>Status</option>
 
-<option>Aktif</option>
-
-<option>Nonaktif</option>
+<option value="Aktif">Aktif</option>
+<option value="Nonaktif">Nonaktif</option>
 
 </select>
 

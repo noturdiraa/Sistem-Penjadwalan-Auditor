@@ -364,7 +364,7 @@
         <li>
             <a href="/kepegawaian/lembaga">
                 <i class="fas fa-landmark"></i>
-                Kelola Jenis Audit
+                Kelola Lembaga
             </a>
         </li>
         <li>
@@ -435,7 +435,7 @@
 
 <div class="row mt-4">
 
-    <div class="col-lg-3 col-md-6 mb-4">
+    <div class="col-lg-4 col-md-6 mb-4">
 
         <div class="card shadow border-0 rounded-4">
 
@@ -463,7 +463,7 @@
 
     </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
+    <div class="col-lg-4 col-md-6 mb-4">
 
         <div class="card shadow border-0 rounded-4">
 
@@ -491,7 +491,7 @@
 
     </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
+    <div class="col-lg-4 col-md-6 mb-4">
 
         <div class="card shadow border-0 rounded-4">
 
@@ -510,34 +510,6 @@
                         Total Lembaga
                     </h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ $totalLembaga }}</h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-lg-3 col-md-6 mb-4">
-
-        <div class="card shadow border-0 rounded-4">
-
-            <div class="card-body d-flex align-items-center">
-
-                <div class="bg-danger text-white rounded-circle d-flex justify-content-center align-items-center"
-                    style="width:70px;height:70px;">
-
-                    <i class="fas fa-award fa-2x"></i>
-
-                </div>
-
-                <div class="ms-3">
-
-                    <h6 class="text-muted mb-1">
-                        Jenis Kompetensi
-                    </h6>
-                    <h3 class="fw-bold mb-0 text-dark">{{ $totalRuangLingkup }}</h3>
 
                 </div>
 

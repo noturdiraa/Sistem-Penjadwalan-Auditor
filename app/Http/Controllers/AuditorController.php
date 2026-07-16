@@ -13,8 +13,9 @@ class AuditorController extends Controller
     public function index()
     {
         $auditors = Auditor::all();
+        $lembagas = \App\Models\Lembaga::all();
 
-        return view('kepegawaian.kelola_auditor.index', compact('auditors'));
+        return view('kepegawaian.kelola_auditor.index', compact('auditors', 'lembagas'));
     }
 
     /**

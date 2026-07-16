@@ -195,7 +195,7 @@
             <li>
                 <a href="/kepegawaian/lembaga">
                     <i class="fas fa-landmark"></i>
-                    Kelola Jenis Audit
+                    Kelola Lembaga
                 </a>
             </li>
             <li>
@@ -258,13 +258,13 @@
                         <form action="{{ route('kepegawaian.ruanglinkup.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Jenis Audit</label>
+                                <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Lembaga</label>
                                 <select class="form-select" name="id_lembaga" id="selectLembaga" required>
-                                    <option value="" disabled selected>Pilih Jenis Audit...</option>
+                                    <option value="" disabled selected>Pilih Lembaga...</option>
                                     @forelse($lembagas as $lembaga)
                                         <option value="{{ $lembaga->id_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
                                     @empty
-                                        <option value="" disabled>Belum ada data jenis audit di database</option>
+                                        <option value="" disabled>Belum ada data lembaga di database</option>
                                     @endforelse
                                 </select>
                             </div>
@@ -290,7 +290,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nama Ruang Lingkup</th>
-                                        <th>Jenis Audit</th>
+                                        <th>Lembaga</th>
                                         <th width="120" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
