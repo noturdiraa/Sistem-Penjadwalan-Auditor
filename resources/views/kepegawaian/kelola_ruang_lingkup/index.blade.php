@@ -167,6 +167,27 @@
             text-align: center;
             color: #777;
         }
+    
+        .search-box input, .search-box .form-control {
+            border-radius: 30px !important;
+            height: 45px !important;
+            padding: 10px 18px !important;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px !important;
+        }
+        .profile img {
+            width: 45px !important;
+            height: 45px !important;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile span {
+            font-weight: 500 !important;
+            color: #333;
+        }
     </style>
 </head>
 
