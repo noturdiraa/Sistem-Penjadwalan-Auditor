@@ -56,6 +56,13 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/kepegawaian/ruang-lingkup/{id}', [App\Http\Controllers\RuangLingkupController::class, 'update'])->name('kepegawaian.ruanglinkup.update');
         Route::delete('/kepegawaian/ruang-lingkup/{id}', [App\Http\Controllers\RuangLingkupController::class, 'destroy'])->name('kepegawaian.ruanglinkup.destroy');
 
+        Route::get('/kepegawaian/riwayat-auditor', [App\Http\Controllers\RiwayatAuditorController::class, 'index'])->name('kepegawaian.riwayatauditor.index');
+        Route::get('/kepegawaian/riwayat-auditor/create', [App\Http\Controllers\RiwayatAuditorController::class, 'create'])->name('kepegawaian.riwayatauditor.create');
+        Route::post('/kepegawaian/riwayat-auditor', [App\Http\Controllers\RiwayatAuditorController::class, 'store'])->name('kepegawaian.riwayatauditor.store');
+        Route::get('/kepegawaian/riwayat-auditor/{id}/edit', [App\Http\Controllers\RiwayatAuditorController::class, 'edit'])->name('kepegawaian.riwayatauditor.edit');
+        Route::put('/kepegawaian/riwayat-auditor/{id}', [App\Http\Controllers\RiwayatAuditorController::class, 'update'])->name('kepegawaian.riwayatauditor.update');
+        Route::delete('/kepegawaian/riwayat-auditor/{id}', [App\Http\Controllers\RiwayatAuditorController::class, 'destroy'])->name('kepegawaian.riwayatauditor.destroy');
+
         Route::view('/kepegawaian/profil', 'kepegawaian.profil.index')->name('kepegawaian.profil.index');
     });
 

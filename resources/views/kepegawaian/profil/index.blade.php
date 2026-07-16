@@ -237,6 +237,12 @@
                     Kelola Ruang Lingkup
                 </a>
             </li>
+        <li>
+            <a href="/kepegawaian/riwayat-auditor">
+                <i class="fas fa-clock-rotate-left"></i>
+                Riwayat Auditor
+            </a>
+        </li>
             <li>
                 <a href="/kepegawaian/profil" class="active">
                     <i class="fas fa-user"></i>
