@@ -391,36 +391,47 @@
                         <thead>
                             <tr>
                                 <th>Nama Perusahaan</th>
-                                <th>Status Jasa</th>
-                                <th>Ruang Lingkup</th>
-                                <th>Bidang Usaha</th>
-                                <th>Skala</th>
-                                <th>Telepon / HP</th>
                                 <th>Email</th>
-                                <th>Alamat</th>
-                                <th width="120">Aksi</th>
+                                <th>Telepon / HP</th>
+                                <th>Status</th>
+                                <th width="150">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($perusahaans as $p)
                                 <tr>
                                     <td><strong>{{ $p->nama_perusahaan }}</strong></td>
-                                    <td>{{ $p->status_jasa ?? '-' }}</td>
-                                    <td>{{ $p->ruang_lingkup ?? '-' }}</td>
-                                    <td>{{ $p->bidang_usaha ?? '-' }}</td>
-                                    <td>{{ $p->skala ?? '-' }}</td>
-                                    <td>{{ $p->no_telepon ?? '-' }}</td>
                                     <td>{{ $p->email ?? '-' }}</td>
-                                    <td>{{ $p->alamat }}</td>
+                                    <td>{{ $p->no_telepon ?? '-' }}</td>
+                                    <td>
+                                        <span class="badge {{ $p->status === 'Aktif' ? 'bg-success' : 'bg-secondary' }}" style="padding: 8px 12px; font-size: 13px; color: white;">
+                                            {{ $p->status }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('pji.perusahaan.edit', $p->id_perusahaan) }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                            <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center btn-detail" 
+                                                    style="border-radius: 8px; padding: 6px 10px;"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#perusahaanDetailModal"
+                                                    data-nama="{{ $p->nama_perusahaan }}"
+                                                    data-status-jasa="{{ $p->status_jasa ?? '-' }}"
+                                                    data-ruang-lingkup="{{ $p->ruang_lingkup ?? '-' }}"
+                                                    data-bidang-usaha="{{ $p->bidang_usaha ?? '-' }}"
+                                                    data-skala="{{ $p->skala ?? '-' }}"
+                                                    data-telepon="{{ $p->no_telepon ?? '-' }}"
+                                                    data-email="{{ $p->email ?? '-' }}"
+                                                    data-alamat="{{ $p->alamat }}"
+                                                    data-status-perusahaan="{{ $p->status }}">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <a href="{{ route('pji.perusahaan.edit', $p->id_perusahaan) }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center justify-content-center" style="border-radius: 8px; padding: 6px 10px;">
                                                 <i class="fas fa-pen"></i>
                                             </a>
                                             <form action="{{ route('pji.perusahaan.destroy', $p->id_perusahaan) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus perusahaan ini?');" style="display: inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center justify-content-center" style="border-radius: 8px; padding: 6px 10px;">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -429,11 +440,75 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
+                                    <td colspan="5" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DETAIL MODAL ================= -->
+        <div class="modal fade" id="perusahaanDetailModal" tabindex="-1" aria-labelledby="perusahaanDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <div class="modal-header" style="border-bottom: 1px solid #F3F4F6; padding: 20px 24px;">
+                        <h5 class="modal-title fw-bold text-dark" id="perusahaanDetailModalLabel"><i class="fas fa-building text-primary me-2"></i>Detail Informasi Perusahaan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="transition: none;"></button>
+                    </div>
+                    <div class="modal-body" style="padding: 24px; font-size: 14px;">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6 border-end">
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">NAMA PERUSAHAAN</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalNamaPerusahaan">-</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">STATUS JASA</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalStatusJasa">-</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">RUANG LINGKUP</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalRuangLingkup">-</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">BIDANG USAHA</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalBidangUsaha">-</p>
+                                </div>
+                            </div>
+                            <!-- Right Column -->
+                            <div class="col-md-6 ps-md-4">
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">SKALA</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalSkala">-</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">TELEPON / HP</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalTelepon">-</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">EMAIL</span>
+                                    <p class="text-dark fw-bold mb-0" id="modalEmail">-</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-semibold">STATUS PERUSAHAAN</span>
+                                    <div>
+                                        <span class="badge bg-success" id="modalStatusPerusahaan">Aktif</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Full Width Address -->
+                            <div class="col-12 border-top pt-3 mt-3">
+                                <span class="text-muted small fw-semibold">ALAMAT LENGKAP</span>
+                                <p class="text-dark mb-0 bg-light p-3 rounded-3" id="modalAlamat" style="min-height: 60px;">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
+                        <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" style="height: 45px; border-radius: 8px; font-weight: 600; background-color: #F3F4F6; color: #4B5563; border: none; transition: none;">Tutup</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -469,6 +544,37 @@
                     "" :
                     "none";
             });
+        });
+
+        // ================= DETAIL MODAL POPULATION =================
+        const detailModal = document.getElementById('perusahaanDetailModal');
+        detailModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            
+            // Get data attributes
+            const nama = button.getAttribute('data-nama');
+            const statusJasa = button.getAttribute('data-status-jasa');
+            const ruangLingkup = button.getAttribute('data-ruang-lingkup');
+            const bidangUsaha = button.getAttribute('data-bidang-usaha');
+            const skala = button.getAttribute('data-skala');
+            const telepon = button.getAttribute('data-telepon');
+            const email = button.getAttribute('data-email');
+            const alamat = button.getAttribute('data-alamat');
+            const statusPerusahaan = button.getAttribute('data-status-perusahaan');
+
+            // Populate elements
+            document.getElementById('modalNamaPerusahaan').innerText = nama;
+            document.getElementById('modalStatusJasa').innerText = statusJasa;
+            document.getElementById('modalRuangLingkup').innerText = ruangLingkup;
+            document.getElementById('modalBidangUsaha').innerText = bidangUsaha;
+            document.getElementById('modalSkala').innerText = skala;
+            document.getElementById('modalTelepon').innerText = telepon;
+            document.getElementById('modalEmail').innerText = email;
+            document.getElementById('modalAlamat').innerText = alamat;
+
+            const statusEl = document.getElementById('modalStatusPerusahaan');
+            statusEl.innerText = statusPerusahaan;
+            statusEl.className = 'badge ' + (statusPerusahaan === 'Aktif' ? 'bg-success' : 'bg-secondary');
         });
     </script>
 </body>
