@@ -310,21 +310,42 @@
                 <div class="form-card">
                     <h2>Tambah Perusahaan</h2>
 
-                    <form>
+                    <form action="{{ route('pji.perusahaan.store') }}" method="POST">
+                        @csrf
                         <div class="row">
                             <div class="col-12 mb-4">
                                 <label class="form-label fw-semibold">Nama Perusahaan</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama perusahaan">
+                                <input type="text" name="nama_perusahaan" class="form-control @error('nama_perusahaan') is-invalid @enderror" value="{{ old('nama_perusahaan') }}" placeholder="Masukkan nama perusahaan" required>
+                                @error('nama_perusahaan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 mb-4">
                                 <label class="form-label fw-semibold">Alamat</label>
-                                <textarea class="form-control" placeholder="Masukkan alamat lengkap"></textarea>
+                                <textarea name="alamat" class="form-control @error('alamat') is-invalid @enderror" placeholder="Masukkan alamat lengkap" required>{{ old('alamat') }}</textarea>
+                                @error('alamat')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 mb-4">
                                 <label class="form-label fw-semibold">Kontak</label>
-                                <input type="text" class="form-control" placeholder="No. Telepon">
+                                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon') }}" placeholder="No. Telepon">
+                                @error('no_telepon')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-semibold">Status Perusahaan</label>
+                                <select name="status" class="form-select @error('status') is-invalid @enderror" required style="height: 48px; border-radius: 8px;">
+                                    <option value="Aktif" {{ old('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="Tidak Aktif" {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 

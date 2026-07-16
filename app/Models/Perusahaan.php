@@ -15,6 +15,7 @@ class Perusahaan extends Model
         'alamat',
         'provinsi',
         'no_telepon',
+        'status',
     ];
 
     public $timestamps = true;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Perusahaan;
 use Illuminate\Http\Request;
 
 class PerusahaanController extends Controller
@@ -11,7 +12,8 @@ class PerusahaanController extends Controller
      */
     public function index()
     {
-        //
+        $perusahaans = Perusahaan::all();
+        return view('pji.kelola_perusahaan.index', compact('perusahaans'));
     }
 
     /**
@@ -19,7 +21,7 @@ class PerusahaanController extends Controller
      */
     public function create()
     {
-        //
+        return view('pji.kelola_perusahaan.create');
     }
 
     /**
@@ -27,15 +29,17 @@ class PerusahaanController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'nama_perusahaan' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'no_telepon' => 'nullable|string|max:50',
+            'status' => 'required|in:Aktif,Tidak Aktif',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        Perusahaan::create($request->all());
+
+        return redirect()->route('pji.perusahaan.index')
+            ->with('success', 'Perusahaan berhasil ditambahkan.');
     }
 
     /**
@@ -43,7 +47,8 @@ class PerusahaanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $perusahaan = Perusahaan::findOrFail($id);
+        return view('pji.kelola_perusahaan.edit', compact('perusahaan'));
     }
 
     /**
@@ -51,7 +56,19 @@ class PerusahaanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $perusahaan = Perusahaan::findOrFail($id);
+
+        $request->validate([
+            'nama_perusahaan' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'no_telepon' => 'nullable|string|max:50',
+            'status' => 'required|in:Aktif,Tidak Aktif',
+        ]);
+
+        $perusahaan->update($request->all());
+
+        return redirect()->route('pji.perusahaan.index')
+            ->with('success', 'Perusahaan berhasil diperbarui.');
     }
 
     /**
@@ -59,6 +76,10 @@ class PerusahaanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $perusahaan = Perusahaan::findOrFail($id);
+        $perusahaan->delete();
+
+        return redirect()->route('pji.perusahaan.index')
+            ->with('success', 'Perusahaan berhasil dihapus.');
     }
 }

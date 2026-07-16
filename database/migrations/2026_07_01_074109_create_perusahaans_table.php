@@ -14,6 +14,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('provinsi')->nullable();
             $table->string('no_telepon')->nullable();
+            $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
 
             $table->timestamps();
         });

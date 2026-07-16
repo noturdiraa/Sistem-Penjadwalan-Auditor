@@ -371,6 +371,13 @@
                 </a>
             </div>
 
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="fas fa-circle-check me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <!-- ================= TABLE CARD ================= -->
             <div class="table-card">
                 <!-- ================= SEARCH ================= -->
@@ -391,7 +398,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Data perusahaan dari database akan di-load di sini secara dinamis -->
+                            @forelse($perusahaans as $p)
+                                <tr>
+                                    <td><strong>{{ $p->nama_perusahaan }}</strong></td>
+                                    <td>{{ $p->alamat }}</td>
+                                    <td>{{ $p->no_telepon ?? '-' }}</td>
+                                    <td>
+                                        <span class="badge {{ $p->status === 'Aktif' ? 'bg-success' : 'bg-secondary' }}" style="padding: 8px 12px; font-size: 13px; color: white;">
+                                            {{ $p->status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ route('pji.perusahaan.edit', $p->id_perusahaan) }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <form action="{{ route('pji.perusahaan.destroy', $p->id_perusahaan) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus perusahaan ini?');" style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -420,10 +456,10 @@
 
         // ================= SEARCH TABLE =================
         const search = document.querySelector(".table-search-input");
-        const rows = document.querySelectorAll("tbody tr");
 
         search.addEventListener("keyup", function () {
             let value = this.value.toLowerCase();
+            const rows = document.querySelectorAll("tbody tr");
             rows.forEach(row => {
                 row.style.display = row.innerText.toLowerCase().includes(value) ?
                     "" :

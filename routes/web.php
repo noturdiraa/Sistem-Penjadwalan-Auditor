@@ -70,9 +70,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:pji'])->group(function () {
         Route::view('/dashboard-pji', 'dashboard.pji')->name('dashboard.pji');
 
-        Route::view('/pji/perusahaan', 'pji.kelola_perusahaan.index')->name('pji.perusahaan.index');
-        Route::view('/pji/perusahaan/create', 'pji.kelola_perusahaan.create')->name('pji.perusahaan.create');
-        Route::view('/pji/perusahaan/edit', 'pji.kelola_perusahaan.edit')->name('pji.perusahaan.edit');
+        Route::get('/pji/perusahaan', [App\Http\Controllers\PerusahaanController::class, 'index'])->name('pji.perusahaan.index');
+        Route::get('/pji/perusahaan/create', [App\Http\Controllers\PerusahaanController::class, 'create'])->name('pji.perusahaan.create');
+        Route::post('/pji/perusahaan', [App\Http\Controllers\PerusahaanController::class, 'store'])->name('pji.perusahaan.store');
+        Route::get('/pji/perusahaan/{id}/edit', [App\Http\Controllers\PerusahaanController::class, 'edit'])->name('pji.perusahaan.edit');
+        Route::put('/pji/perusahaan/{id}', [App\Http\Controllers\PerusahaanController::class, 'update'])->name('pji.perusahaan.update');
+        Route::delete('/pji/perusahaan/{id}', [App\Http\Controllers\PerusahaanController::class, 'destroy'])->name('pji.perusahaan.destroy');
 
         Route::view('/pji/audit', 'pji.kelola_audit.index')->name('pji.audit.index');
         Route::view('/pji/audit/create', 'pji.kelola_audit.create')->name('pji.audit.create');
