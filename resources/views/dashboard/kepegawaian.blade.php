@@ -47,7 +47,7 @@
 
             top:0;
 
-            width:270px;
+            width: 290px;
 
             height:100vh;
 
@@ -106,14 +106,15 @@
         }
 
         .menu li a{
+            white-space: nowrap;
 
             display:flex;
 
             align-items:center;
 
-            gap:15px;
+            gap: 12px;
 
-            padding:14px 18px;
+            padding: 12px 14px;
 
             border-radius:12px;
 
@@ -136,7 +137,7 @@
 
         .content{
 
-            margin-left:270px;
+            margin-left: 290px;
 
             min-height:100vh;
 
@@ -388,7 +389,7 @@
         <li>
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1;">
+                <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; font-size: 15px; line-height: 1.1;">
                     <i class="fas fa-right-from-bracket"></i>
                     Logout
                 </button>
