@@ -15,7 +15,12 @@ class RiwayatAuditorController extends Controller
      */
     public function index()
     {
-        $riwayats = RiwayatAuditor::with(['auditor', 'audit.perusahaan', 'jadwalAudit.lokasi'])->get();
+        $riwayats = RiwayatAuditor::with([
+            'auditor', 
+            'audit.perusahaan', 
+            'audit.ruangLingkup.lembaga', 
+            'jadwalAudit.timAudits.auditor'
+        ])->get();
 
         return view('kepegawaian.data_riwayat_auditor.index', compact('riwayats'));
     }

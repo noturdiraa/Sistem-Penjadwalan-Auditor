@@ -426,10 +426,9 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 25%">Auditor</th>
-                                <th style="width: 25%">Audit Perusahaan</th>
+                                <th style="width: 35%">Auditor</th>
+                                <th style="width: 35%">Audit Perusahaan</th>
                                 <th style="width: 15%">Peran</th>
-                                <th style="width: 15%">Periode</th>
                                 <th style="width: 10%">Status</th>
                                 <th style="width: 10%" class="text-center">Aksi</th>
                             </tr>
@@ -445,25 +444,14 @@
                                             </div>
                                             <div>
                                                 <strong>{{ $riwayat->auditor->nama_auditor ?? '-' }}</strong>
-                                                <br>
-                                                <small class="text-muted">NIP: {{ $riwayat->auditor->nip ?? '-' }}</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <strong>{{ $riwayat->audit->perusahaan->nama_perusahaan ?? 'Perusahaan' }}</strong>
-                                        <br>
-                                        <small class="text-secondary">Audit: {{ $riwayat->audit->jenis_audit ?? '-' }}</small>
                                     </td>
                                     <td>
                                         <span class="badge bg-light-blue">{{ $riwayat->peran_auditor }}</span>
-                                    </td>
-                                    <td>
-                                        <small class="fw-semibold">{{ \Carbon\Carbon::parse($riwayat->tanggal_mulai)->format('d M Y') }}</small>
-                                        @if($riwayat->tanggal_selesai)
-                                            <br>
-                                            <small class="text-muted">s.d {{ \Carbon\Carbon::parse($riwayat->tanggal_selesai)->format('d M Y') }}</small>
-                                        @endif
                                     </td>
                                     <td>
                                         <span class="badge-status {{ $riwayat->status_penugasan == 'Selesai' ? 'bg-light-green' : ($riwayat->status_penugasan == 'Dibatalkan' ? 'bg-light-red' : 'bg-light-blue') }}">
@@ -471,6 +459,33 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
+                                        <button class="btn-action btn-detail" 
+                                                style="border: none; background: none; padding: 0;"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#detailModal"
+                                                data-auditor="{{ $riwayat->auditor->nama_auditor ?? '-' }}"
+                                                data-nip="{{ $riwayat->auditor->nip ?? '-' }}"
+                                                data-perusahaan="{{ $riwayat->audit->perusahaan->nama_perusahaan ?? '-' }}"
+                                                data-lembaga="{{ $riwayat->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
+                                                data-jenis-audit="{{ $riwayat->audit->jenis_audit ?? '-' }}"
+                                                data-peran="{{ $riwayat->peran_auditor }}"
+                                                data-tanggal-mulai="{{ \Carbon\Carbon::parse($riwayat->tanggal_mulai)->format('d M Y') }}"
+                                                data-tanggal-selesai="{{ $riwayat->tanggal_selesai ? \Carbon\Carbon::parse($riwayat->tanggal_selesai)->format('d M Y') : '-' }}"
+                                                data-status="{{ $riwayat->status_penugasan }}"
+                                                data-keterangan="{{ $riwayat->keterangan ?? '-' }}"
+                                                data-tim="@php
+                                                    $teamNames = [];
+                                                    if ($riwayat->jadwalAudit) {
+                                                        foreach ($riwayat->jadwalAudit->timAudits as $t) {
+                                                            if ($t->auditor) {
+                                                                $teamNames[] = $t->auditor->nama_auditor . ' (NIP: ' . $t->auditor->nip . ')';
+                                                            }
+                                                        }
+                                                    }
+                                                    echo count($teamNames) > 0 ? implode(' | ', $teamNames) : 'Tidak ada anggota tim lain';
+                                                @endphp">
+                                            <i class="fas fa-eye text-blue" title="Detail"></i>
+                                        </button>
                                         <a href="{{ route('kepegawaian.riwayatauditor.edit', $riwayat->id_riwayat) }}" class="btn-action">
                                             <i class="fas fa-pen text-orange" title="Edit"></i>
                                         </a>
@@ -485,7 +500,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-5 text-muted">
+                                    <td colspan="6" class="text-center py-5 text-muted">
                                         <div class="mb-3">
                                             <i class="fas fa-clock-rotate-left fa-3x text-secondary opacity-50"></i>
                                         </div>
@@ -496,6 +511,60 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DETAIL MODAL ================= -->
+        <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <div class="modal-header" style="border-bottom: 1px solid #F3F4F6; padding: 20px 24px;">
+                        <h5 class="modal-title fw-bold text-dark" id="detailModalLabel"><i class="fas fa-circle-info text-blue me-2"></i>Detail Riwayat Penugasan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="transition: none;"></button>
+                    </div>
+                    <div class="modal-body" style="padding: 24px; font-size: 14px;">
+                        <div class="row">
+                            <!-- Left Side Info -->
+                            <div class="col-md-6 border-end">
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-user-tie me-2"></i>DATA AUDITOR</h6>
+                                    <div class="mb-2">Nama: <strong class="text-dark" id="modalAuditorName">-</strong></div>
+                                    <div class="mb-2">NIP: <strong class="text-dark" id="modalAuditorNip">-</strong></div>
+                                    <div class="mb-2">Peran: <span class="badge bg-light-blue" id="modalAuditorPeran">-</span></div>
+                                </div>
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-building me-2"></i>DETAIL AUDIT & PERUSAHAAN</h6>
+                                    <div class="mb-2">Perusahaan: <strong class="text-dark" id="modalPerusahaanName">-</strong></div>
+                                    <div class="mb-2">Lembaga: <strong class="text-dark" id="modalLembagaName">-</strong></div>
+                                    <div class="mb-2">Jenis Audit: <strong class="text-dark" id="modalJenisAudit">-</strong></div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side Info -->
+                            <div class="col-md-6 ps-md-4">
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-calendar-days me-2"></i>TANGGAL & STATUS</h6>
+                                    <div class="mb-2">Tanggal Mulai: <strong class="text-dark" id="modalTanggalMulai">-</strong></div>
+                                    <div class="mb-2">Tanggal Selesai: <strong class="text-dark" id="modalTanggalSelesai">-</strong></div>
+                                    <div class="mb-2">Status Penugasan: <span class="badge-status bg-light-green" id="modalStatus">-</span></div>
+                                </div>
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-users-gear me-2"></i>TIM AUDIT LAINNYA</h6>
+                                    <div id="modalTimAudit" class="text-dark fw-semibold" style="line-height: 1.6;">-</div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Keterangan -->
+                            <div class="col-12 border-top pt-3 mt-2">
+                                <h6 class="fw-bold text-secondary mb-2"><i class="fas fa-comments me-2"></i>KETERANGAN / CATATAN</h6>
+                                <p class="text-dark mb-0 bg-light p-3 rounded-3" id="modalKeterangan" style="min-height: 60px;">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
+                        <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" style="height: 45px; border-radius: 8px; font-weight: 600; background-color: #F3F4F6; color: #4B5563; border: none; transition: none;">Tutup</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -521,6 +590,58 @@
                     row.style.display = 'none';
                 }
             });
+        });
+
+        // Handle detail modal popup
+        const detailModal = document.getElementById('detailModal');
+        detailModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            
+            // Get data attributes
+            const auditor = button.getAttribute('data-auditor');
+            const nip = button.getAttribute('data-nip');
+            const perusahaan = button.getAttribute('data-perusahaan');
+            const lembaga = button.getAttribute('data-lembaga');
+            const jenisAudit = button.getAttribute('data-jenis-audit');
+            const peran = button.getAttribute('data-peran');
+            const tanggalMulai = button.getAttribute('data-tanggal-mulai');
+            const tanggalSelesai = button.getAttribute('data-tanggal-selesai');
+            const status = button.getAttribute('data-status');
+            const keterangan = button.getAttribute('data-keterangan');
+            const tim = button.getAttribute('data-tim');
+
+            // Populate Modal
+            document.getElementById('modalAuditorName').innerText = auditor;
+            document.getElementById('modalAuditorNip').innerText = nip;
+            document.getElementById('modalAuditorPeran').innerText = peran;
+            document.getElementById('modalPerusahaanName').innerText = perusahaan;
+            document.getElementById('modalLembagaName').innerText = lembaga;
+            document.getElementById('modalJenisAudit').innerText = jenisAudit;
+            document.getElementById('modalTanggalMulai').innerText = tanggalMulai;
+            document.getElementById('modalTanggalSelesai').innerText = tanggalSelesai;
+            document.getElementById('modalKeterangan').innerText = keterangan;
+
+            const statusEl = document.getElementById('modalStatus');
+            statusEl.innerText = status;
+            statusEl.className = 'badge-status ' + (status === 'Selesai' ? 'bg-light-green' : 'bg-light-blue');
+
+            // Parse tim list
+            const timEl = document.getElementById('modalTimAudit');
+            timEl.innerHTML = '';
+            const members = tim.split(' | ');
+            if (members.length > 0 && members[0] !== 'Tidak ada anggota tim lain') {
+                const ul = document.createElement('ul');
+                ul.style.paddingLeft = '20px';
+                ul.style.margin = '0';
+                members.forEach(m => {
+                    const li = document.createElement('li');
+                    li.innerText = m;
+                    ul.appendChild(li);
+                });
+                timEl.appendChild(ul);
+            } else {
+                timEl.innerText = 'Tidak ada anggota tim lain';
+            }
         });
     </script>
 </body>
