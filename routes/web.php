@@ -57,7 +57,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/kepegawaian/ruang-lingkup/{id}', [App\Http\Controllers\RuangLingkupController::class, 'destroy'])->name('kepegawaian.ruanglinkup.destroy');
 
         Route::view('/kepegawaian/profil', 'kepegawaian.profil.index')->name('kepegawaian.profil.index');
-        Route::view('/kepegawaian/profil/edit', 'kepegawaian.profil.edit')->name('kepegawaian.profil.edit');
     });
 
     // ================= 2. ROLE: PJI =================
@@ -78,7 +77,6 @@ Route::middleware(['auth'])->group(function () {
         Route::view('/pji/review-katim/review', 'pji.review_katim_pji.review')->name('pji.reviewkatim.review');
 
         Route::view('/pji/profil', 'pji.profil.index')->name('pji.profil.index');
-        Route::view('/pji/profil/edit', 'pji.profil.edit')->name('pji.profil.edit');
     });
 
     // ================= 3. ROLE: OPERASIONAL =================
@@ -95,7 +93,6 @@ Route::middleware(['auth'])->group(function () {
         Route::view('/operasional/riwayat-review', 'operasional.riwayat_review.index')->name('operasional.riwayatreview.index');
         Route::view('/operasional/kalender-audit', 'operasional.kalender_audit.index')->name('operasional.kalender.index');
         Route::view('/operasional/profil', 'operasional.profil.index')->name('operasional.profil.index');
-        Route::view('/operasional/profil/edit', 'operasional.profil.edit')->name('operasional.profil.edit');
     });
 
     // ================= 4. ROLE: KEPALA BALAI =================
@@ -111,7 +108,6 @@ Route::middleware(['auth'])->group(function () {
         Route::view('/kepala-balai/kalender-audit', 'kepalabalai.kalender_audit.index')->name('kepalabalai.kalender.index');
         Route::view('/kepala-balai/grafik-penugasan', 'kepalabalai.grafik_penugasan.index')->name('kepalabalai.grafik.index');
         Route::view('/kepala-balai/profil', 'kepalabalai.profil.index')->name('kepalabalai.profil.index');
-        Route::view('/kepala-balai/profil/edit', 'kepalabalai.profil.edit')->name('kepalabalai.profil.edit');
     });
 
 });

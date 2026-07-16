@@ -321,11 +321,6 @@
                     </div>
                 </div>
 
-                <div class="text-end">
-                    <a href="/operasional/profil/edit" class="btn btn-primary px-4 py-2 fw-semibold" style="border-radius: 10px;">
-                        <i class="far fa-pen-to-square me-1"></i> Edit Profil
-                    </a>
-                </div>
             </div>
         </div>
 

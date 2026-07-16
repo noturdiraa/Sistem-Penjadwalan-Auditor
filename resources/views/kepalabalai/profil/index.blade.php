@@ -290,12 +290,6 @@
                     </div>
                 </div>
 
-                <!-- Edit Profile Button -->
-                <div class="d-flex justify-content-end mt-4">
-                    <a href="/kepala-balai/profil/edit" class="btn btn-primary d-flex align-items-center gap-2" style="border-radius: 10px; padding: 10px 20px; font-weight: 500;">
-                        <i class="fas fa-user-pen"></i> Edit Profil
-                    </a>
-                </div>
             </div>
 
             <div class="footer text-center py-4">

@@ -359,13 +359,8 @@
                         </div>
                     </div>
 
-                    <div class="text-end mt-4">
-                        <a href="/pji/profil/edit" class="btn btn-primary px-4">
-                            <i class="fas fa-user-pen"></i>
-                            Edit Profil
-                        </a>
-                    </div>
                 </div>
+            </div>
             </div>
 
             <div class="footer text-center py-4">

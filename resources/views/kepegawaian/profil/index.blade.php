@@ -296,12 +296,6 @@
                     </div>
                 </div>
 
-                <div class="text-end mt-4">
-                    <a href="/kepegawaian/profil/edit" class="btn btn-primary px-4" style="border-radius: 12px; height: 48px; display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-user-pen"></i>
-                        Edit Profil
-                    </a>
-                </div>
             </div>
         </div>
 

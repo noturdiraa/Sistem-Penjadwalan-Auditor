@@ -468,12 +468,6 @@
 
                     </div>
 
-                    <a href="#" class="text-decoration-none">
-
-                        Lupa Password?
-
-                    </a>
-
                 </div>
 
                 <button
