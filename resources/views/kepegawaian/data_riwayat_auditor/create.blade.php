@@ -63,7 +63,6 @@
         }
 
         .menu li a {
-            white-space: nowrap;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -72,6 +71,7 @@
             text-decoration: none;
             color: white;
             transition: .3s;
+            white-space: nowrap;
         }
 
         .menu li a:hover,
@@ -109,23 +109,47 @@
         .profile {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px !important;
         }
 
         .profile img {
-            width: 42px;
-            height: 42px;
+            width: 45px !important;
+            height: 45px !important;
             border-radius: 50%;
             object-fit: cover;
         }
 
         .profile span {
-            font-weight: 600;
+            font-weight: 500 !important;
             color: #333;
         }
 
         .main {
             padding: 35px;
+        }
+
+        /* HEADER CARD */
+        .header-card {
+            background: linear-gradient(180deg, #ffffff, #fbfdff);
+            border-radius: 12px;
+            padding: 18px 22px;
+            box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-card .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 6px 0;
+        }
+
+        .header-card .subtitle {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
         }
 
         /* FORM BOX */
@@ -156,6 +180,12 @@
         .form-control:focus, .form-select:focus {
             border-color: #2563EB;
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control[readonly] {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            color: #64748b;
         }
 
         textarea.form-control {
@@ -199,27 +229,6 @@
             padding: 25px;
             text-align: center;
             color: #64748b;
-        }
-    
-        .search-box input, .search-box .form-control {
-            border-radius: 30px !important;
-            height: 45px !important;
-            padding: 10px 18px !important;
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 10px !important;
-        }
-        .profile img {
-            width: 45px !important;
-            height: 45px !important;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .profile span {
-            font-weight: 500 !important;
-            color: #333;
         }
     </style>
 </head>
@@ -297,16 +306,21 @@
         </div>
 
         <div class="main">
-            <!-- Header Title -->
-            <div class="mb-4">
-                <h2 class="fw-bold text-dark">Tambah Riwayat Penugasan</h2>
-                <p class="text-secondary mb-0">Silakan lengkapi form di bawah ini untuk menambahkan riwayat penugasan auditor baru.</p>
+            <!-- Header Card (Kotak di tulisan tambah riwayat penugasan) -->
+            <div class="header-card">
+                <div>
+                    <h2 class="title">Tambah Riwayat Penugasan</h2>
+                    <p class="subtitle">Silakan lengkapi form di bawah ini untuk menambahkan riwayat penugasan auditor baru.</p>
+                </div>
             </div>
 
             <!-- Form Box -->
             <div class="form-box">
                 <form action="{{ route('kepegawaian.riwayatauditor.store') }}" method="POST">
                     @csrf
+
+                    <!-- Hidden Input for id_audit -->
+                    <input type="hidden" name="id_audit" id="id_audit_hidden" value="{{ old('id_audit') }}">
 
                     <div class="row">
                         <!-- Auditor -->
@@ -325,29 +339,29 @@
                             @enderror
                         </div>
 
-                        <!-- Audit Perusahaan -->
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Pilih Audit Perusahaan</label>
-                            <select name="id_audit" class="form-select @error('id_audit') is-invalid @enderror" required>
-                                <option value="" selected disabled>-- Pilih Audit --</option>
-                                @foreach($audits as $audit)
-                                    <option value="{{ $audit->id_audit }}" {{ old('id_audit') == $audit->id_audit ? 'selected' : '' }}>
-                                        {{ $audit->perusahaan->nama_perusahaan ?? 'Perusahaan' }} - {{ $audit->jenis_audit }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('id_audit')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <!-- Jadwal Audit -->
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Pilih Jadwal Audit</label>
-                            <select name="id_jadwal" class="form-select @error('id_jadwal') is-invalid @enderror" required>
+                            <select name="id_jadwal" id="selectJadwal" class="form-select @error('id_jadwal') is-invalid @enderror" required>
                                 <option value="" selected disabled>-- Pilih Jadwal --</option>
                                 @foreach($jadwals as $jadwal)
-                                    <option value="{{ $jadwal->id_jadwal }}" {{ old('id_jadwal') == $jadwal->id_jadwal ? 'selected' : '' }}>
+                                    <option value="{{ $jadwal->id_jadwal }}" 
+                                            data-audit-id="{{ $jadwal->id_audit }}"
+                                            data-perusahaan="{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}"
+                                            data-lembaga="{{ $jadwal->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
+                                            data-jenis-audit="{{ $jadwal->audit->jenis_audit ?? '-' }}"
+                                            data-tanggal-mulai="{{ $jadwal->tanggal_mulai }}"
+                                            data-tanggal-selesai="{{ $jadwal->tanggal_selesai }}"
+                                            data-tim="@php
+                                                $names = [];
+                                                foreach($jadwal->timAudits as $t) {
+                                                    if($t->auditor) {
+                                                        $names[] = $t->auditor->nama_auditor . ' (' . $t->jabatan . ')';
+                                                    }
+                                                }
+                                                echo count($names) > 0 ? implode(', ', $names) : 'Belum ditentukan';
+                                            @endphp"
+                                            {{ old('id_jadwal') == $jadwal->id_jadwal ? 'selected' : '' }}>
                                         {{ $jadwal->audit->perusahaan->nama_perusahaan ?? 'Perusahaan' }} (Mulai: {{ \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') }})
                                     </option>
                                 @endforeach
@@ -356,57 +370,92 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                    </div>
 
-                        <!-- Peran Auditor -->
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Peran Auditor</label>
-                            <select name="peran_auditor" class="form-select @error('peran_auditor') is-invalid @enderror" required>
-                                <option value="Auditor" {{ old('peran_auditor') == 'Auditor' ? 'selected' : '' }}>Auditor</option>
-                                <option value="Lead Auditor" {{ old('peran_auditor') == 'Lead Auditor' ? 'selected' : '' }}>Lead Auditor</option>
-                            </select>
-                            @error('peran_auditor')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                    <!-- Divider/Header for Information -->
+                    <div class="border-top pt-4 mt-2 mb-4">
+                        <h5 class="fw-bold text-primary mb-3"><i class="fas fa-circle-info me-2"></i>Informasi Detail Audit</h5>
+                        <div class="row">
+                            <!-- Nama Perusahaan -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Nama Perusahaan</label>
+                                <input type="text" id="infoPerusahaan" class="form-control" readonly placeholder="-">
+                            </div>
+
+                            <!-- Jenis Lembaga -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Jenis Lembaga</label>
+                                <input type="text" id="infoLembaga" class="form-control" readonly placeholder="-">
+                            </div>
+
+                            <!-- Jenis Audit -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Jenis Audit</label>
+                                <input type="text" id="infoJenisAudit" class="form-control" readonly placeholder="-">
+                            </div>
+
+                            <!-- Tim Audit -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Tim Audit</label>
+                                <input type="text" id="infoTimAudit" class="form-control" readonly placeholder="-">
+                            </div>
+
+                            <!-- Tanggal Mulai -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Tanggal Audit Mulai</label>
+                                <input type="date" name="tanggal_mulai" id="infoTanggalMulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" required readonly>
+                                @error('tanggal_mulai')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Tanggal Selesai -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Tanggal Audit Selesai</label>
+                                <input type="date" name="tanggal_selesai" id="infoTanggalSelesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" readonly>
+                                @error('tanggal_selesai')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Tanggal Mulai -->
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Tanggal Mulai Penugasan</label>
-                            <input type="date" name="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" value="{{ old('tanggal_mulai') }}" required>
-                            @error('tanggal_mulai')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                    <!-- Divider/Header for Assignment Details -->
+                    <div class="border-top pt-4 mt-2">
+                        <div class="row">
+                            <!-- Peran Auditor -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Peran Auditor</label>
+                                <select name="peran_auditor" class="form-select @error('peran_auditor') is-invalid @enderror" required>
+                                    <option value="Auditor" {{ old('peran_auditor') == 'Auditor' ? 'selected' : '' }}>Auditor</option>
+                                    <option value="Lead Auditor" {{ old('peran_auditor') == 'Lead Auditor' ? 'selected' : '' }}>Lead Auditor</option>
+                                </select>
+                                @error('peran_auditor')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <!-- Tanggal Selesai -->
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Tanggal Selesai Penugasan (Opsional)</label>
-                            <input type="date" name="tanggal_selesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" value="{{ old('tanggal_selesai') }}">
-                            @error('tanggal_selesai')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                            <!-- Status Penugasan -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Status Penugasan</label>
+                                <select name="status_penugasan" class="form-select @error('status_penugasan') is-invalid @enderror" required>
+                                    <option value="Berlangsung" {{ old('status_penugasan') == 'Berlangsung' ? 'selected' : '' }}>Berlangsung</option>
+                                    <option value="Selesai" {{ old('status_penugasan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="Dibatalkan" {{ old('status_penugasan') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                                </select>
+                                @error('status_penugasan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <!-- Status Penugasan -->
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label">Status Penugasan</label>
-                            <select name="status_penugasan" class="form-select @error('status_penugasan') is-invalid @enderror" required>
-                                <option value="Berlangsung" {{ old('status_penugasan') == 'Berlangsung' ? 'selected' : '' }}>Berlangsung</option>
-                                <option value="Selesai" {{ old('status_penugasan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                <option value="Dibatalkan" {{ old('status_penugasan') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                            </select>
-                            @error('status_penugasan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <!-- Keterangan -->
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label">Keterangan / Catatan</label>
-                            <textarea name="keterangan" rows="4" class="form-control @error('keterangan') is-invalid @enderror" placeholder="Masukkan keterangan tambahan jika ada...">{{ old('keterangan') }}</textarea>
-                            @error('keterangan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <!-- Keterangan -->
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">Keterangan / Catatan</label>
+                                <textarea name="keterangan" rows="4" class="form-control @error('keterangan') is-invalid @enderror" placeholder="Masukkan keterangan tambahan jika ada...">{{ old('keterangan') }}</textarea>
+                                @error('keterangan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
@@ -428,6 +477,46 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectJadwal = document.getElementById('selectJadwal');
+            const idAuditHidden = document.getElementById('id_audit_hidden');
+            const infoPerusahaan = document.getElementById('infoPerusahaan');
+            const infoLembaga = document.getElementById('infoLembaga');
+            const infoJenisAudit = document.getElementById('infoJenisAudit');
+            const infoTimAudit = document.getElementById('infoTimAudit');
+            const infoTanggalMulai = document.getElementById('infoTanggalMulai');
+            const infoTanggalSelesai = document.getElementById('infoTanggalSelesai');
+
+            function updateDetails() {
+                const selectedOption = selectJadwal.options[selectJadwal.selectedIndex];
+                if (selectedOption && !selectedOption.disabled) {
+                    idAuditHidden.value = selectedOption.getAttribute('data-audit-id') || '';
+                    infoPerusahaan.value = selectedOption.getAttribute('data-perusahaan') || '';
+                    infoLembaga.value = selectedOption.getAttribute('data-lembaga') || '';
+                    infoJenisAudit.value = selectedOption.getAttribute('data-jenis-audit') || '';
+                    infoTimAudit.value = selectedOption.getAttribute('data-tim') || '';
+                    infoTanggalMulai.value = selectedOption.getAttribute('data-tanggal-mulai') || '';
+                    infoTanggalSelesai.value = selectedOption.getAttribute('data-tanggal-selesai') || '';
+                } else {
+                    idAuditHidden.value = '';
+                    infoPerusahaan.value = '';
+                    infoLembaga.value = '';
+                    infoJenisAudit.value = '';
+                    infoTimAudit.value = '';
+                    infoTanggalMulai.value = '';
+                    infoTanggalSelesai.value = '';
+                }
+            }
+
+            selectJadwal.addEventListener('change', updateDetails);
+            
+            // Trigger onload if there's old input
+            if (selectJadwal.value) {
+                updateDetails();
+            }
+        });
+    </script>
 </body>
 
 </html>
