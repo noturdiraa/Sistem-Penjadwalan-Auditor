@@ -321,10 +321,58 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            <div class="col-12 mb-4">
+                            <div class="col-md-6 mb-4">
                                 <label class="form-label fw-semibold">Nama Perusahaan</label>
                                 <input type="text" name="nama_perusahaan" class="form-control @error('nama_perusahaan') is-invalid @enderror" value="{{ old('nama_perusahaan', $perusahaan->nama_perusahaan) }}" placeholder="Masukkan nama perusahaan" required>
                                 @error('nama_perusahaan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Status Jasa</label>
+                                <input type="text" name="status_jasa" class="form-control @error('status_jasa') is-invalid @enderror" value="{{ old('status_jasa', $perusahaan->status_jasa) }}" placeholder="Masukkan status jasa">
+                                @error('status_jasa')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Ruang Lingkup</label>
+                                <input type="text" name="ruang_lingkup" class="form-control @error('ruang_lingkup') is-invalid @enderror" value="{{ old('ruang_lingkup', $perusahaan->ruang_lingkup) }}" placeholder="Masukkan ruang lingkup">
+                                @error('ruang_lingkup')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Bidang Usaha</label>
+                                <input type="text" name="bidang_usaha" class="form-control @error('bidang_usaha') is-invalid @enderror" value="{{ old('bidang_usaha', $perusahaan->bidang_usaha) }}" placeholder="Masukkan bidang usaha">
+                                @error('bidang_usaha')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Skala</label>
+                                <input type="text" name="skala" class="form-control @error('skala') is-invalid @enderror" value="{{ old('skala', $perusahaan->skala) }}" placeholder="Masukkan skala (contoh: Kecil, Menengah, Besar)">
+                                @error('skala')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Telepon / HP</label>
+                                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon', $perusahaan->no_telepon) }}" placeholder="No. Telepon / HP">
+                                @error('no_telepon')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $perusahaan->email) }}" placeholder="Masukkan email perusahaan">
+                                @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -333,25 +381,6 @@
                                 <label class="form-label fw-semibold">Alamat</label>
                                 <textarea name="alamat" class="form-control @error('alamat') is-invalid @enderror" placeholder="Masukkan alamat lengkap" required>{{ old('alamat', $perusahaan->alamat) }}</textarea>
                                 @error('alamat')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-12 mb-4">
-                                <label class="form-label fw-semibold">Kontak</label>
-                                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon', $perusahaan->no_telepon) }}" placeholder="No. Telepon">
-                                @error('no_telepon')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-12 mb-4">
-                                <label class="form-label fw-semibold">Status Perusahaan</label>
-                                <select name="status" class="form-select @error('status') is-invalid @enderror" required style="height: 48px; border-radius: 8px;">
-                                    <option value="Aktif" {{ old('status', $perusahaan->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="Tidak Aktif" {{ old('status', $perusahaan->status) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                                </select>
-                                @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

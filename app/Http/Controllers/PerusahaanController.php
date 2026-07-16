@@ -31,9 +31,13 @@ class PerusahaanController extends Controller
     {
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
-            'alamat' => 'required|string',
+            'status_jasa' => 'nullable|string|max:255',
+            'ruang_lingkup' => 'nullable|string|max:255',
+            'bidang_usaha' => 'nullable|string|max:255',
+            'skala' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:50',
-            'status' => 'required|in:Aktif,Tidak Aktif',
+            'email' => 'nullable|email|max:255',
+            'alamat' => 'required|string',
         ]);
 
         Perusahaan::create($request->all());
@@ -60,9 +64,13 @@ class PerusahaanController extends Controller
 
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
-            'alamat' => 'required|string',
+            'status_jasa' => 'nullable|string|max:255',
+            'ruang_lingkup' => 'nullable|string|max:255',
+            'bidang_usaha' => 'nullable|string|max:255',
+            'skala' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:50',
-            'status' => 'required|in:Aktif,Tidak Aktif',
+            'email' => 'nullable|email|max:255',
+            'alamat' => 'required|string',
         ]);
 
         $perusahaan->update($request->all());

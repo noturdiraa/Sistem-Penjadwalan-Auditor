@@ -391,9 +391,13 @@
                         <thead>
                             <tr>
                                 <th>Nama Perusahaan</th>
+                                <th>Status Jasa</th>
+                                <th>Ruang Lingkup</th>
+                                <th>Bidang Usaha</th>
+                                <th>Skala</th>
+                                <th>Telepon / HP</th>
+                                <th>Email</th>
                                 <th>Alamat</th>
-                                <th>Kontak</th>
-                                <th>Status</th>
                                 <th width="120">Aksi</th>
                             </tr>
                         </thead>
@@ -401,13 +405,13 @@
                             @forelse($perusahaans as $p)
                                 <tr>
                                     <td><strong>{{ $p->nama_perusahaan }}</strong></td>
-                                    <td>{{ $p->alamat }}</td>
+                                    <td>{{ $p->status_jasa ?? '-' }}</td>
+                                    <td>{{ $p->ruang_lingkup ?? '-' }}</td>
+                                    <td>{{ $p->bidang_usaha ?? '-' }}</td>
+                                    <td>{{ $p->skala ?? '-' }}</td>
                                     <td>{{ $p->no_telepon ?? '-' }}</td>
-                                    <td>
-                                        <span class="badge {{ $p->status === 'Aktif' ? 'bg-success' : 'bg-secondary' }}" style="padding: 8px 12px; font-size: 13px; color: white;">
-                                            {{ $p->status }}
-                                        </span>
-                                    </td>
+                                    <td>{{ $p->email ?? '-' }}</td>
+                                    <td>{{ $p->alamat }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="{{ route('pji.perusahaan.edit', $p->id_perusahaan) }}" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center justify-content-center">
@@ -425,7 +429,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
+                                    <td colspan="9" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
                                 </tr>
                             @endforelse
                         </tbody>

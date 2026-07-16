@@ -12,10 +12,13 @@ class Perusahaan extends Model
 
     protected $fillable = [
         'nama_perusahaan',
-        'alamat',
-        'provinsi',
+        'status_jasa',
+        'ruang_lingkup',
+        'bidang_usaha',
+        'skala',
         'no_telepon',
-        'status',
+        'email',
+        'alamat',
     ];
 
     public $timestamps = true;
