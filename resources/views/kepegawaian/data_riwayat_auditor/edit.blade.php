@@ -8,6 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tom Select CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -168,28 +172,48 @@
             font-size: 14px;
         }
 
-        .form-control, .form-select {
-            height: 48px;
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            padding: 10px 16px;
-            font-size: 14px;
+        .form-control, .form-select, .ts-wrapper {
+            border-radius: 10px !important;
+            border: 1px solid #cbd5e1 !important;
+            font-size: 14px !important;
             transition: .2s;
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: #2563EB;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        .form-control {
+            height: 48px;
+            padding: 10px 16px;
         }
 
-        .form-control[readonly] {
-            background-color: #f8fafc;
-            border-color: #e2e8f0;
-            color: #64748b;
+        .form-control:focus, .form-select:focus, .ts-wrapper.focus {
+            border-color: #2563EB !important;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
+        }
+
+        .ts-wrapper .ts-control {
+            padding: 10px 16px !important;
+            min-height: 48px !important;
+            border-radius: 10px !important;
         }
 
         textarea.form-control {
             height: auto;
+        }
+
+        .input-group-text {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            color: #64748b;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .input-group .form-control {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 10px !important;
+            border-bottom-right-radius: 10px !important;
         }
 
         .btn-submit {
@@ -306,7 +330,7 @@
         </div>
 
         <div class="main">
-            <!-- Header Card (Kotak di tulisan tambah riwayat penugasan) -->
+            <!-- Header Card -->
             <div class="header-card">
                 <div>
                     <h2 class="title">Edit Riwayat Penugasan</h2>
@@ -320,14 +344,11 @@
                     @csrf
                     @method('PUT')
 
-                    <!-- Hidden Input for id_audit -->
-                    <input type="hidden" name="id_audit" id="id_audit_hidden" value="{{ old('id_audit', $riwayat->id_audit) }}">
-
                     <div class="row">
                         <!-- Auditor -->
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Auditor</label>
-                            <select name="id_auditor" class="form-select @error('id_auditor') is-invalid @enderror" required>
+                            <select name="id_auditor" id="id_auditor" required>
                                 @foreach($auditors as $auditor)
                                     <option value="{{ $auditor->id_auditor }}" {{ (old('id_auditor', $riwayat->id_auditor) == $auditor->id_auditor) ? 'selected' : '' }}>
                                         {{ $auditor->nama_auditor }} (NIP: {{ $auditor->nip }})
@@ -335,126 +356,127 @@
                                 @endforeach
                             </select>
                             @error('id_auditor')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Jadwal Audit -->
+                        <!-- Nama Perusahaan -->
                         <div class="col-md-6 mb-4">
-                            <label class="form-label">Jadwal Audit</label>
-                            <select name="id_jadwal" id="selectJadwal" class="form-select @error('id_jadwal') is-invalid @enderror" required>
-                                @foreach($jadwals as $jadwal)
-                                    <option value="{{ $jadwal->id_jadwal }}" 
-                                            data-audit-id="{{ $jadwal->id_audit }}"
-                                            data-perusahaan="{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}"
-                                            data-lembaga="{{ $jadwal->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
-                                            data-jenis-audit="{{ $jadwal->audit->jenis_audit ?? '-' }}"
-                                            data-tanggal-mulai="{{ $jadwal->tanggal_mulai }}"
-                                            data-tanggal-selesai="{{ $jadwal->tanggal_selesai }}"
-                                            data-tim="@php
-                                                $names = [];
-                                                foreach($jadwal->timAudits as $t) {
-                                                    if($t->auditor) {
-                                                        $names[] = $t->auditor->nama_auditor . ' (' . $t->jabatan . ')';
-                                                    }
-                                                }
-                                                echo count($names) > 0 ? implode(', ', $names) : 'Belum ditentukan';
-                                            @endphp"
-                                            {{ (old('id_jadwal', $riwayat->id_jadwal) == $jadwal->id_jadwal) ? 'selected' : '' }}>
-                                        {{ $jadwal->audit->perusahaan->nama_perusahaan ?? 'Perusahaan' }} (Mulai: {{ \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') }})
+                            <label class="form-label">Nama Perusahaan</label>
+                            <select name="id_perusahaan" id="id_perusahaan" required>
+                                @foreach($perusahaans as $p)
+                                    <option value="{{ $p->id_perusahaan }}" {{ (old('id_perusahaan', $riwayat->audit->id_perusahaan ?? '') == $p->id_perusahaan) ? 'selected' : '' }}>
+                                        {{ $p->nama_perusahaan }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('id_jadwal')
+                            @error('id_perusahaan')
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Jenis Lembaga -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Jenis Lembaga</label>
+                            <select name="id_lembaga" id="id_lembaga" required>
+                                @foreach($lembagas as $l)
+                                    <option value="{{ $l->id_lembaga }}" {{ (old('id_lembaga', $riwayat->audit->ruangLingkup->id_lembaga ?? '') == $l->id_lembaga) ? 'selected' : '' }}>
+                                        {{ $l->nama_lembaga }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('id_lembaga')
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Jenis Audit -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Jenis Audit</label>
+                            <select name="jenis_audit" id="jenis_audit" required>
+                                <option value="Sertifikasi" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Sertifikasi') ? 'selected' : '' }}>Sertifikasi</option>
+                                <option value="Surveilan 1" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Surveilan 1') ? 'selected' : '' }}>Surveilan 1</option>
+                                <option value="Surveilan 2" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Surveilan 2') ? 'selected' : '' }}>Surveilan 2</option>
+                                <option value="Re-Sertifikasi" {{ (old('jenis_audit', $riwayat->audit->jenis_audit ?? '') == 'Re-Sertifikasi') ? 'selected' : '' }}>Re-Sertifikasi</option>
+                            </select>
+                            @error('jenis_audit')
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Tim Audit (Multiselect) -->
+                        @php
+                            $selectedTeamIds = $riwayat->jadwalAudit ? $riwayat->jadwalAudit->timAudits->pluck('id_auditor')->toArray() : [];
+                        @endphp
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Tim Audit (Lainnya)</label>
+                            <select name="tim_audit[]" id="tim_audit" multiple placeholder="Pilih anggota tim audit...">
+                                @foreach($auditors as $auditor)
+                                    <option value="{{ $auditor->id_auditor }}" {{ in_array($auditor->id_auditor, $selectedTeamIds) ? 'selected' : '' }}>
+                                        {{ $auditor->nama_auditor }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('tim_audit')
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Tanggal Mulai -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Tanggal Audit Mulai</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <input type="date" name="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" value="{{ old('tanggal_mulai', $riwayat->tanggal_mulai) }}" required>
+                            </div>
+                            @error('tanggal_mulai')
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Tanggal Selesai -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Tanggal Audit Selesai</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <input type="date" name="tanggal_selesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" value="{{ old('tanggal_selesai', $riwayat->tanggal_selesai) }}">
+                            </div>
+                            @error('tanggal_selesai')
+                                <div class="text-danger mt-1 small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Peran Auditor -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Peran Auditor</label>
+                            <select name="peran_auditor" class="form-select @error('peran_auditor') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
+                                <option value="Auditor" {{ (old('peran_auditor', $riwayat->peran_auditor) == 'Auditor') ? 'selected' : '' }}>Auditor</option>
+                                <option value="Lead Auditor" {{ (old('peran_auditor', $riwayat->peran_auditor) == 'Lead Auditor') ? 'selected' : '' }}>Lead Auditor</option>
+                            </select>
+                            @error('peran_auditor')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
 
-                    <!-- Divider/Header for Information -->
-                    <div class="border-top pt-4 mt-2 mb-4">
-                        <h5 class="fw-bold text-primary mb-3"><i class="fas fa-circle-info me-2"></i>Informasi Detail Audit</h5>
-                        <div class="row">
-                            <!-- Nama Perusahaan -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Nama Perusahaan</label>
-                                <input type="text" id="infoPerusahaan" class="form-control" readonly placeholder="-">
-                            </div>
-
-                            <!-- Jenis Lembaga -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Jenis Lembaga</label>
-                                <input type="text" id="infoLembaga" class="form-control" readonly placeholder="-">
-                            </div>
-
-                            <!-- Jenis Audit -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Jenis Audit</label>
-                                <input type="text" id="infoJenisAudit" class="form-control" readonly placeholder="-">
-                            </div>
-
-                            <!-- Tim Audit -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tim Audit</label>
-                                <input type="text" id="infoTimAudit" class="form-control" readonly placeholder="-">
-                            </div>
-
-                            <!-- Tanggal Mulai -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tanggal Audit Mulai</label>
-                                <input type="date" name="tanggal_mulai" id="infoTanggalMulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" required readonly>
-                                @error('tanggal_mulai')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Tanggal Selesai -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Tanggal Audit Selesai</label>
-                                <input type="date" name="tanggal_selesai" id="infoTanggalSelesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" readonly>
-                                @error('tanggal_selesai')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <!-- Status Penugasan -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Status Penugasan</label>
+                            <select name="status_penugasan" class="form-select @error('status_penugasan') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
+                                <option value="Berlangsung" {{ (old('status_penugasan', $riwayat->status_penugasan) == 'Berlangsung') ? 'selected' : '' }}>Berlangsung</option>
+                                <option value="Selesai" {{ (old('status_penugasan', $riwayat->status_penugasan) == 'Selesai') ? 'selected' : '' }}>Selesai</option>
+                            </select>
+                            @error('status_penugasan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                    </div>
 
-                    <!-- Divider/Header for Assignment Details -->
-                    <div class="border-top pt-4 mt-2">
-                        <div class="row">
-                            <!-- Peran Auditor -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Peran Auditor</label>
-                                <select name="peran_auditor" class="form-select @error('peran_auditor') is-invalid @enderror" required>
-                                    <option value="Auditor" {{ (old('peran_auditor', $riwayat->peran_auditor) == 'Auditor') ? 'selected' : '' }}>Auditor</option>
-                                    <option value="Lead Auditor" {{ (old('peran_auditor', $riwayat->peran_auditor) == 'Lead Auditor') ? 'selected' : '' }}>Lead Auditor</option>
-                                </select>
-                                @error('peran_auditor')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Status Penugasan -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Status Penugasan</label>
-                                <select name="status_penugasan" class="form-select @error('status_penugasan') is-invalid @enderror" required>
-                                    <option value="Berlangsung" {{ (old('status_penugasan', $riwayat->status_penugasan) == 'Berlangsung') ? 'selected' : '' }}>Berlangsung</option>
-                                    <option value="Selesai" {{ (old('status_penugasan', $riwayat->status_penugasan) == 'Selesai') ? 'selected' : '' }}>Selesai</option>
-                                    <option value="Dibatalkan" {{ (old('status_penugasan', $riwayat->status_penugasan) == 'Dibatalkan') ? 'selected' : '' }}>Dibatalkan</option>
-                                </select>
-                                @error('status_penugasan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Keterangan -->
-                            <div class="col-md-12 mb-4">
-                                <label class="form-label">Keterangan / Catatan</label>
-                                <textarea name="keterangan" rows="4" class="form-control @error('keterangan') is-invalid @enderror" placeholder="Masukkan keterangan tambahan jika ada...">{{ old('keterangan', $riwayat->keterangan) }}</textarea>
-                                @error('keterangan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <!-- Keterangan -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Keterangan / Catatan</label>
+                            <textarea name="keterangan" rows="4" class="form-control @error('keterangan') is-invalid @enderror" placeholder="Masukkan keterangan tambahan jika ada...">{{ old('keterangan', $riwayat->keterangan) }}</textarea>
+                            @error('keterangan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -476,42 +498,17 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Tom Select JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const selectJadwal = document.getElementById('selectJadwal');
-            const idAuditHidden = document.getElementById('id_audit_hidden');
-            const infoPerusahaan = document.getElementById('infoPerusahaan');
-            const infoLembaga = document.getElementById('infoLembaga');
-            const infoJenisAudit = document.getElementById('infoJenisAudit');
-            const infoTimAudit = document.getElementById('infoTimAudit');
-            const infoTanggalMulai = document.getElementById('infoTanggalMulai');
-            const infoTanggalSelesai = document.getElementById('infoTanggalSelesai');
-
-            function updateDetails() {
-                const selectedOption = selectJadwal.options[selectJadwal.selectedIndex];
-                if (selectedOption && !selectedOption.disabled) {
-                    idAuditHidden.value = selectedOption.getAttribute('data-audit-id') || '';
-                    infoPerusahaan.value = selectedOption.getAttribute('data-perusahaan') || '';
-                    infoLembaga.value = selectedOption.getAttribute('data-lembaga') || '';
-                    infoJenisAudit.value = selectedOption.getAttribute('data-jenis-audit') || '';
-                    infoTimAudit.value = selectedOption.getAttribute('data-tim') || '';
-                    infoTanggalMulai.value = selectedOption.getAttribute('data-tanggal-mulai') || '';
-                    infoTanggalSelesai.value = selectedOption.getAttribute('data-tanggal-selesai') || '';
-                } else {
-                    idAuditHidden.value = '';
-                    infoPerusahaan.value = '';
-                    infoLembaga.value = '';
-                    infoJenisAudit.value = '';
-                    infoTimAudit.value = '';
-                    infoTanggalMulai.value = '';
-                    infoTanggalSelesai.value = '';
-                }
-            }
-
-            selectJadwal.addEventListener('change', updateDetails);
-            
-            // Trigger onload to populate on page load
-            updateDetails();
+            new TomSelect('#id_auditor', { create: false });
+            new TomSelect('#id_perusahaan', { create: false });
+            new TomSelect('#id_lembaga', { create: false });
+            new TomSelect('#jenis_audit', { create: true });
+            new TomSelect('#tim_audit', { create: false, plugins: ['remove_button'] });
         });
     </script>
 </body>
