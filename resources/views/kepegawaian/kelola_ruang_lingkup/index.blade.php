@@ -241,6 +241,13 @@
                 <p>Manajemen data bidang / komoditas ruang lingkup sertifikasi pada BSPJI Palembang.</p>
             </div>
 
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px; margin-bottom: 25px; border-left: 5px solid #10B981;">
+                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="row">
                 <!-- Form Tambah Ruang Lingkup -->
                 <div class="col-lg-5 mb-4">
@@ -248,17 +255,22 @@
                         <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
                             <i class="fas fa-plus-circle me-2"></i>Tambah Ruang Lingkup
                         </h5>
-                        <form action="#" method="POST" id="formRuangLingkup">
+                        <form action="{{ route('kepegawaian.ruanglinkup.store') }}" method="POST">
+                            @csrf
                             <div class="mb-3">
                                 <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Jenis Audit</label>
-                                <select class="form-select" id="selectLembaga" required disabled>
+                                <select class="form-select" name="id_lembaga" id="selectLembaga" required>
                                     <option value="" disabled selected>Pilih Jenis Audit...</option>
-                                    <option value="" disabled>Belum ada data jenis audit di database</option>
+                                    @forelse($lembagas as $lembaga)
+                                        <option value="{{ $lembaga->id_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
+                                    @empty
+                                        <option value="" disabled>Belum ada data jenis audit di database</option>
+                                    @endforelse
                                 </select>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label fw-semibold" style="font-size: 14px;">Nama Ruang Lingkup</label>
-                                <input type="text" class="form-control" id="inputRuangLingkup" placeholder="Masukkan nama ruang lingkup (contoh: Air Mineral)" required>
+                                <input type="text" class="form-control" name="nama_ruang_lingkup" placeholder="Masukkan nama ruang lingkup (contoh: Air Mineral)" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; height: 48px; font-weight: 600;">
                                 <i class="fas fa-floppy-disk me-1"></i> Simpan Ruang Lingkup
@@ -279,16 +291,37 @@
                                     <tr>
                                         <th>Nama Ruang Lingkup</th>
                                         <th>Jenis Audit</th>
-                                        <th width="100" class="text-center">Aksi</th>
+                                        <th width="120" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="ruangLingkupTableBody">
-                                    <tr>
-                                        <td colspan="3" class="text-center py-5 text-secondary" style="font-size: 14px;">
-                                            <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                                            <span>Belum ada data ruang lingkup.</span>
-                                        </td>
-                                    </tr>
+                                    @forelse($ruangLingkups as $ruangLingkup)
+                                        <tr>
+                                            <td><strong>{{ $ruangLingkup->nama_ruang_lingkup }}</strong></td>
+                                            <td><span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2" style="border-radius: 8px;">{{ $ruangLingkup->lembaga->nama_lembaga ?? '-' }}</span></td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href="{{ route('kepegawaian.ruanglinkup.edit', $ruangLingkup->id_ruang_lingkup) }}" class="btn btn-outline-warning btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
+                                                        <i class="fas fa-pen-to-square" style="font-size: 13px;"></i>
+                                                    </a>
+                                                    <form action="{{ route('kepegawaian.ruanglinkup.destroy', $ruangLingkup->id_ruang_lingkup) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ruang lingkup ini?');" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
+                                                            <i class="far fa-trash-can" style="font-size: 13px;"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="3" class="text-center py-5 text-secondary" style="font-size: 14px;">
+                                                <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
+                                                <span>Belum ada data ruang lingkup.</span>
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -307,57 +340,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('formRuangLingkup').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const selectLembaga = document.getElementById('selectLembaga');
-            const inputRuang = document.getElementById('inputRuangLingkup');
-            
-            const valLembaga = selectLembaga.value;
-            const valRuang = inputRuang.value.trim();
-
-            if (!valLembaga || !valRuang) return;
-
-            const tbody = document.getElementById('ruangLingkupTableBody');
-            
-            // Hapus baris empty state jika ada
-            const emptyRow = tbody.querySelector('td[colspan="3"]');
-            if (emptyRow) {
-                tbody.innerHTML = '';
-            }
-
-            // Tambahkan baris baru
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${valRuang}</strong></td>
-                <td><span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2" style="border-radius: 8px;">${valLembaga}</span></td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center mx-auto" onclick="this.closest('tr').remove(); checkEmptyTable();" style="width: 32px; height: 32px; border-radius: 8px; border-color: #EF4444; color: #EF4444; background: transparent; transition: none;">
-                        <i class="far fa-trash-can" style="font-size: 13px;"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-            
-            // Reset input
-            inputRuang.value = '';
-            selectLembaga.value = '';
-        });
-
-        function checkEmptyTable() {
-            const tbody = document.getElementById('ruangLingkupTableBody');
-            if (tbody.children.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="text-center py-5 text-secondary" style="font-size: 14px;">
-                            <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                            <span>Belum ada data ruang lingkup.</span>
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-    </script>
 </body>
 
 </html>

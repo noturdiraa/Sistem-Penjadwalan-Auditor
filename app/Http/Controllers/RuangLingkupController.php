@@ -11,30 +11,31 @@ class RuangLingkupController extends Controller
     public function index()
     {
         $ruangLingkups = RuangLingkup::with('lembaga')->get();
+        $lembagas = Lembaga::all();
 
-        return view('ruang_lingkup.index', compact('ruangLingkups'));
+        return view('kepegawaian.kelola_ruang_lingkup.index', compact('ruangLingkups', 'lembagas'));
     }
 
     public function create()
     {
         $lembagas = Lembaga::all();
 
-        return view('ruang_lingkup.create', compact('lembagas'));
+        return view('kepegawaian.kelola_ruang_lingkup.create', compact('lembagas'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'lembaga_id' => 'required|exists:lembagas,id',
+            'id_lembaga' => 'required|exists:lembagas,id_lembaga',
             'nama_ruang_lingkup' => 'required|string|max:255',
         ]);
 
         RuangLingkup::create([
-            'lembaga_id' => $request->lembaga_id,
+            'id_lembaga' => $request->id_lembaga,
             'nama_ruang_lingkup' => $request->nama_ruang_lingkup,
         ]);
 
-        return redirect()->route('ruang-lingkup.index')
+        return redirect()->route('kepegawaian.ruanglinkup.index')
             ->with('success', 'Data ruang lingkup berhasil ditambahkan.');
     }
 
@@ -42,7 +43,7 @@ class RuangLingkupController extends Controller
     {
         $ruangLingkup = RuangLingkup::findOrFail($id);
 
-        return view('ruang_lingkup.show', compact('ruangLingkup'));
+        return view('kepegawaian.kelola_ruang_lingkup.show', compact('ruangLingkup'));
     }
 
     public function edit(string $id)
@@ -50,24 +51,24 @@ class RuangLingkupController extends Controller
         $ruangLingkup = RuangLingkup::findOrFail($id);
         $lembagas = Lembaga::all();
 
-        return view('ruang_lingkup.edit', compact('ruangLingkup', 'lembagas'));
+        return view('kepegawaian.kelola_ruang_lingkup.edit', compact('ruangLingkup', 'lembagas'));
     }
 
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'lembaga_id' => 'required|exists:lembagas,id',
+            'id_lembaga' => 'required|exists:lembagas,id_lembaga',
             'nama_ruang_lingkup' => 'required|string|max:255',
         ]);
 
         $ruangLingkup = RuangLingkup::findOrFail($id);
 
         $ruangLingkup->update([
-            'lembaga_id' => $request->lembaga_id,
+            'id_lembaga' => $request->id_lembaga,
             'nama_ruang_lingkup' => $request->nama_ruang_lingkup,
         ]);
 
-        return redirect()->route('ruang-lingkup.index')
+        return redirect()->route('kepegawaian.ruanglinkup.index')
             ->with('success', 'Data ruang lingkup berhasil diperbarui.');
     }
 
@@ -77,7 +78,7 @@ class RuangLingkupController extends Controller
 
         $ruangLingkup->delete();
 
-        return redirect()->route('ruang-lingkup.index')
+        return redirect()->route('kepegawaian.ruanglinkup.index')
             ->with('success', 'Data ruang lingkup berhasil dihapus.');
     }
 }

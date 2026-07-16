@@ -453,6 +453,7 @@
                     <h6 class="text-muted mb-1">
                         Total Auditor
                     </h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ $totalAuditor }}</h3>
 
                 </div>
 
@@ -480,6 +481,7 @@
                     <h6 class="text-muted mb-1">
                         Auditor Aktif
                     </h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ $auditorAktif }}</h3>
 
                 </div>
 
@@ -507,6 +509,7 @@
                     <h6 class="text-muted mb-1">
                         Total Lembaga
                     </h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ $totalLembaga }}</h3>
 
                 </div>
 
@@ -534,6 +537,7 @@
                     <h6 class="text-muted mb-1">
                         Jenis Kompetensi
                     </h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ $totalRuangLingkup }}</h3>
 
                 </div>
 
@@ -550,16 +554,48 @@
 <div class="table-box">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold mb-0">Daftar Auditor</h4>
-        <a href="#" class="text-primary small">Lihat semua →</a>
+        <a href="/kepegawaian/auditor" class="text-primary small">Lihat semua →</a>
     </div>
 
     <div class="auditor-list">
-        <div class="auditor-card justify-content-center">
-            <div class="auditor-meta text-center" style="width:100%;">
-                <h5 class="mb-2">Belum ada data auditor</h5>
-                <p class="mb-0 text-muted">Silakan tambahkan auditor terlebih dahulu di menu Kelola Auditor.</p>
+        @forelse($auditors as $auditor)
+            <div class="auditor-card shadow-sm border-0">
+                <div class="auditor-info">
+                    <div class="auditor-avatar" style="background: #2563EB; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
+                        {{ strtoupper(substr($auditor->nama_auditor, 0, 1)) }}
+                    </div>
+                    <div class="auditor-meta">
+                        <h5 class="fw-bold mb-1 text-dark">{{ $auditor->nama_auditor }}</h5>
+                        <p class="small text-muted mb-0">NIP: {{ $auditor->nip }} | {{ $auditor->jabatan }}</p>
+                    </div>
+                </div>
+                <div class="badge-group">
+                    <span class="badge bg-{{ $auditor->status == 'Aktif' ? 'success' : 'danger' }} text-white" style="border-radius: 8px;">{{ $auditor->status }}</span>
+                    <span class="badge bg-secondary text-white" style="border-radius: 8px;">{{ $auditor->posisi }}</span>
+                    @php
+                        $grouped = [];
+                        foreach ($auditor->detailAuditors as $detail) {
+                            $rl = $detail->ruangLingkup;
+                            if ($rl && $rl->lembaga) {
+                                $grouped[$rl->lembaga->nama_lembaga][] = $rl->nama_ruang_lingkup;
+                            }
+                        }
+                    @endphp
+                    @foreach($grouped as $lembaga_nama => $scopes)
+                        <span class="badge bg-primary text-white" style="border-radius: 8px;" title="{{ implode(', ', $scopes) }}">
+                            {{ $lembaga_nama }}
+                        </span>
+                    @endforeach
+                </div>
             </div>
-        </div>
+        @empty
+            <div class="auditor-card justify-content-center border-0 shadow-sm">
+                <div class="auditor-meta text-center" style="width:100%;">
+                    <h5 class="mb-2">Belum ada data auditor</h5>
+                    <p class="mb-0 text-muted">Silakan tambahkan auditor terlebih dahulu di menu Kelola Auditor.</p>
+                </div>
+            </div>
+        @endforelse
     </div>
 
 </div>

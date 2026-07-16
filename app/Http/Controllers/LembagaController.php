@@ -14,7 +14,7 @@ class LembagaController extends Controller
     {
         $lembagas = Lembaga::all();
 
-        return view('lembaga.index', compact('lembagas'));
+        return view('kepegawaian.kelola_lembaga.index', compact('lembagas'));
     }
 
     /**
@@ -22,7 +22,7 @@ class LembagaController extends Controller
      */
     public function create()
     {
-        return view('lembaga.create');
+        return view('kepegawaian.kelola_lembaga.create');
     }
 
     /**
@@ -40,7 +40,7 @@ class LembagaController extends Controller
             'deskripsi' => $request->deskripsi,
         ]);
 
-        return redirect()->route('lembaga.index')
+        return redirect()->route('kepegawaian.lembaga.index')
             ->with('success', 'Data lembaga berhasil ditambahkan.');
     }
 
@@ -51,7 +51,7 @@ class LembagaController extends Controller
     {
         $lembaga = Lembaga::findOrFail($id);
 
-        return view('lembaga.show', compact('lembaga'));
+        return view('kepegawaian.kelola_lembaga.show', compact('lembaga'));
     }
 
     /**
@@ -61,7 +61,7 @@ class LembagaController extends Controller
     {
         $lembaga = Lembaga::findOrFail($id);
 
-        return view('lembaga.edit', compact('lembaga'));
+        return view('kepegawaian.kelola_lembaga.edit', compact('lembaga'));
     }
 
     /**
@@ -81,7 +81,7 @@ class LembagaController extends Controller
             'deskripsi' => $request->deskripsi,
         ]);
 
-        return redirect()->route('lembaga.index')
+        return redirect()->route('kepegawaian.lembaga.index')
             ->with('success', 'Data lembaga berhasil diperbarui.');
     }
 
@@ -94,7 +94,7 @@ class LembagaController extends Controller
 
         $lembaga->delete();
 
-        return redirect()->route('lembaga.index')
+        return redirect()->route('kepegawaian.lembaga.index')
             ->with('success', 'Data lembaga berhasil dihapus.');
     }
 }

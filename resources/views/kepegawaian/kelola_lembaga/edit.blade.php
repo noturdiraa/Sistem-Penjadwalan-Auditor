@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Jenis Audit</title>
+    <title>Edit Jenis Audit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -144,22 +144,6 @@
             border-radius: 12px;
         }
 
-        .table thead {
-            background: #EEF4FF;
-        }
-
-        .table th {
-            padding: 18px;
-            font-weight: 600;
-            color: #555;
-            white-space: nowrap;
-        }
-
-        .table td {
-            padding: 18px;
-            vertical-align: middle;
-        }
-
         .footer {
             padding: 25px;
             text-align: center;
@@ -194,7 +178,7 @@
             <li>
                 <a href="/kepegawaian/lembaga" class="active">
                     <i class="fas fa-landmark"></i>
-                    Kelola Jenis Audit
+                    Kelola Lembaga
                 </a>
             </li>
             <li>
@@ -209,10 +193,10 @@
                     Profil
                 </a>
             </li>
-                        <li>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+            <li>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1; cursor: pointer;">
+                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1;">
                         <i class="fas fa-right-from-bracket"></i>
                         Logout
                     </button>
@@ -236,81 +220,33 @@
 
         <div class="main">
             <div class="page-header">
-                <h2>Kelola Jenis Audit</h2>
-                <p>Manajemen data jenis audit sertifikasi resmi pada BSPJI Palembang.</p>
+                <h2>Edit Jenis Audit</h2>
+                <p>Perbarui nama data jenis audit sertifikasi resmi pada BSPJI Palembang.</p>
             </div>
 
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px; margin-bottom: 25px; border-left: 5px solid #10B981;">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
             <div class="row">
-                <!-- Form Tambah Jenis Audit -->
-                <div class="col-lg-5 mb-4">
+                <div class="col-lg-6">
                     <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
                         <h5 class="fw-bold mb-3 text-primary" style="font-size: 16px;">
-                            <i class="fas fa-plus-circle me-2"></i>Tambah Jenis Audit
+                            <i class="fas fa-pen-to-square me-2"></i>Edit Nama Jenis Audit
                         </h5>
-                        <form action="{{ route('kepegawaian.lembaga.store') }}" method="POST">
+                        <form action="{{ route('kepegawaian.lembaga.update', $lembaga->id_lembaga) }}" method="POST">
                             @csrf
+                            @method('PUT')
                             <div class="mb-4">
                                 <label class="form-label fw-semibold" style="font-size: 14px;">Nama Jenis Audit</label>
-                                <input type="text" class="form-control" name="nama_lembaga" placeholder="Masukkan nama jenis audit (contoh: LSPRO)" required>
+                                <input type="text" class="form-control" name="nama_lembaga" value="{{ $lembaga->nama_lembaga }}" placeholder="Masukkan nama jenis audit" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; height: 48px; font-weight: 600;">
-                                <i class="fas fa-floppy-disk me-1"></i> Simpan Jenis Audit
-                            </button>
+                            
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('kepegawaian.lembaga.index') }}" class="btn btn-secondary w-50" style="border-radius: 12px; height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600;">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
+                                <button type="submit" class="btn btn-primary w-50" style="border-radius: 12px; height: 48px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fas fa-floppy-disk"></i> Simpan Perubahan
+                                </button>
+                            </div>
                         </form>
-                    </div>
-                </div>
-
-                <!-- Daftar Jenis Audit -->
-                <div class="col-lg-7 mb-4">
-                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-white" style="min-height: 250px;">
-                        <h5 class="fw-bold mb-3 text-dark" style="font-size: 16px;">
-                            <i class="fas fa-landmark me-2"></i>Daftar Jenis Audit
-                        </h5>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Jenis Audit</th>
-                                        <th width="120" class="text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="jenisAuditTableBody">
-                                    @forelse($lembagas as $lembaga)
-                                        <tr>
-                                            <td><strong>{{ $lembaga->nama_lembaga }}</strong></td>
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{{ route('kepegawaian.lembaga.edit', $lembaga->id_lembaga) }}" class="btn btn-outline-warning btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
-                                                        <i class="fas fa-pen-to-square" style="font-size: 13px;"></i>
-                                                    </a>
-                                                    <form action="{{ route('kepegawaian.lembaga.destroy', $lembaga->id_lembaga) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jenis audit ini?');" style="display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
-                                                            <i class="far fa-trash-can" style="font-size: 13px;"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="2" class="text-center py-5 text-secondary" style="font-size: 14px;">
-                                                <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                                                <span>Belum ada data jenis audit.</span>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>

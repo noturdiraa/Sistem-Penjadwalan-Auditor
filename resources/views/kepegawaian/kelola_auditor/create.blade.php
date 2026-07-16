@@ -354,8 +354,8 @@ color:#777;
 
 <div class="form-box">
 
-<form action="#" method="POST">
-    {{-- @csrf --}}
+<form action="{{ route('kepegawaian.auditor.store') }}" method="POST">
+    @csrf
     
     <div class="row">
 
@@ -457,6 +457,9 @@ color:#777;
                             <label class="form-label text-muted small">Pilih Lembaga</label>
                             <select class="form-select" id="selectLembaga">
                                 <option value="" selected disabled>Pilih Lembaga...</option>
+                                @foreach($lembagas as $lembaga)
+                                    <option value="{{ $lembaga->id_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
+                                @endforeach
                             </select>
                         </div>
                         
@@ -544,7 +547,15 @@ menu.forEach(item => {
 });
 
 // Data Pemetaan Ruang Lingkup untuk 8 Lembaga
-const lingkupData = {};
+const lingkupData = {
+    @foreach($lembagas as $lembaga)
+        "{{ $lembaga->id_lembaga }}": [
+            @foreach($lembaga->ruangLingkups as $rl)
+                "{{ $rl->nama_ruang_lingkup }}",
+            @endforeach
+        ],
+    @endforeach
+};
 
 // State list kompetensi terpilih
 let selectedKompetensi = [];

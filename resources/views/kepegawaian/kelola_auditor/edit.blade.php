@@ -354,9 +354,9 @@ color:#777;
 
 <div class="form-box">
 
-<form action="#" method="POST">
-    {{-- @csrf --}}
-    {{-- @method('PUT') --}}
+<form action="{{ route('kepegawaian.auditor.update', $auditor->id_auditor) }}" method="POST">
+    @csrf
+    @method('PUT')
     
     <div class="row">
 
@@ -460,6 +460,9 @@ color:#777;
                             <label class="form-label text-muted small">Pilih Lembaga</label>
                             <select class="form-select" id="selectLembaga">
                                 <option value="" selected disabled>Pilih Lembaga...</option>
+                                @foreach($lembagas as $lembaga)
+                                    <option value="{{ $lembaga->id_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
+                                @endforeach
                             </select>
                         </div>
                         
@@ -546,12 +549,40 @@ menu.forEach(item => {
     });
 });
 
-// Data Pemetaan Ruang Lingkup untuk 8 Lembaga
-const lingkupData = {};
+const lingkupData = {
+    @foreach($lembagas as $lembaga)
+        "{{ $lembaga->id_lembaga }}": [
+            @foreach($lembaga->ruangLingkups as $rl)
+                "{{ $rl->nama_ruang_lingkup }}",
+            @endforeach
+        ],
+    @endforeach
+};
 
 // State list kompetensi terpilih (Di-prepopulate secara dinamis dari database di Laravel)
-// Contoh integrasi Laravel Blade: let selectedKompetensi = {!! json_encode($auditor->kompetensi_json ?? []) !!};
-let selectedKompetensi = [];
+let selectedKompetensi = [
+    @php
+        $grouped = [];
+        foreach ($auditor->detailAuditors as $detail) {
+            $rl = $detail->ruangLingkup;
+            if ($rl) {
+                $lembaga = $rl->lembaga;
+                if ($lembaga) {
+                    $grouped[$lembaga->id_lembaga]['lembaga_id'] = $lembaga->id_lembaga;
+                    $grouped[$lembaga->id_lembaga]['lembaga_nama'] = $lembaga->nama_lembaga;
+                    $grouped[$lembaga->id_lembaga]['ruang_lingkup'][] = $rl->nama_ruang_lingkup;
+                }
+            }
+        }
+    @endphp
+    @foreach($grouped as $item)
+        {
+            "lembaga_id": "{{ $item['lembaga_id'] }}",
+            "lembaga_nama": "{{ $item['lembaga_nama'] }}",
+            "ruang_lingkup": {!! json_encode($item['ruang_lingkup']) !!}
+        },
+    @endforeach
+];
 
 const selectLembaga = document.getElementById('selectLembaga');
 const ruangLingkupSection = document.getElementById('ruangLingkupSection');

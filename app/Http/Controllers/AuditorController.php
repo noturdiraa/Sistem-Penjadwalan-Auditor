@@ -14,7 +14,7 @@ class AuditorController extends Controller
     {
         $auditors = Auditor::all();
 
-        return view('auditor.index', compact('auditors'));
+        return view('kepegawaian.kelola_auditor.index', compact('auditors'));
     }
 
     /**
@@ -22,7 +22,9 @@ class AuditorController extends Controller
      */
     public function create()
     {
-        return view('auditor.create');
+        $lembagas = \App\Models\Lembaga::with('ruangLingkups')->get();
+
+        return view('kepegawaian.kelola_auditor.create', compact('lembagas'));
     }
 
     /**
@@ -31,20 +33,41 @@ class AuditorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_auditor' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'nip' => 'required|string|max:255|unique:auditors,nip',
             'jabatan' => 'required|string|max:255',
+            'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        Auditor::create([
-            'nama_auditor' => $request->nama_auditor,
+        $auditor = Auditor::create([
+            'nama_auditor' => $request->nama,
             'nip' => $request->nip,
+            'jenis_auditor' => $request->posisi == 'Subkon' ? 'Subkontrak' : 'Pegawai',
             'jabatan' => $request->jabatan,
+            'posisi' => $request->posisi,
             'status' => $request->status,
         ]);
 
-        return redirect()->route('auditor.index')
+        $kompetensi_json = json_decode($request->kompetensi_lembaga, true);
+        if ($kompetensi_json) {
+            foreach ($kompetensi_json as $item) {
+                $id_lembaga = $item['lembaga_id'];
+                foreach ($item['ruang_lingkup'] as $nama_scope) {
+                    $rl = \App\Models\RuangLingkup::where('id_lembaga', $id_lembaga)
+                        ->where('nama_ruang_lingkup', $nama_scope)
+                        ->first();
+                    if ($rl) {
+                        \App\Models\DetailAuditor::create([
+                            'id_auditor' => $auditor->id_auditor,
+                            'id_ruang_lingkup' => $rl->id_ruang_lingkup
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return redirect()->route('kepegawaian.auditor.index')
             ->with('success', 'Data auditor berhasil ditambahkan.');
     }
 
@@ -55,7 +78,7 @@ class AuditorController extends Controller
     {
         $auditor = Auditor::findOrFail($id);
 
-        return view('auditor.show', compact('auditor'));
+        return view('kepegawaian.kelola_auditor.show', compact('auditor'));
     }
 
     /**
@@ -64,8 +87,9 @@ class AuditorController extends Controller
     public function edit(string $id)
     {
         $auditor = Auditor::findOrFail($id);
+        $lembagas = \App\Models\Lembaga::with('ruangLingkups')->get();
 
-        return view('auditor.edit', compact('auditor'));
+        return view('kepegawaian.kelola_auditor.edit', compact('auditor', 'lembagas'));
     }
 
     /**
@@ -74,22 +98,44 @@ class AuditorController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'nama_auditor' => 'required|string|max:255',
-            'nip' => 'required|string|max:255|unique:auditors,nip,' . $id,
+            'nama' => 'required|string|max:255',
+            'nip' => 'required|string|max:255|unique:auditors,nip,' . $id . ',id_auditor',
             'jabatan' => 'required|string|max:255',
+            'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
         $auditor = Auditor::findOrFail($id);
 
         $auditor->update([
-            'nama_auditor' => $request->nama_auditor,
+            'nama_auditor' => $request->nama,
             'nip' => $request->nip,
+            'jenis_auditor' => $request->posisi == 'Subkon' ? 'Subkontrak' : 'Pegawai',
             'jabatan' => $request->jabatan,
+            'posisi' => $request->posisi,
             'status' => $request->status,
         ]);
 
-        return redirect()->route('auditor.index')
+        \App\Models\DetailAuditor::where('id_auditor', $id)->delete();
+        $kompetensi_json = json_decode($request->kompetensi_lembaga, true);
+        if ($kompetensi_json) {
+            foreach ($kompetensi_json as $item) {
+                $id_lembaga = $item['lembaga_id'];
+                foreach ($item['ruang_lingkup'] as $nama_scope) {
+                    $rl = \App\Models\RuangLingkup::where('id_lembaga', $id_lembaga)
+                        ->where('nama_ruang_lingkup', $nama_scope)
+                        ->first();
+                    if ($rl) {
+                        \App\Models\DetailAuditor::create([
+                            'id_auditor' => $id,
+                            'id_ruang_lingkup' => $rl->id_ruang_lingkup
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return redirect()->route('kepegawaian.auditor.index')
             ->with('success', 'Data auditor berhasil diperbarui.');
     }
 
@@ -98,11 +144,12 @@ class AuditorController extends Controller
      */
     public function destroy(string $id)
     {
-        $auditor = Auditor::findOrFail($id);
+        \App\Models\DetailAuditor::where('id_auditor', $id)->delete();
 
+        $auditor = Auditor::findOrFail($id);
         $auditor->delete();
 
-        return redirect()->route('auditor.index')
+        return redirect()->route('kepegawaian.auditor.index')
             ->with('success', 'Data auditor berhasil dihapus.');
     }
 }

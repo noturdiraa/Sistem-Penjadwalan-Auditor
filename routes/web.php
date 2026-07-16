@@ -36,14 +36,25 @@ Route::middleware(['auth'])->group(function () {
 
     // ================= 1. ROLE: KEPEGAWAIAN =================
     Route::middleware(['role:kepegawaian'])->group(function () {
-        Route::view('/dashboard-kepegawaian', 'dashboard.kepegawaian')->name('dashboard.kepegawaian');
+        Route::get('/dashboard-kepegawaian', [App\Http\Controllers\DashboardController::class, 'kepegawaian'])->name('dashboard.kepegawaian');
 
-        Route::view('/kepegawaian/auditor', 'kepegawaian.kelola_auditor.index')->name('kepegawaian.auditor.index');
-        Route::view('/kepegawaian/auditor/create', 'kepegawaian.kelola_auditor.create')->name('kepegawaian.auditor.create');
-        Route::view('/kepegawaian/auditor/edit', 'kepegawaian.kelola_auditor.edit')->name('kepegawaian.auditor.edit');
+        Route::get('/kepegawaian/auditor', [App\Http\Controllers\AuditorController::class, 'index'])->name('kepegawaian.auditor.index');
+        Route::get('/kepegawaian/auditor/create', [App\Http\Controllers\AuditorController::class, 'create'])->name('kepegawaian.auditor.create');
+        Route::post('/kepegawaian/auditor', [App\Http\Controllers\AuditorController::class, 'store'])->name('kepegawaian.auditor.store');
+        Route::get('/kepegawaian/auditor/{id}/edit', [App\Http\Controllers\AuditorController::class, 'edit'])->name('kepegawaian.auditor.edit');
+        Route::put('/kepegawaian/auditor/{id}', [App\Http\Controllers\AuditorController::class, 'update'])->name('kepegawaian.auditor.update');
+        Route::delete('/kepegawaian/auditor/{id}', [App\Http\Controllers\AuditorController::class, 'destroy'])->name('kepegawaian.auditor.destroy');
 
-        Route::view('/kepegawaian/lembaga', 'kepegawaian.kelola_lembaga.index')->name('kepegawaian.lembaga.index');
-        Route::view('/kepegawaian/ruang-lingkup', 'kepegawaian.kelola_ruang_lingkup.index')->name('kepegawaian.ruanglinkup.index');
+        Route::get('/kepegawaian/lembaga', [App\Http\Controllers\LembagaController::class, 'index'])->name('kepegawaian.lembaga.index');
+        Route::post('/kepegawaian/lembaga', [App\Http\Controllers\LembagaController::class, 'store'])->name('kepegawaian.lembaga.store');
+        Route::get('/kepegawaian/lembaga/{id}/edit', [App\Http\Controllers\LembagaController::class, 'edit'])->name('kepegawaian.lembaga.edit');
+        Route::put('/kepegawaian/lembaga/{id}', [App\Http\Controllers\LembagaController::class, 'update'])->name('kepegawaian.lembaga.update');
+        Route::delete('/kepegawaian/lembaga/{id}', [App\Http\Controllers\LembagaController::class, 'destroy'])->name('kepegawaian.lembaga.destroy');
+        Route::get('/kepegawaian/ruang-lingkup', [App\Http\Controllers\RuangLingkupController::class, 'index'])->name('kepegawaian.ruanglinkup.index');
+        Route::post('/kepegawaian/ruang-lingkup', [App\Http\Controllers\RuangLingkupController::class, 'store'])->name('kepegawaian.ruanglinkup.store');
+        Route::get('/kepegawaian/ruang-lingkup/{id}/edit', [App\Http\Controllers\RuangLingkupController::class, 'edit'])->name('kepegawaian.ruanglinkup.edit');
+        Route::put('/kepegawaian/ruang-lingkup/{id}', [App\Http\Controllers\RuangLingkupController::class, 'update'])->name('kepegawaian.ruanglinkup.update');
+        Route::delete('/kepegawaian/ruang-lingkup/{id}', [App\Http\Controllers\RuangLingkupController::class, 'destroy'])->name('kepegawaian.ruanglinkup.destroy');
 
         Route::view('/kepegawaian/profil', 'kepegawaian.profil.index')->name('kepegawaian.profil.index');
         Route::view('/kepegawaian/profil/edit', 'kepegawaian.profil.edit')->name('kepegawaian.profil.edit');

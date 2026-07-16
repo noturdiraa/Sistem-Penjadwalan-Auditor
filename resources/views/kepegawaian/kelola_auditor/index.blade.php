@@ -539,6 +539,14 @@ color:#EF4444;
 <p>Kelola data auditor BSPJI Palembang.</p>
 
 </div>
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px; margin-bottom: 25px; border-left: 5px solid #10B981;">
+        <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <!-- FILTER -->
 
 <div class="filter-box">
@@ -631,8 +639,72 @@ Tambah Auditor
         </thead>
 
         <tbody>
+        @forelse($auditors as $index => $auditor)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $auditor->nip }}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-3" style="background: #2563EB; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        {{ strtoupper(substr($auditor->nama_auditor, 0, 1)) }}
+                    </div>
+                    <div>
+                        <strong>{{ $auditor->nama_auditor }}</strong>
+                        <br>
+                        <small class="text-muted">
+                            NIP: {{ $auditor->nip }}
+                        </small>
+                    </div>
+                </div>
+            </td>
+            <td>{{ $auditor->jabatan }}</td>
+            <td>
+                <span class="badge bg-{{ $auditor->status == 'Aktif' ? 'success' : 'danger' }} badge-status">
+                    {{ $auditor->status }}
+                </span>
+            </td>
+            <td>
+                <a href="#" class="btn-action btn-detail"
+                   data-bs-toggle="modal"
+                   data-bs-target="#detailModal"
+                   data-nama="{{ $auditor->nama_auditor }}"
+                   data-nip="{{ $auditor->nip }}"
+                   data-jabatan="{{ $auditor->jabatan }}"
+                   data-posisi="{{ $auditor->posisi }}"
+                   data-status="{{ $auditor->status }}"
+                   data-lembaga="
+                       @php
+                           $grouped = [];
+                           foreach ($auditor->detailAuditors as $detail) {
+                               $rl = $detail->ruangLingkup;
+                               if ($rl && $rl->lembaga) {
+                                   $grouped[$rl->lembaga->nama_lembaga][] = $rl->nama_ruang_lingkup;
+                               }
+                           }
+                           $output = [];
+                           foreach ($grouped as $lembaga_nama => $scopes) {
+                               $output[] = $lembaga_nama . ': ' . implode(', ', $scopes);
+                           }
+                           echo implode(' | ', $output);
+                       @endphp
+                   ">
+                   <i class="fas fa-eye text-blue" title="Detail"></i>
+                </a>
 
-        <!-- KONDISI KOSONG (Belum Ada Data) -->
+                <a href="{{ route('kepegawaian.auditor.edit', $auditor->id_auditor) }}" class="btn-action">
+                    <i class="fas fa-pen text-orange" title="Edit"></i>
+                </a>
+
+                <form action="{{ route('kepegawaian.auditor.destroy', $auditor->id_auditor) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus auditor ini?');" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="background: none; border: none; padding: 0;" class="btn-action">
+                        <i class="fas fa-trash text-red" title="Hapus"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        @empty
         <tr>
             <td colspan="6" class="text-center py-5 text-muted">
                 <div class="mb-3">
@@ -642,84 +714,7 @@ Tambah Auditor
                 <p class="small text-muted mb-0">Silakan klik tombol <strong>Tambah Auditor</strong> untuk memasukkan data baru.</p>
             </td>
         </tr>
-
-        {{-- TEMPLATE BARIS DATA (Gunakan ini saat data sudah ditarik dari database / loop forelse)
-        <tr>
-
-        <td>1</td>
-
-        <td>197805012024001</td>
-
-        <td>
-
-        <div class="d-flex align-items-center">
-
-        <div class="avatar me-3">
-
-        P
-
-        </div>
-
-        <div>
-
-        <strong>Popy Marlina</strong>
-
-        <br>
-
-        <small class="text-muted">
-
-        Lead Auditor
-
-        </small>
-
-        </div>
-
-        </div>
-
-        </td>
-
-        <td>Lead Auditor</td>
-
-        <td>
-
-        <span class="badge bg-success badge-status">
-
-        Aktif
-
-        </span>
-
-        </td>
-
-        <td>
-
-        <a href="#" class="btn-action"
-           data-bs-toggle="modal"
-           data-bs-target="#detailModal"
-           data-nama="Popy Marlina"
-           data-nip="197805012024001"
-           data-jabatan="Lead Auditor"
-           data-status="Aktif"
-           data-lembaga="LSPRO BSPJI Palembang: Garam Konsumsi, Pupuk NPK, Air Minum dalam Kemasan (AMDK) | LSSM BSPJI Palembang: Sistem Manajemen Mutu (ISO 9001:2015)">
-           <i class="fas fa-eye text-blue" title="Detail"></i>
-        </a>
-
-        <a href="#" class="btn-action">
-
-        <i class="fas fa-pen text-orange" title="Edit"></i>
-
-        </a>
-
-        <a href="#" class="btn-action">
-
-        <i class="fas fa-trash text-red" title="Hapus"></i>
-
-        </a>
-
-        </td>
-
-        </tr>
-        --}}
-
+        @endforelse
         </tbody>
 
         </table>
