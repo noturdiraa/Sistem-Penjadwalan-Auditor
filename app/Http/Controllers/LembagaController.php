@@ -92,9 +92,16 @@ class LembagaController extends Controller
     {
         $lembaga = Lembaga::findOrFail($id);
 
-        $lembaga->delete();
-
-        return redirect()->route('kepegawaian.lembaga.index')
-            ->with('success', 'Data lembaga berhasil dihapus.');
+        try {
+            $lembaga->delete();
+            return redirect()->route('kepegawaian.lembaga.index')
+                ->with('success', 'Data lembaga berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == '23000') {
+                return redirect()->route('kepegawaian.lembaga.index')
+                    ->with('error', 'Lembaga tidak dapat dihapus karena masih terhubung dengan data Ruang Lingkup.');
+            }
+            throw $e;
+        }
     }
 }

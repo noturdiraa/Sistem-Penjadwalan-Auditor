@@ -188,6 +188,20 @@
             font-weight: 500 !important;
             color: #333;
         }
+
+        .table-compact th {
+            padding: 10px 12px !important;
+            font-size: 13px !important;
+            font-weight: 600;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .table-compact td {
+            padding: 10px 12px !important;
+            font-size: 13.5px !important;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -313,30 +327,36 @@
                         <h5 class="fw-bold mb-3 text-dark" style="font-size: 16px;">
                             <i class="fas fa-circle-nodes me-2"></i>Daftar Ruang Lingkup
                         </h5>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead>
+                        
+                        <!-- Search Bar -->
+                        <div class="mb-3">
+                            <input type="text" id="searchRuangLingkup" class="form-control" placeholder="🔍 Cari ruang lingkup..." style="border-radius: 10px; height: 40px; font-size: 14px;">
+                        </div>
+
+                        <div class="table-responsive" style="max-height: 480px; overflow-y: auto; border: 1px solid #E2E8F0; border-radius: 12px;">
+                            <table class="table align-middle mb-0 table-compact">
+                                <thead style="position: sticky; top: 0; z-index: 1; background-color: #EEF4FF;">
                                     <tr>
                                         <th>Nama Ruang Lingkup</th>
                                         <th>Lembaga</th>
-                                        <th width="120" class="text-center">Aksi</th>
+                                        <th width="100" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="ruangLingkupTableBody">
                                     @forelse($ruangLingkups as $ruangLingkup)
                                         <tr>
                                             <td><strong>{{ $ruangLingkup->nama_ruang_lingkup }}</strong></td>
-                                            <td><span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2" style="border-radius: 8px;">{{ $ruangLingkup->lembaga->nama_lembaga ?? '-' }}</span></td>
+                                            <td><span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1.5" style="border-radius: 6px; font-size: 12px;">{{ $ruangLingkup->lembaga->nama_lembaga ?? '-' }}</span></td>
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{{ route('kepegawaian.ruanglinkup.edit', $ruangLingkup->id_ruang_lingkup) }}" class="btn btn-outline-warning btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
-                                                        <i class="fas fa-pen-to-square" style="font-size: 13px;"></i>
+                                                <div class="d-flex justify-content-center gap-1">
+                                                    <a href="{{ route('kepegawaian.ruanglinkup.edit', $ruangLingkup->id_ruang_lingkup) }}" class="btn btn-outline-warning btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; border-radius: 6px;">
+                                                        <i class="fas fa-pen-to-square" style="font-size: 12px;"></i>
                                                     </a>
                                                     <form action="{{ route('kepegawaian.ruanglinkup.destroy', $ruangLingkup->id_ruang_lingkup) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ruang lingkup ini?');" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
-                                                            <i class="far fa-trash-can" style="font-size: 13px;"></i>
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; border-radius: 6px;">
+                                                            <i class="far fa-trash-can" style="font-size: 12px;"></i>
                                                         </button>
                                                     </form>
                                                 </div>
@@ -344,7 +364,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="text-center py-5 text-secondary" style="font-size: 14px;">
+                                            <td colspan="3" class="text-center py-5 text-secondary" style="font-size: 13px;">
                                                 <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
                                                 <span>Belum ada data ruang lingkup.</span>
                                             </td>
@@ -368,6 +388,17 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('searchRuangLingkup').addEventListener('keyup', function() {
+            let value = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#ruangLingkupTableBody tr');
+            rows.forEach(row => {
+                if (row.querySelector('td')) {
+                    row.style.display = row.innerText.toLowerCase().includes(value) ? '' : 'none';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

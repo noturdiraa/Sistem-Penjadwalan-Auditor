@@ -650,8 +650,6 @@ Tambah Auditor
 
         <th>Nama Auditor</th>
 
-        <th>Jabatan</th>
-
         <th>Status</th>
 
         <th>Aksi</th>
@@ -679,7 +677,6 @@ Tambah Auditor
                     </div>
                 </div>
             </td>
-            <td>{{ $auditor->jabatan }}</td>
             <td>
                 <span class="badge bg-{{ $auditor->status == 'Aktif' ? 'success' : 'danger' }} badge-status">
                     {{ $auditor->status }}
@@ -691,7 +688,6 @@ Tambah Auditor
                    data-bs-target="#detailModal"
                    data-nama="{{ $auditor->nama_auditor }}"
                    data-nip="{{ $auditor->nip }}"
-                   data-jabatan="{{ $auditor->jabatan }}"
                    data-posisi="{{ $auditor->posisi }}"
                    data-status="{{ $auditor->status }}"
                    data-lembaga="
@@ -781,7 +777,7 @@ Tambah Auditor
                             <div class="avatar me-3" id="modalAvatar" style="width: 60px; height: 60px; font-size: 24px;">-</div>
                             <div>
                                 <h5 class="fw-bold mb-1" id="modalNama">-</h5>
-                                <span class="text-muted small" id="modalJabatan">-</span>
+                                <span class="text-muted small" id="modalPosisi">-</span>
                             </div>
                         </div>
                         
@@ -848,14 +844,14 @@ if (detailModal) {
         // Ambil data dari atribut data-bs-*
         const nama = button.getAttribute('data-nama');
         const nip = button.getAttribute('data-nip');
-        const jabatan = button.getAttribute('data-jabatan');
+        const posisi = button.getAttribute('data-posisi');
         const status = button.getAttribute('data-status');
         const lembagaData = button.getAttribute('data-lembaga'); // Format string: "Lembaga A: Lingkup A, B | Lembaga B: Lingkup C"
         
         // Terapkan data ke elemen modal
         detailModal.querySelector('#modalNama').textContent = nama;
         detailModal.querySelector('#modalNip').textContent = nip;
-        detailModal.querySelector('#modalJabatan').textContent = jabatan;
+        detailModal.querySelector('#modalPosisi').textContent = posisi;
         
         // Tentukan inisial avatar dari huruf pertama nama
         const inisial = nama ? nama.charAt(0).toUpperCase() : '-';

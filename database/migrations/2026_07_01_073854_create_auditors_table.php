@@ -20,7 +20,6 @@ return new class extends Migration
             'Pegawai',
             'Subkontrak'
             ]);
-            $table->string('jabatan')->nullable();
             $table->string('posisi')->nullable();
             $table->string('status')->default('Aktif');
 
