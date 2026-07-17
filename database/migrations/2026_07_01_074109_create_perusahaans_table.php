@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('no_telepon')->nullable();
             $table->string('email')->nullable();
             $table->text('alamat');
+            $table->string('provinsi')->nullable();
+            $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
 
             $table->timestamps();
         });
