@@ -545,12 +545,29 @@
                     </div>
                     <div class="auditor-meta">
                         <h5 class="fw-bold mb-1 text-dark">{{ $auditor->nama_auditor }}</h5>
-                        <p class="small text-muted mb-0">NIP: {{ $auditor->nip }} | {{ $auditor->jabatan }}</p>
+                        <p class="small text-muted mb-0">NIP: {{ $auditor->nip ?: '-' }}</p>
                     </div>
                 </div>
                 <div class="badge-group">
-                    <span class="badge bg-{{ $auditor->status == 'Aktif' ? 'success' : 'danger' }} text-white" style="border-radius: 8px;">{{ $auditor->status }}</span>
-                    <span class="badge bg-secondary text-white" style="border-radius: 8px;">{{ $auditor->posisi }}</span>
+                    {{-- Status Badge --}}
+                    @if($auditor->status == 'Aktif')
+                        <span class="badge" style="background: #10B981; color: white; border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px;">{{ $auditor->status }}</span>
+                    @else
+                        <span class="badge" style="background: #EF4444; color: white; border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px;">{{ $auditor->status }}</span>
+                    @endif
+
+                    {{-- Posisi Badge --}}
+                    @php
+                        $posisiStyle = match($auditor->posisi) {
+                            'AMMI' => 'background: #F3E8FF; color: #7E22CE; border: 1px solid #D8B4FE;',
+                            'Non AMMI' => 'background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A;',
+                            'Subkon' => 'background: #E2E8F0; color: #334155; border: 1px solid #CBD5E1;',
+                            default => 'background: #E2E8F0; color: #334155; border: 1px solid #CBD5E1;',
+                        };
+                    @endphp
+                    <span class="badge" style="{{ $posisiStyle }} border-radius: 10px; padding: 5px 12px; font-weight: 600; font-size: 12px;">{{ $auditor->posisi }}</span>
+
+                    {{-- Lembaga Badges dengan Warna Unik per Lembaga --}}
                     @php
                         $grouped = [];
                         foreach ($auditor->detailAuditors as $detail) {
@@ -559,9 +576,31 @@
                                 $grouped[$rl->lembaga->nama_lembaga][] = $rl->nama_ruang_lingkup;
                             }
                         }
+                        
+                        $lembagaPalette = [
+                            'LSPro'   => 'background: #0284C7; color: #FFFFFF;',
+                            'LSSM'    => 'background: #2563EB; color: #FFFFFF;',
+                            'LSSML'   => 'background: #0284C7; color: #FFFFFF;',
+                            'LSIH'    => 'background: #2563EB; color: #FFFFFF;',
+                            'LPH'     => 'background: #0284C7; color: #FFFFFF;',
+                            'LSHACCP' => 'background: #2563EB; color: #FFFFFF;',
+                            'LSSMK3'  => 'background: #0284C7; color: #FFFFFF;',
+                        ];
                     @endphp
                     @foreach($grouped as $lembaga_nama => $scopes)
-                        <span class="badge bg-primary text-white" style="border-radius: 8px;" title="{{ implode(', ', $scopes) }}">
+                        @php
+                            $lembagaStyle = match($lembaga_nama) {
+                                'LSPro'   => 'background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;',
+                                'LSSM'    => 'background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE;',
+                                'LSSML'   => 'background: #CCFBF1; color: #0F766E; border: 1px solid #99F6E4;',
+                                'LSIH'    => 'background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0;',
+                                'LPH'     => 'background: #FFE4E6; color: #BE123C; border: 1px solid #FECDD3;',
+                                'LSHACCP' => 'background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;',
+                                'LSSMK3'  => 'background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA;',
+                                default   => 'background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;',
+                            };
+                        @endphp
+                        <span class="badge" style="{{ $lembagaStyle }} border-radius: 8px; padding: 5px 10px; font-weight: 600; font-size: 11px;" title="{{ implode(', ', $scopes) }}">
                             {{ $lembaga_nama }}
                         </span>
                     @endforeach
