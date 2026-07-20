@@ -120,7 +120,6 @@ background:#2563EB;
 .content{
 
 margin-left: 290px;
-min-height:100vh;
 
 }
 
@@ -281,6 +280,16 @@ overflow:hidden;
 }
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
+}
+
+@media (min-width: 992px) {
+    body {
+        overflow: hidden !important;
+    }
+    .table-responsive {
+        max-height: calc(100vh - 450px);
+        overflow-y: auto !important;
+    }
 }
 
 .table thead{
@@ -585,6 +594,7 @@ color:#EF4444;
 
 <input
 type="text"
+id="filterSearch"
 class="form-control"
 placeholder="Cari Nama Auditor atau NIP">
 
@@ -592,12 +602,12 @@ placeholder="Cari Nama Auditor atau NIP">
 
 <div class="col-md-3">
 
-<select class="form-select">
+<select class="form-select" id="filterKompetensi">
 
-<option value="" disabled selected>Kompetensi</option>
+<option value="" selected>Semua Lembaga</option>
 
 @foreach($lembagas as $lembaga)
-    <option value="{{ $lembaga->id_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
+    <option value="{{ $lembaga->nama_lembaga }}">{{ $lembaga->nama_lembaga }}</option>
 @endforeach
 </select>
 
@@ -605,9 +615,9 @@ placeholder="Cari Nama Auditor atau NIP">
 
 <div class="col-md-2">
 
-<select class="form-select">
+<select class="form-select" id="filterStatus">
 
-<option value="" disabled selected>Status</option>
+<option value="" selected>Semua Status</option>
 
 <option value="Aktif">Aktif</option>
 <option value="Nonaktif">Nonaktif</option>
@@ -660,7 +670,7 @@ Tambah Auditor
 
         <tbody>
         @forelse($auditors as $index => $auditor)
-        <tr>
+        <tr class="auditor-row">
             <td>{{ $index + 1 }}</td>
             <td>{{ $auditor->nip }}</td>
             <td>
@@ -724,7 +734,7 @@ Tambah Auditor
         </tr>
         @empty
         <tr>
-            <td colspan="6" class="text-center py-5 text-muted">
+            <td colspan="5" class="text-center py-5 text-muted">
                 <div class="mb-3">
                     <i class="fas fa-users-slash fa-3x text-secondary opacity-50"></i>
                 </div>
@@ -733,6 +743,15 @@ Tambah Auditor
             </td>
         </tr>
         @endforelse
+        <tr id="emptyFilterRow" style="display: none !important;">
+            <td colspan="5" class="text-center py-5 text-muted">
+                <div class="mb-3">
+                    <i class="fas fa-search fa-3x text-secondary opacity-50"></i>
+                </div>
+                <h5 class="fw-semibold text-dark mb-1">Data Tidak Ditemukan</h5>
+                <p class="small text-muted mb-0">Tidak ada data auditor yang cocok dengan filter yang Anda pilih.</p>
+            </td>
+        </tr>
         </tbody>
 
         </table>
@@ -875,6 +894,7 @@ if (detailModal) {
                 if (parts.length >= 2) {
                     const namaLembaga = parts[0].trim();
                     const lingkup = parts[1].trim();
+                    const lingkupItems = lingkup.split(',').map(li => li.trim()).filter(li => li !== '');
                     
                     // Buat elemen card lembaga
                     const card = document.createElement('div');
@@ -885,8 +905,10 @@ if (detailModal) {
                             ${namaLembaga}
                         </div>
                         <div class="lingkup-list">
-                            <strong>Ruang Lingkup:</strong><br>
-                            ${lingkup}
+                            <strong>Ruang Lingkup:</strong>
+                            <ul class="mb-0 mt-1 ps-3" style="list-style-type: disc;">
+                                ${lingkupItems.map(li => `<li>${li}</li>`).join('')}
+                            </ul>
                         </div>
                     `;
                     lembagaContainer.appendChild(card);
@@ -902,6 +924,62 @@ if (detailModal) {
         }
     });
 }
+
+// Logic Filter Real-time Client-side
+const searchInput = document.getElementById('filterSearch');
+const kompetensiSelect = document.getElementById('filterKompetensi');
+const statusSelect = document.getElementById('filterStatus');
+const tableRows = document.querySelectorAll('.auditor-row');
+const emptyRow = document.getElementById('emptyFilterRow');
+
+function filterTable() {
+    const searchText = (searchInput.value || '').toLowerCase();
+    const selectedKompetensi = kompetensiSelect.value;
+    const selectedStatus = (statusSelect.value || '').toLowerCase();
+    
+    let visibleCount = 0;
+    
+    tableRows.forEach(row => {
+        const strongEl = row.querySelector('strong');
+        const nipEl = row.querySelector('.text-muted');
+        const badgeEl = row.querySelector('.badge-status');
+        const detailBtn = row.querySelector('.btn-detail');
+        
+        const nama = strongEl ? strongEl.textContent.toLowerCase() : '';
+        const nip = nipEl ? nipEl.textContent.replace('NIP:', '').trim() : '';
+        const status = badgeEl ? badgeEl.textContent.trim().toLowerCase() : '';
+        const dataLembaga = detailBtn ? detailBtn.getAttribute('data-lembaga') : '';
+        
+        const matchesSearch = nama.includes(searchText) || nip.includes(searchText);
+        const matchesStatus = !selectedStatus || status === selectedStatus;
+        const matchesKompetensi = !selectedKompetensi || dataLembaga.includes(selectedKompetensi);
+        
+        if (matchesSearch && matchesStatus && matchesKompetensi) {
+            row.style.setProperty('display', '', 'important');
+            visibleCount++;
+        } else {
+            row.style.setProperty('display', 'none', 'important');
+        }
+    });
+    
+    const tableResponsive = document.querySelector('.table-responsive');
+    if (visibleCount === 0) {
+        emptyRow.style.setProperty('display', '', 'important');
+        if (tableResponsive) {
+            tableResponsive.style.setProperty('overflow-x', 'hidden', 'important');
+        }
+    } else {
+        emptyRow.style.setProperty('display', 'none', 'important');
+        if (tableResponsive) {
+            tableResponsive.style.setProperty('overflow-x', 'auto', 'important');
+        }
+    }
+}
+
+if (searchInput) searchInput.addEventListener('input', filterTable);
+if (kompetensiSelect) kompetensiSelect.addEventListener('change', filterTable);
+if (statusSelect) statusSelect.addEventListener('change', filterTable);
+
 </script>
 </body>
 </html>

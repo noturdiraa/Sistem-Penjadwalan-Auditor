@@ -477,7 +477,7 @@ color:#777;
                         
                         <div class="col-md-7 d-none" id="ruangLingkupSection">
                             <label class="form-label text-muted small">Pilih Ruang Lingkup (Bisa Pilih Lebih dari Satu)</label>
-                            <div id="ruangLingkupChecklist" class="d-flex flex-wrap gap-2 p-3 bg-white border rounded-3" style="min-height: 48px; border-color: #dee2e6 !important;">
+                            <div id="ruangLingkupChecklist" class="d-flex flex-column gap-2 p-3 bg-white border rounded-3" style="min-height: 48px; max-height: 320px; overflow-y: auto; border-color: #dee2e6 !important;">
                                 <!-- Checkbox dinamis akan di-populate oleh Javascript -->
                             </div>
                             <button type="button" class="btn btn-outline-primary btn-sm mt-3 px-3" id="btnTambahKompetensi" style="border-radius: 8px;">
@@ -616,7 +616,7 @@ selectLembaga.addEventListener('change', function() {
         ruangLingkupChecklist.innerHTML = '';
         scopes.forEach((scope, index) => {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'form-check me-3 mb-2';
+            itemDiv.className = 'form-check mb-2';
             itemDiv.innerHTML = `
                 <input class="form-check-input" type="checkbox" value="${scope}" id="scope_${index}">
                 <label class="form-check-label small text-dark" for="scope_${index}">
@@ -683,16 +683,22 @@ function renderKompetensiList() {
     if (selectedKompetensi.length > 0) {
         selectedKompetensi.forEach((komp, index) => {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'd-flex align-items-center justify-content-between p-3 bg-white rounded-3 border border-light shadow-sm';
+            itemDiv.className = 'd-flex align-items-start justify-content-between p-3 bg-white rounded-3 border border-light shadow-sm';
             itemDiv.style.borderLeft = '4px solid #2563EB';
+            
+            const listItems = komp.ruang_lingkup.map(item => `<li>${item}</li>`).join('');
+            
             itemDiv.innerHTML = `
-                <div>
+                <div class="w-100 me-3">
                     <strong class="text-blue small">${komp.lembaga_nama}</strong>
                     <div class="text-muted small mt-1">
-                        <strong>Ruang Lingkup:</strong> ${komp.ruang_lingkup.join(', ')}
+                        <strong>Ruang Lingkup:</strong>
+                        <ul class="mb-0 ps-3 mt-1" style="line-height: 1.6;">
+                            ${listItems}
+                        </ul>
                     </div>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="hapusKompetensi(${index})">
+                <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle flex-shrink-0" onclick="hapusKompetensi(${index})">
                     <i class="fas fa-trash-can"></i>
                 </button>
             `;
@@ -706,6 +712,25 @@ function renderKompetensiList() {
         daftarKompetensiSection.classList.add('d-none');
         inputKompetensiLembaga.value = '';
     }
+
+    // Update dropdown options (disable/hide already selected)
+    updateLembagaDropdownOptions();
+}
+
+function updateLembagaDropdownOptions() {
+    const options = selectLembaga.querySelectorAll('option');
+    options.forEach(option => {
+        if (option.value === '') return;
+        
+        const isSelected = selectedKompetensi.some(komp => komp.lembaga_id === option.value);
+        if (isSelected) {
+            option.disabled = true;
+            option.hidden = true;
+        } else {
+            option.disabled = false;
+            option.hidden = false;
+        }
+    });
 }
 
 // Fungsi untuk menghapus kompetensi terpilih dari daftar
