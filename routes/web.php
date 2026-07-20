@@ -28,8 +28,8 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', 'App\Http\Controllers\Auth\LoginController@login');
 });
 
-// Logout (Hanya untuk user yang sudah login)
-Route::post('/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout')->middleware('auth');
+// Logout (Mendukung GET & POST, aman dari error 419 Page Expired)
+Route::match(['get', 'post'], '/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
 
 // ================= GROUP ROUTE TERPROTEKSI LOGIN =================
 Route::middleware(['auth'])->group(function () {
