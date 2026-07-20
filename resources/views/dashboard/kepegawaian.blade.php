@@ -573,7 +573,7 @@
                         <i class="fas fa-id-badge me-1" style="opacity: 0.8;"></i> {{ $auditor->posisi }}
                     </span>
 
-                    {{-- 3. Lembaga Badges: Shape Chip Lengkung dengan Icon Gedung --}}
+                    {{-- 3. Lembaga Badges: Shape Chip Lengkung Abu-abu Netral dengan Icon Gedung --}}
                     @php
                         $grouped = [];
                         foreach ($auditor->detailAuditors as $detail) {
@@ -584,20 +584,8 @@
                         }
                     @endphp
                     @foreach($grouped as $lembaga_nama => $scopes)
-                        @php
-                            $lembagaStyle = match($lembaga_nama) {
-                                'LSPro'   => 'background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;',
-                                'LSSM'    => 'background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE;',
-                                'LSSML'   => 'background: #CCFBF1; color: #0F766E; border: 1px solid #99F6E4;',
-                                'LSIH'    => 'background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0;',
-                                'LPH'     => 'background: #FFE4E6; color: #BE123C; border: 1px solid #FECDD3;',
-                                'LSHACCP' => 'background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;',
-                                'LSSMK3'  => 'background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA;',
-                                default   => 'background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;',
-                            };
-                        @endphp
-                        <span class="badge d-inline-flex align-items-center" style="{{ $lembagaStyle }} border-radius: 10px; padding: 5px 10px; font-weight: 600; font-size: 11px;" title="{{ implode(', ', $scopes) }}">
-                            <i class="fas fa-building me-1" style="font-size: 10px; opacity: 0.7;"></i> {{ $lembaga_nama }}
+                        <span class="badge d-inline-flex align-items-center" style="background: #F8FAFC; color: #475569; border: 1px solid #CBD5E1; border-radius: 10px; padding: 5px 10px; font-weight: 600; font-size: 11px;" title="{{ implode(', ', $scopes) }}">
+                            <i class="fas fa-building me-1" style="font-size: 10px; opacity: 0.6;"></i> {{ $lembaga_nama }}
                         </span>
                     @endforeach
                 </div>
