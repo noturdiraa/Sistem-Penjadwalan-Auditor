@@ -393,22 +393,7 @@
                         <!-- Jenis Audit -->
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Jenis Audit</label>
-                            <select name="jenis_audit" id="jenis_audit" required>
-                                <option value="" disabled>Cari / Pilih Jenis Audit...</option>
-                                @php
-                                    $currentVal = old('jenis_audit', $riwayat->audit->jenis_audit ?? '');
-                                    $hasCurrent = false;
-                                @endphp
-                                @foreach($jenisAudits as $ja)
-                                    @if($ja == $currentVal)
-                                        @php $hasCurrent = true; @endphp
-                                    @endif
-                                    <option value="{{ $ja }}" {{ $currentVal == $ja ? 'selected' : '' }}>{{ $ja }}</option>
-                                @endforeach
-                                @if(!$hasCurrent && $currentVal)
-                                    <option value="{{ $currentVal }}" selected>{{ $currentVal }}</option>
-                                @endif
-                            </select>
+                            <input type="text" name="jenis_audit" id="jenis_audit" class="form-control @error('jenis_audit') is-invalid @enderror" value="{{ old('jenis_audit', $riwayat->audit->jenis_audit ?? '') }}" placeholder="Masukkan Jenis Audit (misal: Resertifikasi, Surveillance, dll)" required style="height: 48px; border-radius: 10px;">
                             @error('jenis_audit')
                                 <div class="text-danger mt-1 small">{{ $message }}</div>
                             @enderror
@@ -517,7 +502,6 @@
             new TomSelect('#id_auditor', { create: false });
             new TomSelect('#id_perusahaan', { create: false });
             new TomSelect('#id_lembaga', { create: false });
-            new TomSelect('#jenis_audit', { create: true });
             new TomSelect('#tim_audit', { create: false, plugins: ['remove_button'] });
         });
     </script>

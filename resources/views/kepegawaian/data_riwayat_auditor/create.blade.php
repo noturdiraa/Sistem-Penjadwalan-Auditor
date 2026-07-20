@@ -395,12 +395,7 @@
                         <!-- Jenis Audit -->
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Jenis Audit</label>
-                            <select name="jenis_audit" id="jenis_audit" required>
-                                <option value="" selected disabled>Cari / Pilih Jenis Audit...</option>
-                                @foreach($jenisAudits as $ja)
-                                    <option value="{{ $ja }}" {{ old('jenis_audit') == $ja ? 'selected' : '' }}>{{ $ja }}</option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="jenis_audit" id="jenis_audit" class="form-control @error('jenis_audit') is-invalid @enderror" value="{{ old('jenis_audit') }}" placeholder="Masukkan Jenis Audit (misal: Resertifikasi, Surveillance, dll)" required style="height: 48px; border-radius: 10px;">
                             @error('jenis_audit')
                                 <div class="text-danger mt-1 small">{{ $message }}</div>
                             @enderror
@@ -506,7 +501,6 @@
             new TomSelect('#id_auditor', { create: false });
             new TomSelect('#id_perusahaan', { create: false });
             new TomSelect('#id_lembaga', { create: false });
-            new TomSelect('#jenis_audit', { create: true });
             new TomSelect('#tim_audit', { create: false, plugins: ['remove_button'] });
         });
     </script>
