@@ -549,25 +549,31 @@
                     </div>
                 </div>
                 <div class="badge-group">
-                    {{-- Status Badge --}}
+                    {{-- 1. Status Badge: Shape Pill Lonjong dengan Dot Indicator --}}
                     @if($auditor->status == 'Aktif')
-                        <span class="badge" style="background: #10B981; color: white; border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px;">{{ $auditor->status }}</span>
+                        <span class="badge d-inline-flex align-items-center" style="background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; border-radius: 50px; padding: 6px 14px; font-weight: 600; font-size: 12px;">
+                            <i class="fas fa-circle me-1 text-success" style="font-size: 8px;"></i> {{ $auditor->status }}
+                        </span>
                     @else
-                        <span class="badge" style="background: #EF4444; color: white; border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px;">{{ $auditor->status }}</span>
+                        <span class="badge d-inline-flex align-items-center" style="background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; border-radius: 50px; padding: 6px 14px; font-weight: 600; font-size: 12px;">
+                            <i class="fas fa-circle me-1 text-danger" style="font-size: 8px;"></i> {{ $auditor->status }}
+                        </span>
                     @endif
 
-                    {{-- Posisi Badge --}}
+                    {{-- 2. Posisi Badge: Shape Kartu Tiket Kotak dengan Left Accent Border --}}
                     @php
                         $posisiStyle = match($auditor->posisi) {
-                            'AMMI' => 'background: #F3E8FF; color: #7E22CE; border: 1px solid #D8B4FE;',
-                            'Non AMMI' => 'background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A;',
-                            'Subkon' => 'background: #E2E8F0; color: #334155; border: 1px solid #CBD5E1;',
-                            default => 'background: #E2E8F0; color: #334155; border: 1px solid #CBD5E1;',
+                            'AMMI' => 'background: #F3E8FF; color: #6B21A8; border-left: 4px solid #9333EA; border-top: 1px solid #E9D5FF; border-right: 1px solid #E9D5FF; border-bottom: 1px solid #E9D5FF;',
+                            'Non AMMI' => 'background: #FEF3C7; color: #92400E; border-left: 4px solid #D97706; border-top: 1px solid #FDE68A; border-right: 1px solid #FDE68A; border-bottom: 1px solid #FDE68A;',
+                            'Subkon' => 'background: #F1F5F9; color: #334155; border-left: 4px solid #64748B; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;',
+                            default => 'background: #F1F5F9; color: #334155; border-left: 4px solid #64748B; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;',
                         };
                     @endphp
-                    <span class="badge" style="{{ $posisiStyle }} border-radius: 10px; padding: 5px 12px; font-weight: 600; font-size: 12px;">{{ $auditor->posisi }}</span>
+                    <span class="badge d-inline-flex align-items-center" style="{{ $posisiStyle }} border-radius: 4px; padding: 5px 12px; font-weight: 700; font-size: 12px;">
+                        <i class="fas fa-id-badge me-1" style="opacity: 0.8;"></i> {{ $auditor->posisi }}
+                    </span>
 
-                    {{-- Lembaga Badges dengan Warna Unik per Lembaga --}}
+                    {{-- 3. Lembaga Badges: Shape Chip Lengkung dengan Icon Gedung --}}
                     @php
                         $grouped = [];
                         foreach ($auditor->detailAuditors as $detail) {
@@ -576,16 +582,6 @@
                                 $grouped[$rl->lembaga->nama_lembaga][] = $rl->nama_ruang_lingkup;
                             }
                         }
-                        
-                        $lembagaPalette = [
-                            'LSPro'   => 'background: #0284C7; color: #FFFFFF;',
-                            'LSSM'    => 'background: #2563EB; color: #FFFFFF;',
-                            'LSSML'   => 'background: #0284C7; color: #FFFFFF;',
-                            'LSIH'    => 'background: #2563EB; color: #FFFFFF;',
-                            'LPH'     => 'background: #0284C7; color: #FFFFFF;',
-                            'LSHACCP' => 'background: #2563EB; color: #FFFFFF;',
-                            'LSSMK3'  => 'background: #0284C7; color: #FFFFFF;',
-                        ];
                     @endphp
                     @foreach($grouped as $lembaga_nama => $scopes)
                         @php
@@ -593,15 +589,15 @@
                                 'LSPro'   => 'background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;',
                                 'LSSM'    => 'background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE;',
                                 'LSSML'   => 'background: #CCFBF1; color: #0F766E; border: 1px solid #99F6E4;',
-                                'LSIH'    => 'background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0;',
+                                'LSIH'    => 'background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0;',
                                 'LPH'     => 'background: #FFE4E6; color: #BE123C; border: 1px solid #FECDD3;',
                                 'LSHACCP' => 'background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;',
                                 'LSSMK3'  => 'background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA;',
                                 default   => 'background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;',
                             };
                         @endphp
-                        <span class="badge" style="{{ $lembagaStyle }} border-radius: 8px; padding: 5px 10px; font-weight: 600; font-size: 11px;" title="{{ implode(', ', $scopes) }}">
-                            {{ $lembaga_nama }}
+                        <span class="badge d-inline-flex align-items-center" style="{{ $lembagaStyle }} border-radius: 10px; padding: 5px 10px; font-weight: 600; font-size: 11px;" title="{{ implode(', ', $scopes) }}">
+                            <i class="fas fa-building me-1" style="font-size: 10px; opacity: 0.7;"></i> {{ $lembaga_nama }}
                         </span>
                     @endforeach
                 </div>
