@@ -33,9 +33,11 @@ class AuditorController extends Controller
      */
     public function store(Request $request)
     {
+        $nipRule = $request->posisi === 'Subkon' ? 'nullable|string|max:255' : 'required|string|max:255|unique:auditors,nip';
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'required|string|max:255|unique:auditors,nip',
+            'nip' => $nipRule,
             'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
@@ -96,9 +98,11 @@ class AuditorController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $nipRule = $request->posisi === 'Subkon' ? 'nullable|string|max:255' : 'required|string|max:255|unique:auditors,nip,' . $id . ',id_auditor';
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'required|string|max:255|unique:auditors,nip,' . $id . ',id_auditor',
+            'nip' => $nipRule,
             'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);

@@ -672,7 +672,7 @@ Tambah Auditor
         @forelse($auditors as $index => $auditor)
         <tr class="auditor-row">
             <td>{{ $index + 1 }}</td>
-            <td>{{ $auditor->nip }}</td>
+            <td>{{ $auditor->nip ?: '-' }}</td>
             <td>
                 <div class="d-flex align-items-center">
                     <div class="avatar me-3" style="background: #2563EB; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
@@ -682,7 +682,7 @@ Tambah Auditor
                         <strong>{{ $auditor->nama_auditor }}</strong>
                         <br>
                         <small class="text-muted">
-                            NIP: {{ $auditor->nip }}
+                            NIP: {{ $auditor->nip ?: '-' }}
                         </small>
                     </div>
                 </div>

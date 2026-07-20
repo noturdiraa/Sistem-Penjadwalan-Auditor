@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_auditor');
 
             $table->string('nama_auditor');
-            $table->string('nip')->unique();
+            $table->string('nip')->nullable()->unique();
             $table->enum('jenis_auditor', [
             'Pegawai',
             'Subkontrak'

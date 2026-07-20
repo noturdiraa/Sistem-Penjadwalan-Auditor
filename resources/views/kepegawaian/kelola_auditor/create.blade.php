@@ -397,9 +397,9 @@ color:#777;
             <input
             type="text"
             name="nip"
+            id="inputNip"
             class="form-control"
-            placeholder="Masukkan NIP"
-            required>
+            placeholder="Masukkan NIP">
 
         </div>
 
@@ -577,6 +577,21 @@ const daftarKompetensiSection = document.getElementById('daftarKompetensiSection
 const daftarKompetensiList = document.getElementById('daftarKompetensiList');
 const inputKompetensiLembaga = document.getElementById('inputKompetensiLembaga');
 const btnResetForm = document.getElementById('btnResetForm');
+
+const selectPosisi = document.querySelector('select[name="posisi"]');
+const inputNip = document.getElementById('inputNip');
+
+if (selectPosisi && inputNip) {
+    selectPosisi.addEventListener('change', function() {
+        if (this.value === 'Subkon') {
+            inputNip.removeAttribute('required');
+            inputNip.placeholder = 'Masukkan NIP (Opsional untuk Subkon)';
+        } else {
+            inputNip.setAttribute('required', 'required');
+            inputNip.placeholder = 'Masukkan NIP';
+        }
+    });
+}
 
 // Ketika Lembaga dipilih
 selectLembaga.addEventListener('change', function() {
