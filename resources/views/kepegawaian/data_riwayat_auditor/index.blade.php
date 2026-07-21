@@ -477,8 +477,8 @@
                                                     $teamNames = [];
                                                     if ($riwayat->jadwalAudit) {
                                                         foreach ($riwayat->jadwalAudit->timAudits as $t) {
-                                                            if ($t->auditor) {
-                                                                $teamNames[] = $t->auditor->nama_auditor . ' (NIP: ' . $t->auditor->nip . ')';
+                                                            if ($t->auditor && $t->id_auditor != $riwayat->id_auditor) {
+                                                                $teamNames[] = $t->auditor->nama_auditor . ' (NIP: ' . ($t->auditor->nip ?: '-') . ')';
                                                             }
                                                         }
                                                     }
