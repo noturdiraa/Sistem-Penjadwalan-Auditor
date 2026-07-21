@@ -390,6 +390,7 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
+                                <th width="60" class="text-center">No.</th>
                                 <th>Nama Perusahaan</th>
                                 <th>Email</th>
                                 <th>Telepon / HP</th>
@@ -400,6 +401,7 @@
                         <tbody>
                             @forelse($perusahaans as $p)
                                 <tr>
+                                    <td class="text-center fw-semibold text-muted">{{ $loop->iteration }}</td>
                                     <td><strong>{{ $p->nama_perusahaan }}</strong></td>
                                     <td>{{ $p->email ?? '-' }}</td>
                                     <td>{{ $p->no_telepon ?? '-' }}</td>
@@ -440,7 +442,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
+                                    <td colspan="6" class="text-center text-muted py-4">Belum ada data perusahaan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
