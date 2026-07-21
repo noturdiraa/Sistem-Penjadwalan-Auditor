@@ -12,6 +12,10 @@ class RiwayatAuditor extends Model
 
     protected $fillable = [
         'id_auditor',
+        'id_perusahaan',
+        'id_lembaga',
+        'jenis_audit',
+        'tim_audit_lainnya',
         'id_audit',
         'id_jadwal',
         'peran_auditor',
@@ -26,6 +30,16 @@ class RiwayatAuditor extends Model
     public function auditor()
     {
         return $this->belongsTo(Auditor::class, 'id_auditor', 'id_auditor');
+    }
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(Perusahaan::class, 'id_perusahaan', 'id_perusahaan');
+    }
+
+    public function lembaga()
+    {
+        return $this->belongsTo(Lembaga::class, 'id_lembaga', 'id_lembaga');
     }
 
     public function audit()

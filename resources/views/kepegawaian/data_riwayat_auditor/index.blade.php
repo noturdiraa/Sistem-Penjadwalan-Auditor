@@ -448,7 +448,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <strong>{{ $riwayat->audit->perusahaan->nama_perusahaan ?? 'Perusahaan' }}</strong>
+                                        <strong>{{ $riwayat->perusahaan->nama_perusahaan ?? $riwayat->audit->perusahaan->nama_perusahaan ?? '-' }}</strong>
                                     </td>
                                     <td>
                                         <span class="badge bg-light-blue">{{ $riwayat->peran_auditor }}</span>
@@ -465,24 +465,28 @@
                                                 data-bs-target="#detailModal"
                                                 data-auditor="{{ $riwayat->auditor->nama_auditor ?? '-' }}"
                                                 data-nip="{{ $riwayat->auditor->nip ?? '-' }}"
-                                                data-perusahaan="{{ $riwayat->audit->perusahaan->nama_perusahaan ?? '-' }}"
-                                                data-lembaga="{{ $riwayat->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
-                                                data-jenis-audit="{{ $riwayat->audit->jenis_audit ?? '-' }}"
+                                                data-perusahaan="{{ $riwayat->perusahaan->nama_perusahaan ?? $riwayat->audit->perusahaan->nama_perusahaan ?? '-' }}"
+                                                data-lembaga="{{ $riwayat->lembaga->nama_lembaga ?? $riwayat->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
+                                                data-jenis-audit="{{ $riwayat->jenis_audit ?? $riwayat->audit->jenis_audit ?? '-' }}"
                                                 data-peran="{{ $riwayat->peran_auditor }}"
                                                 data-tanggal-mulai="{{ \Carbon\Carbon::parse($riwayat->tanggal_mulai)->format('d M Y') }}"
                                                 data-tanggal-selesai="{{ $riwayat->tanggal_selesai ? \Carbon\Carbon::parse($riwayat->tanggal_selesai)->format('d M Y') : '-' }}"
                                                 data-status="{{ $riwayat->status_penugasan }}"
                                                 data-keterangan="{{ $riwayat->keterangan ?? '-' }}"
                                                 data-tim="@php
-                                                    $teamNames = [];
-                                                    if ($riwayat->jadwalAudit) {
-                                                        foreach ($riwayat->jadwalAudit->timAudits as $t) {
-                                                            if ($t->auditor && $t->id_auditor != $riwayat->id_auditor) {
-                                                                $teamNames[] = $t->auditor->nama_auditor . ' (NIP: ' . ($t->auditor->nip ?: '-') . ')';
+                                                    if ($riwayat->tim_audit_lainnya) {
+                                                        echo $riwayat->tim_audit_lainnya;
+                                                    } else {
+                                                        $teamNames = [];
+                                                        if ($riwayat->jadwalAudit) {
+                                                            foreach ($riwayat->jadwalAudit->timAudits as $t) {
+                                                                if ($t->auditor && $t->id_auditor != $riwayat->id_auditor) {
+                                                                    $teamNames[] = $t->auditor->nama_auditor . ' (NIP: ' . ($t->auditor->nip ?: '-') . ')';
+                                                                }
                                                             }
                                                         }
+                                                        echo count($teamNames) > 0 ? implode(' | ', $teamNames) : 'Tidak ada anggota tim lain';
                                                     }
-                                                    echo count($teamNames) > 0 ? implode(' | ', $teamNames) : 'Tidak ada anggota tim lain';
                                                 @endphp">
                                             <i class="fas fa-eye text-blue" title="Detail"></i>
                                         </button>

@@ -20,15 +20,32 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
+            $table->foreignId('id_perusahaan')
+                ->nullable()
+                ->constrained('perusahaans', 'id_perusahaan')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
+
+            $table->foreignId('id_lembaga')
+                ->nullable()
+                ->constrained('lembagas', 'id_lembaga')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
+
+            $table->string('jenis_audit')->nullable();
+            $table->text('tim_audit_lainnya')->nullable();
+
             $table->foreignId('id_audit')
+                ->nullable()
                 ->constrained('audits', 'id_audit')
                 ->cascadeOnUpdate()
-                ->restrictOnDelete();
+                ->nullOnDelete();
 
             $table->foreignId('id_jadwal')
+                ->nullable()
                 ->constrained('jadwal_audits', 'id_jadwal')
                 ->cascadeOnUpdate()
-                ->restrictOnDelete();
+                ->nullOnDelete();
 
             $table->enum('peran_auditor', [
                 'Lead Auditor',
