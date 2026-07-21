@@ -35,9 +35,34 @@ class RiwayatAuditorController extends Controller
         $auditors = Auditor::all();
         $perusahaans = \App\Models\Perusahaan::all();
         $lembagas = \App\Models\Lembaga::all();
-        $jenisAudits = Audit::select('jenis_audit')->distinct()->pluck('jenis_audit');
 
-        return view('kepegawaian.data_riwayat_auditor.create', compact('auditors', 'perusahaans', 'lembagas', 'jenisAudits'));
+        $companyMap = [];
+        foreach ($perusahaans as $p) {
+            $compName = trim($p->nama_perusahaan);
+            $statusJasa = trim($p->status_jasa ?? '');
+
+            $idLembaga = null;
+            if ($statusJasa) {
+                $matchedLembaga = $lembagas->first(function ($l) use ($statusJasa) {
+                    return strcasecmp(trim($l->nama_lembaga), $statusJasa) === 0;
+                });
+                if ($matchedLembaga) {
+                    $idLembaga = $matchedLembaga->id_lembaga;
+                }
+            }
+
+            if (!isset($companyMap[$compName])) {
+                $companyMap[$compName] = [];
+            }
+
+            $companyMap[$compName][] = [
+                'id_perusahaan' => $p->id_perusahaan,
+                'status_jasa'   => $statusJasa ?: 'Lembaga Umum',
+                'id_lembaga'    => $idLembaga,
+            ];
+        }
+
+        return view('kepegawaian.data_riwayat_auditor.create', compact('auditors', 'companyMap', 'lembagas'));
     }
 
     /**
@@ -97,9 +122,34 @@ class RiwayatAuditorController extends Controller
         $auditors = Auditor::all();
         $perusahaans = \App\Models\Perusahaan::all();
         $lembagas = \App\Models\Lembaga::all();
-        $jenisAudits = Audit::select('jenis_audit')->distinct()->pluck('jenis_audit');
 
-        return view('kepegawaian.data_riwayat_auditor.edit', compact('riwayat', 'auditors', 'perusahaans', 'lembagas', 'jenisAudits'));
+        $companyMap = [];
+        foreach ($perusahaans as $p) {
+            $compName = trim($p->nama_perusahaan);
+            $statusJasa = trim($p->status_jasa ?? '');
+
+            $idLembaga = null;
+            if ($statusJasa) {
+                $matchedLembaga = $lembagas->first(function ($l) use ($statusJasa) {
+                    return strcasecmp(trim($l->nama_lembaga), $statusJasa) === 0;
+                });
+                if ($matchedLembaga) {
+                    $idLembaga = $matchedLembaga->id_lembaga;
+                }
+            }
+
+            if (!isset($companyMap[$compName])) {
+                $companyMap[$compName] = [];
+            }
+
+            $companyMap[$compName][] = [
+                'id_perusahaan' => $p->id_perusahaan,
+                'status_jasa'   => $statusJasa ?: 'Lembaga Umum',
+                'id_lembaga'    => $idLembaga,
+            ];
+        }
+
+        return view('kepegawaian.data_riwayat_auditor.edit', compact('riwayat', 'auditors', 'companyMap', 'lembagas'));
     }
 
     /**
