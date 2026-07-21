@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('id_auditor')
                 ->constrained('auditors', 'id_auditor')
                 ->cascadeOnUpdate()
-                ->restrictOnDelete();
+                ->cascadeOnDelete();
 
             $table->foreignId('id_perusahaan')
                 ->nullable()

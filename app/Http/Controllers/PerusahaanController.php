@@ -85,6 +85,9 @@ class PerusahaanController extends Controller
     public function destroy(string $id)
     {
         $perusahaan = Perusahaan::findOrFail($id);
+        \App\Models\RiwayatAuditor::where('id_perusahaan', $id)->delete();
+        \App\Models\Audit::where('id_perusahaan', $id)->delete();
+        
         $perusahaan->delete();
 
         return redirect()->route('pji.perusahaan.index')

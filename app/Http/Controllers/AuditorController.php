@@ -146,6 +146,9 @@ class AuditorController extends Controller
     public function destroy(string $id)
     {
         \App\Models\DetailAuditor::where('id_auditor', $id)->delete();
+        \App\Models\RiwayatAuditor::where('id_auditor', $id)->delete();
+        \App\Models\TimAudit::where('id_auditor', $id)->delete();
+        \App\Models\RekomendasiAuditor::where('id_auditor', $id)->delete();
 
         $auditor = Auditor::findOrFail($id);
         $auditor->delete();
