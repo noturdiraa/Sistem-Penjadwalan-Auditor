@@ -520,6 +520,26 @@
                                                         {{ $badgeText }}
                                                     </span>
                                                 </div>
+                                                <div class="mt-2 text-secondary" style="font-size: 11px; line-height: 1.3;">
+                                                    <strong>Kompetensi:</strong>
+                                                    @php
+                                                        $groupedComp = [];
+                                                        foreach ($auditor->detailAuditors as $detail) {
+                                                            if ($detail->ruangLingkup && $detail->ruangLingkup->lembaga) {
+                                                                $lemb = $detail->ruangLingkup->lembaga->nama_lembaga;
+                                                                $scope = $detail->ruangLingkup->nama_ruang_lingkup;
+                                                                $groupedComp[$lemb][] = $scope;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <ul class="mb-0 ps-3 mt-1" style="list-style-type: square;">
+                                                        @forelse ($groupedComp as $lembName => $scopes)
+                                                            <li><strong class="text-dark">{{ $lembName }}</strong>: {{ implode(', ', $scopes) }}</li>
+                                                        @empty
+                                                            <li class="text-muted">Tidak ada kompetensi terdaftar</li>
+                                                        @endforelse
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
 

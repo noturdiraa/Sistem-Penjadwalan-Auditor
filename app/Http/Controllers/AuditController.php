@@ -231,6 +231,33 @@ class AuditController extends Controller
 
         $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])->get();
 
+        // Filter: Hanya auditor yang memiliki kompetensi Lembaga & Ruang Lingkup yang sesuai
+        $auditors = $auditors->filter(function($auditor) use ($selectedLembagaIds, $requestedScopes) {
+            // Cek apakah auditor terdaftar di Lembaga terpilih
+            $hasLembaga = $auditor->detailAuditors->contains(function($d) use ($selectedLembagaIds) {
+                return in_array($d->ruangLingkup->id_lembaga ?? null, $selectedLembagaIds);
+            });
+
+            if (!$hasLembaga) {
+                return false;
+            }
+
+            // Jika ada ruang lingkup yang dicari, pastikan auditor memiliki minimal salah satu ruang lingkup tersebut
+            if (!empty($requestedScopes)) {
+                $auditorScopes = $auditor->detailAuditors->map(fn($d) => trim($d->ruangLingkup->nama_ruang_lingkup ?? ''))->toArray();
+                $hasAnyScope = false;
+                foreach ($requestedScopes as $rScope) {
+                    if (in_array(trim($rScope), $auditorScopes)) {
+                        $hasAnyScope = true;
+                        break;
+                    }
+                }
+                return $hasAnyScope;
+            }
+
+            return true;
+        });
+
         foreach ($auditors as $auditor) {
             // Check availability (overlap check)
             $overlapRiwayat = \App\Models\RiwayatAuditor::where('id_auditor', $auditor->id_auditor)
