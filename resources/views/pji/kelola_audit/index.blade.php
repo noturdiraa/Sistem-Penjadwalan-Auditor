@@ -431,7 +431,7 @@ Buat Audit
                                                 data-anggota="{{ $anggotaList }}"
                                                 data-status="{{ $audit->status }}"
                                                 data-lokasi="{{ $firstJadwal && $firstJadwal->lokasi ? $firstJadwal->lokasi->nama_lokasi : '-' }}"
-                                                data-kategori-wilayah="{{ $firstJadwal && $firstJadwal->lokasi ? $firstJadwal->lokasi->keterangan : '-' }}">
+                                                data-kategori-wilayah="{{ $firstJadwal && $firstJadwal->lokasi ? $firstJadwal->lokasi->kategori_wilayah : '-' }}">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                         <!-- Delete Button -->

@@ -121,7 +121,8 @@ class AuditController extends Controller
         // 2. Create Lokasi
         $lokasi = \App\Models\Lokasi::create([
             'nama_lokasi' => $request->lokasi,
-            'keterangan' => $request->kategori_lokasi, // Store Kategori Wilayah in keterangan field
+            'kategori_wilayah' => $request->kategori_lokasi,
+            'keterangan' => null,
         ]);
 
         // 3. Create Jadwal Audit

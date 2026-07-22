@@ -12,6 +12,7 @@ class Lokasi extends Model
 
     protected $fillable = [
         'nama_lokasi',
+        'kategori_wilayah',
         'keterangan',
     ];
 
