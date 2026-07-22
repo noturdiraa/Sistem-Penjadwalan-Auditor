@@ -157,26 +157,30 @@ class AuditController extends Controller
         // 6. Save Recommendation Scores to rekomendasi_auditors table
         $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])->get();
 
-        foreach ($auditors as $auditor) {
-            $scorePenugasan = $auditor->riwayatAuditors->count();
+        $currentKategori = trim($request->kategori_lokasi);
+        $scoreKategori = 1;
+        if ($currentKategori === 'Dalam Kota') {
+            $scoreKategori = 1;
+        } elseif ($currentKategori === 'Pinggiran Kota') {
+            $scoreKategori = 2;
+        } elseif ($currentKategori === 'Luar Kota') {
+            $scoreKategori = 3;
+        } elseif ($currentKategori === 'Luar Negeri') {
+            $scoreKategori = 4;
+        }
 
-            $scoreKategori = 0;
-            foreach ($auditor->timAudits as $ta) {
-                $kat = '-';
-                if ($ta->jadwalAudit && $ta->jadwalAudit->lokasi) {
-                    $kat = trim($ta->jadwalAudit->lokasi->kategori_wilayah);
-                }
-                if ($kat === 'Dalam Kota') {
-                    $scoreKategori += 1;
-                } elseif ($kat === 'Pinggiran Kota') {
-                    $scoreKategori += 2;
-                } elseif ($kat === 'Luar Kota') {
-                    $scoreKategori += 3;
-                } elseif ($kat === 'Luar Negeri') {
-                    $scoreKategori += 4;
-                } else {
-                    $scoreKategori += 1; // Default
-                }
+        foreach ($auditors as $auditor) {
+            $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+            
+            $scorePenugasan = 1;
+            if ($workloadCount <= 2) {
+                $scorePenugasan = 1;
+            } elseif ($workloadCount <= 4) {
+                $scorePenugasan = 2;
+            } elseif ($workloadCount <= 6) {
+                $scorePenugasan = 3;
+            } else {
+                $scorePenugasan = 4;
             }
 
             $totalScore = $scorePenugasan + $scoreKategori;
@@ -241,25 +245,29 @@ class AuditController extends Controller
                       ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
                 })->exists();
 
-            $scorePenugasan = $auditor->riwayatAuditors->count();
+            $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+            
+            $scorePenugasan = 1;
+            if ($workloadCount <= 2) {
+                $scorePenugasan = 1;
+            } elseif ($workloadCount <= 4) {
+                $scorePenugasan = 2;
+            } elseif ($workloadCount <= 6) {
+                $scorePenugasan = 3;
+            } else {
+                $scorePenugasan = 4;
+            }
 
-            $scoreKategori = 0;
-            foreach ($auditor->timAudits as $ta) {
-                $kat = '-';
-                if ($ta->jadwalAudit && $ta->jadwalAudit->lokasi) {
-                    $kat = trim($ta->jadwalAudit->lokasi->kategori_wilayah);
-                }
-                if ($kat === 'Dalam Kota') {
-                    $scoreKategori += 1;
-                } elseif ($kat === 'Pinggiran Kota') {
-                    $scoreKategori += 2;
-                } elseif ($kat === 'Luar Kota') {
-                    $scoreKategori += 3;
-                } elseif ($kat === 'Luar Negeri') {
-                    $scoreKategori += 4;
-                } else {
-                    $scoreKategori += 1; // Default
-                }
+            $currentKategori = trim($request->kategori_lokasi);
+            $scoreKategori = 1;
+            if ($currentKategori === 'Dalam Kota') {
+                $scoreKategori = 1;
+            } elseif ($currentKategori === 'Pinggiran Kota') {
+                $scoreKategori = 2;
+            } elseif ($currentKategori === 'Luar Kota') {
+                $scoreKategori = 3;
+            } elseif ($currentKategori === 'Luar Negeri') {
+                $scoreKategori = 4;
             }
 
             $totalScore = $scorePenugasan + $scoreKategori;
