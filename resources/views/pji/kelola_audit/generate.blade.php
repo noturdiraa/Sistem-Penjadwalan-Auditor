@@ -485,7 +485,7 @@
                         $memberIdx2 = 2;
                     @endphp
 
-                    <div class="row">
+                    <div class="row g-4">
                         @forelse ($auditors as $index => $auditor)
                             @php
                                 $isLeadSelected = ($index === $leadIdx) ? 'checked' : '';
@@ -504,67 +504,86 @@
                                     $avatarBg = 'background: #2563EB;'; // Blue for Lead
                                 }
                             @endphp
-                            <div class="col-md-12 mb-3">
-                                <div class="card card-auditor shadow-sm border-0 rounded-4 p-3" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.05) !important;">
-                                    <div class="row align-items-center">
-                                        <!-- Avatar & Info -->
-                                        <div class="col-lg-4 col-md-5 d-flex align-items-center gap-3">
-                                            <div class="auditor-avatar flex-shrink-0" style="{{ $avatarBg }} width: 50px; height: 50px; border-radius: 12px; font-size: 18px;">
+                            <div class="col-md-4">
+                                <div class="card card-auditor shadow-sm border-0 rounded-4 p-4 h-100 d-flex flex-column justify-content-between" style="box-shadow: 0 4px 15px rgba(15, 61, 145, 0.06) !important; min-height: 480px;">
+                                    
+                                    <!-- Bagian Atas: Profil Auditor -->
+                                    <div>
+                                        <div class="d-flex align-items-center gap-3 mb-3">
+                                            <div class="auditor-avatar flex-shrink-0" style="{{ $avatarBg }} width: 52px; height: 52px; border-radius: 12px; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; color: white;">
                                                 {{ strtoupper(substr($auditor->nama_auditor, 0, 2)) }}
                                             </div>
                                             <div>
-                                                <h6 class="mb-1 fw-bold text-dark" style="font-size: 15px;">{{ $auditor->nama_auditor }}</h6>
+                                                <h6 class="mb-1 fw-bold text-dark fs-6" style="line-height: 1.2;">{{ $auditor->nama_auditor }}</h6>
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <span class="badge bg-secondary-subtle text-secondary fs-8" style="padding: 3px 6px;">{{ $auditor->posisi }}</span>
-                                                    <span class="badge {{ $badgeColor }}-subtle text-{{ $isBusy ? 'danger' : 'success' }} fs-8" style="padding: 3px 6px;">
+                                                    <span class="badge bg-secondary-subtle text-secondary fs-8" style="padding: 4px 8px;">{{ $auditor->posisi }}</span>
+                                                    <span class="badge {{ $badgeColor }}-subtle text-{{ $isBusy ? 'danger' : 'success' }} fs-8" style="padding: 4px 8px;">
                                                         {{ $badgeText }}
                                                     </span>
                                                 </div>
-                                                <div class="mt-2 text-secondary" style="font-size: 11px; line-height: 1.3;">
-                                                    <strong>Kompetensi:</strong>
-                                                    @php
-                                                        $groupedComp = [];
-                                                        foreach ($auditor->detailAuditors as $detail) {
-                                                            if ($detail->ruangLingkup && $detail->ruangLingkup->lembaga) {
-                                                                $lemb = $detail->ruangLingkup->lembaga->nama_lembaga;
-                                                                $scope = $detail->ruangLingkup->nama_ruang_lingkup;
-                                                                $groupedComp[$lemb][] = $scope;
-                                                            }
+                                            </div>
+                                        </div>
+
+                                        <hr class="text-muted opacity-25">
+
+                                        <!-- Bagian Tengah: Kompetensi Keahlian (Dicocokkan) -->
+                                        <div class="mb-4">
+                                            <div class="text-secondary fw-semibold mb-2" style="font-size: 13px;">
+                                                <i class="fas fa-certificate text-warning me-1"></i> Kompetensi Sesuai Jadwal:
+                                            </div>
+                                            @php
+                                                $groupedComp = [];
+                                                foreach ($auditor->detailAuditors as $detail) {
+                                                    if ($detail->ruangLingkup && $detail->ruangLingkup->lembaga) {
+                                                        $lembId = $detail->ruangLingkup->lembaga->id_lembaga;
+                                                        $lembName = $detail->ruangLingkup->lembaga->nama_lembaga;
+                                                        $scope = trim($detail->ruangLingkup->nama_ruang_lingkup);
+                                                        
+                                                        $isLembagaSelected = isset($kompetensiData[$lembId]);
+                                                        $isScopeSelected = in_array($scope, $requestedScopes);
+                                                        
+                                                        if ($isLembagaSelected && $isScopeSelected) {
+                                                            $groupedComp[$lembName][] = $scope;
                                                         }
-                                                    @endphp
-                                                    <ul class="mb-0 ps-3 mt-1" style="list-style-type: square;">
-                                                        @forelse ($groupedComp as $lembName => $scopes)
-                                                            <li><strong class="text-dark">{{ $lembName }}</strong>: {{ implode(', ', $scopes) }}</li>
-                                                        @empty
-                                                            <li class="text-muted">Tidak ada kompetensi terdaftar</li>
-                                                        @endforelse
-                                                    </ul>
-                                                </div>
+                                                    }
+                                                }
+                                            @endphp
+                                            <div class="bg-light rounded-3 p-3" style="font-size: 12px; min-height: 120px;">
+                                                <ul class="mb-0 ps-3" style="list-style-type: square; line-height: 1.5;">
+                                                    @forelse ($groupedComp as $lembName => $scopes)
+                                                        <li class="mb-2">
+                                                            <strong class="text-dark">{{ $lembName }}</strong>
+                                                            <div class="text-muted mt-1" style="font-size: 11px;">{{ implode(', ', $scopes) }}</div>
+                                                        </li>
+                                                    @empty
+                                                        <li class="text-muted">Tidak ada kompetensi terdaftar</li>
+                                                    @endforelse
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bagian Bawah: Skor & Aksi -->
+                                    <div>
+                                        <!-- Rincian Poin -->
+                                        <div class="d-flex align-items-center justify-content-around bg-light rounded-3 p-2 mb-3" style="font-size: 12px;">
+                                            <div class="text-center" style="flex: 1;">
+                                                <small class="text-secondary d-block text-uppercase" style="font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px;">Penugasan</small>
+                                                <span class="fw-bold text-dark fs-6">{{ $auditor->scoring['penugasan'] }}</span> <small class="text-muted">Poin</small>
+                                            </div>
+                                            <div class="border-start" style="height: 20px;"></div>
+                                            <div class="text-center" style="flex: 1;">
+                                                <small class="text-secondary d-block text-uppercase" style="font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px;">Wilayah</small>
+                                                <span class="fw-bold text-dark fs-6">+{{ $auditor->scoring['kategori'] }}</span> <small class="text-muted">Poin</small>
                                             </div>
                                         </div>
 
-                                        <!-- Detail Skor Breakdown -->
-                                        <div class="col-lg-5 col-md-4 my-3 my-md-0">
-                                            <div class="d-flex align-items-center justify-content-around bg-light rounded-3 p-2" style="font-size: 13px;">
-                                                <div class="text-center" style="flex: 1;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700;">Penugasan Lampau</small>
-                                                    <span class="fw-bold text-dark fs-6">{{ $auditor->scoring['penugasan'] }}</span> <small class="text-muted">Poin</small>
-                                                </div>
-                                                <div class="border-start" style="height: 24px;"></div>
-                                                <div class="text-center" style="flex: 1;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700;">Beban Wilayah</small>
-                                                    <span class="fw-bold text-dark fs-6">+{{ $auditor->scoring['kategori'] }}</span> <small class="text-muted">Poin</small>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Actions & Total Skor -->
-                                        <div class="col-lg-3 col-md-3 text-md-end d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-end gap-2">
-                                            <div class="mb-md-2 text-md-end">
-                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700;">Total Poin</small>
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div>
+                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Total Poin</small>
                                                 <h4 class="fw-bold text-primary mb-0" style="font-size: 22px;">{{ $auditor->scoring['total'] }} <span style="font-size: 12px; font-weight: 500;" class="text-secondary">Poin</span></h4>
                                             </div>
-                                            
+
                                             <div class="d-flex gap-2">
                                                 <!-- Lead Auditor -->
                                                 <input type="radio" class="btn-check btn-role-lead" name="lead_auditor_id" id="lead_{{ $auditor->id_auditor }}" value="{{ $auditor->id_auditor }}" autocomplete="off" required {{ $isLeadSelected }}>
@@ -580,6 +599,7 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         @empty
