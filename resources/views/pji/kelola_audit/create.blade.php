@@ -552,8 +552,11 @@
                                 <!-- Pilih Jenis Audit -->
                                 <div class="col-md-5 mb-3">
                                     <label class="form-label fw-semibold" style="font-size: 14px;">Pilih Jenis Audit</label>
-                                    <select class="form-select" id="selectLembaga" onchange="loadRuangLingkup()" disabled>
-                                        <option value="" disabled selected>Pilih Perusahaan Terlebih Dahulu</option>
+                                    <select class="form-select" id="selectLembaga" onchange="loadRuangLingkup()">
+                                        <option value="" disabled selected>Pilih Jenis Audit</option>
+                                        @foreach($lembagas as $l)
+                                            <option value="{{ $l->id_lembaga }}">{{ $l->nama_lembaga }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 
@@ -643,37 +646,6 @@
 
             // Render existing competencies if page reloads on validation error
             renderKompetensiList();
-            
-            selectCompany.addEventListener('change', function() {
-                const compName = this.value;
-                const services = companyData[compName] || [];
-                
-                selectLembaga.innerHTML = '<option value="" disabled selected>Pilih Jenis Audit</option>';
-                if (services.length > 0) {
-                    selectLembaga.disabled = false;
-                    services.forEach(item => {
-                        if (item.id_lembaga) {
-                            const opt = document.createElement('option');
-                            opt.value = item.id_lembaga;
-                            opt.textContent = item.status_jasa;
-                            selectLembaga.appendChild(opt);
-                        }
-                    });
-                    
-                    if (selectLembaga.options.length > 1) {
-                        selectLembaga.selectedIndex = 1;
-                        loadRuangLingkup();
-                    } else {
-                        const opt = document.createElement('option');
-                        opt.value = "";
-                        opt.disabled = true;
-                        opt.textContent = "Tidak ada Lembaga standar terdaftar";
-                        selectLembaga.appendChild(opt);
-                    }
-                } else {
-                    selectLembaga.disabled = true;
-                }
-            });
         });
 
         const listKompetensi = @json(old('kompetensi_json') ? json_decode(old('kompetensi_json'), true) : (object)[]);
