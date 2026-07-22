@@ -463,13 +463,38 @@
                     </div>
                 </div>
 
+                <!-- Session Alert -->
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="max-width: 900px; margin: 0 auto 22px auto; border-radius: 12px;">
+                        <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="max-width: 900px; margin: 0 auto 22px auto; border-radius: 12px;">
+                        <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                @if($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="max-width: 900px; margin: 0 auto 22px auto; border-radius: 12px;">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <ul class="mb-0 ps-3">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <!-- ================= FORM CARD ================= -->
                 <div class="form-card">
                     <h3>Informasi Dasar Audit</h3>
 
                     <form action="{{ route('pji.audit.generate') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="kompetensi_json" id="inputKompetensiJson" required>
+                        <input type="hidden" name="kompetensi_json" id="inputKompetensiJson">
 
                         <div class="row">
                             <!-- Perusahaan yang Diaudit -->
