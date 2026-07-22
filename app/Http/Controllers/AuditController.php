@@ -147,6 +147,98 @@ class AuditController extends Controller
             ]);
         }
 
+        // 6. Save Recommendation Scores to rekomendasi_auditors table
+        $requestedScopes = [];
+        $selectedLembagaIds = [];
+        if ($kompetensiData && is_array($kompetensiData)) {
+            foreach ($kompetensiData as $lId => $info) {
+                $selectedLembagaIds[] = $lId;
+                if (!empty($info['scopes'])) {
+                    $requestedScopes = array_merge($requestedScopes, $info['scopes']);
+                }
+            }
+        }
+
+        $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])->get();
+
+        foreach ($auditors as $auditor) {
+            // 1. JABATAN (Posisi) - Max 15 Poin
+            $scoreJabatan = 5;
+            if ($auditor->posisi === 'AMMI') {
+                $scoreJabatan = 15;
+            } elseif ($auditor->posisi === 'Non AMMI') {
+                $scoreJabatan = 10;
+            }
+
+            // 2. KOMPETENSI (Lembaga & Ruang Lingkup) - Max 35 Poin
+            $scoreKompetensi = 0;
+            $auditorScopes = $auditor->detailAuditors->map(fn($d) => trim($d->ruangLingkup->nama_ruang_lingkup ?? ''))->toArray();
+            
+            if (!empty($requestedScopes)) {
+                $matchCount = 0;
+                foreach ($requestedScopes as $rScope) {
+                    if (in_array(trim($rScope), $auditorScopes)) {
+                        $matchCount++;
+                    }
+                }
+                
+                $totalRequested = count($requestedScopes);
+                if ($matchCount == $totalRequested) {
+                    $scoreKompetensi = 35;
+                } elseif ($matchCount > 0) {
+                    $scoreKompetensi = 20;
+                }
+            } else {
+                $hasLembaga = $auditor->detailAuditors->contains(function($d) use ($selectedLembagaIds) {
+                    return in_array($d->ruangLingkup->id_lembaga ?? null, $selectedLembagaIds);
+                });
+                if ($hasLembaga) {
+                    $scoreKompetensi = 15;
+                }
+            }
+
+            // 3. KETERSEDIAAN (Availability) - Max 25 Poin
+            $overlapRiwayat = \App\Models\RiwayatAuditor::where('id_auditor', $auditor->id_auditor)
+                ->where(function($q) use ($request) {
+                    $q->where('tanggal_mulai', '<=', $request->tanggal_selesai)
+                      ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
+                })->exists();
+
+            $overlapJadwal = \App\Models\TimAudit::where('id_auditor', $auditor->id_auditor)
+                ->whereHas('jadwalAudit', function($q) use ($request) {
+                    $q->where('tanggal_mulai', '<=', $request->tanggal_selesai)
+                      ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
+                })->exists();
+
+            $scoreKetersediaan = ($overlapRiwayat || $overlapJadwal) ? 0 : 25;
+
+            // 4. RIWAYAT AUDIT - Max 15 Poin
+            $hasAuditedBefore = \App\Models\TimAudit::where('id_auditor', $auditor->id_auditor)
+                ->whereHas('jadwalAudit.audit', function($q) use ($request) {
+                    $q->where('id_perusahaan', $request->id_perusahaan);
+                })->exists();
+            $scoreRiwayat = $hasAuditedBefore ? 15 : 0;
+
+            // 5. BEBAN KERJA (Workload) - Max 10 Poin
+            $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+            if ($workloadCount <= 2) {
+                $scoreBeban = 10;
+            } elseif ($workloadCount <= 4) {
+                $scoreBeban = 5;
+            } else {
+                $scoreBeban = 0;
+            }
+
+            $totalScore = $scoreJabatan + $scoreKompetensi + $scoreKetersediaan + $scoreRiwayat + $scoreBeban;
+
+            // Save to rekomendasi_auditors
+            \App\Models\RekomendasiAuditor::create([
+                'id_jadwal' => $jadwal->id_jadwal,
+                'id_auditor' => $auditor->id_auditor,
+                'nilai_rekomendasi' => $totalScore,
+            ]);
+        }
+
         return redirect()->route('pji.audit.index')->with('success', 'Jadwal audit dan tim audit berhasil dibuat.');
     }
 
