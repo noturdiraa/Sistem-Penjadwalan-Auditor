@@ -467,12 +467,15 @@
                 <div class="form-card">
                     <h3>Informasi Dasar Audit</h3>
 
-                    <form>
+                    <form action="{{ route('pji.audit.generate') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="kompetensi_json" id="inputKompetensiJson" required>
+
                         <div class="row">
                             <!-- Perusahaan yang Diaudit -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Perusahaan yang Diaudit</label>
-                                <select class="form-select" id="selectCompany" required>
+                                <select class="form-select" name="nama_perusahaan" id="selectCompany" required>
                                     <option value="" disabled selected>Pilih Perusahaan</option>
                                     @foreach(array_keys($companyMap) as $compName)
                                         <option value="{{ $compName }}">{{ $compName }}</option>
@@ -483,7 +486,7 @@
                             <!-- Lokasi -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Lokasi</label>
-                                <input type="text" class="form-control" placeholder="Masukkan detail lokasi audit (contoh: Palembang)">
+                                <input type="text" name="lokasi" class="form-control" placeholder="Masukkan detail lokasi audit (contoh: Palembang)" required>
                             </div>
                         </div>
 
@@ -491,12 +494,12 @@
                             <!-- Tanggal Mulai -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Tanggal Mulai</label>
-                                <input type="date" class="form-control">
+                                <input type="date" name="tanggal_mulai" class="form-control" required>
                             </div>
                             <!-- Tanggal Selesai -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Tanggal Selesai</label>
-                                <input type="date" class="form-control">
+                                <input type="date" name="tanggal_selesai" class="form-control" required>
                             </div>
                         </div>
 
@@ -559,7 +562,7 @@
                         <div class="row">
                             <div class="col-md-12 mb-4">
                                 <label class="form-label">Keterangan</label>
-                                <textarea class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
+                                <textarea name="keterangan" class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
                             </div>
                         </div>
 
@@ -595,6 +598,20 @@
         document.addEventListener('DOMContentLoaded', function() {
             const selectCompany = document.getElementById('selectCompany');
             const selectLembaga = document.getElementById('selectLembaga');
+
+            document.querySelector('form').addEventListener('submit', function(e) {
+                if (Object.keys(listKompetensi).length === 0) {
+                    alert('Silakan tambah minimal satu Jenis Audit & Ruang Lingkup!');
+                    e.preventDefault();
+                    return;
+                }
+                if (!document.getElementById('inputKategoriLokasi').value) {
+                    alert('Silakan pilih Kategori Wilayah terlebih dahulu!');
+                    e.preventDefault();
+                    return;
+                }
+                document.getElementById('inputKompetensiJson').value = JSON.stringify(listKompetensi);
+            });
             
             selectCompany.addEventListener('change', function() {
                 const compName = this.value;

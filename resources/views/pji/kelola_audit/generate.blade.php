@@ -398,7 +398,7 @@
                 <div class="header-card">
                     <div>
                         <h2 class="title">Buat Jadwal Audit</h2>
-                        <p class="subtitle">Isi informasi audit dan generate tim secara otomatis.</p>
+                        <p class="subtitle">Hasil perhitungan poin rekomendasi tim auditor secara otomatis.</p>
                     </div>
                 </div>
 
@@ -410,57 +410,156 @@
                             <div class="step-title">Informasi Audit</div>
                         </div>
                         <div class="step-line"></div>
-                        <div class="step">
-                            <div class="step-circle">2</div>
-                            <div class="step-title">Generate Tim Audit</div>
+                        <div class="step" style="opacity: 1;">
+                            <div class="step-circle bg-primary text-white">2</div>
+                            <div class="step-title fw-bold text-primary">Generate Tim Audit</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ================= RINGKASAN ================= -->
-                <div class="audit-info">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h6>Perusahaan</h6>
-                            <p>-</p>
+                <div class="audit-info mb-4" style="background: white; border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);">
+                    <div class="row text-center text-md-start">
+                        <div class="col-md-4 mb-3 mb-md-0 border-end">
+                            <h6 class="text-secondary fw-semibold mb-1" style="font-size: 12px; text-uppercase: true;">Perusahaan</h6>
+                            <p class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $perusahaan->nama_perusahaan }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0 border-end">
+                            <h6 class="text-secondary fw-semibold mb-1" style="font-size: 12px; text-uppercase: true;">Ruang Lingkup & Lembaga</h6>
+                            <p class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ implode(', ', $requestedScopes) ?: 'Lembaga Umum' }}</p>
                         </div>
                         <div class="col-md-4">
-                            <h6>Ruang Lingkup</h6>
-                            <p>-</p>
-                        </div>
-                        <div class="col-md-4">
-                            <h6>Periode Audit</h6>
-                            <p>-</p>
+                            <h6 class="text-secondary fw-semibold mb-1" style="font-size: 12px; text-uppercase: true;">Periode & Lokasi</h6>
+                            <p class="fw-bold text-dark mb-0" style="font-size: 14px;">
+                                {{ \Carbon\Carbon::parse($request->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($request->tanggal_selesai)->format('d M Y') }}
+                                <span class="d-block text-secondary mt-1 fw-medium" style="font-size: 12px;">📍 {{ $request->lokasi }} ({{ $request->kategori_lokasi }})</span>
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- ================= TIM AUDIT ================= -->
-                <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
-                    <i class="fas fa-users text-primary"></i>
-                    Tim Audit Terpilih (Berdasarkan Beban Kerja/Poin Terkecil)
-                    <span class="badge bg-secondary-subtle text-secondary fs-7" style="padding: 6px 12px; border-radius: 8px;">
-                        Belum Digenerate
-                    </span>
-                </h3>
+                <!-- ================= TIM AUDIT FORM ================= -->
+                <form action="{{ route('pji.audit.store') }}" method="POST" id="formStoreAudit">
+                    @csrf
+                    <input type="hidden" name="id_perusahaan" value="{{ $perusahaan->id_perusahaan }}">
+                    <input type="hidden" name="lokasi" value="{{ $request->lokasi }}">
+                    <input type="hidden" name="kategori_lokasi" value="{{ $request->kategori_lokasi }}">
+                    <input type="hidden" name="tanggal_mulai" value="{{ $request->tanggal_mulai }}">
+                    <input type="hidden" name="tanggal_selesai" value="{{ $request->tanggal_selesai }}">
+                    <input type="hidden" name="kompetensi_json" value="{{ $request->kompetensi_json }}">
+                    <input type="hidden" name="keterangan" value="{{ $request->keterangan }}">
 
-                <!-- ================= EMPTY STATE ================= -->
-                <div class="card shadow-sm border-0 rounded-4 text-center py-5 text-secondary" style="font-size: 15px; background: white; margin-bottom: 22px; box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);">
-                    <i class="fas fa-info-circle fa-2x mb-3 text-secondary"></i>
-                    <p class="mb-0 fw-medium">Belum ada tim audit yang digenerate.</p>
-                </div>
+                    <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
+                        <i class="fas fa-users text-primary"></i>
+                        Rekomendasi Auditor Terurut (Poin Tertinggi)
+                        <span class="badge bg-primary text-white fs-7" style="padding: 6px 12px; border-radius: 8px; font-weight: 500;">
+                            Formula Aktif
+                        </span>
+                    </h3>
 
-                <!-- ================= TOMBOL ================= -->
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a href="/pji/audit/create" class="btn btn-outline-secondary px-4">
-                        <i class="fas fa-arrow-left"></i>
-                        Kembali
-                    </a>
-                    <a href="/pji/audit" class="btn btn-primary px-4">
-                        <i class="fas fa-paper-plane"></i>
-                        Simpan & Kirim Review
-                    </a>
-                </div>
+                    <div class="row">
+                        @forelse($auditors as $index => $auditor)
+                            @php
+                                $sc = $auditor->scoring;
+                                $avatarBgs = ['bg-avatar-blue', 'bg-avatar-green', 'bg-avatar-purple'];
+                                $avatarBg = $avatarBgs[$index % 3];
+
+                                // Auto-select top 1 as Lead and top 2 & 3 as Members by default
+                                $isLeadSelected = ($index === 0) ? 'checked' : '';
+                                $isMemberSelected = ($index === 1 || $index === 2) ? 'checked' : '';
+                            @endphp
+                            <div class="col-md-12 mb-3">
+                                <div class="card card-auditor shadow-sm p-4 border border-light" style="border-radius: 14px; background: white;">
+                                    <div class="row align-items-center">
+                                        <!-- Profile Info -->
+                                        <div class="col-lg-3 col-md-4 d-flex align-items-center gap-3">
+                                            <div class="auditor-avatar {{ $avatarBg }}">
+                                                {{ strtoupper(substr($auditor->nama_auditor, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">{{ $auditor->nama_auditor }}</h5>
+                                                <span class="badge bg-light text-primary border border-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                                                    {{ $auditor->posisi }} ({{ $auditor->jenis_auditor }})
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Score breakdown -->
+                                        <div class="col-lg-6 col-md-5 my-3 my-md-0">
+                                            <div class="d-flex flex-wrap gap-2 justify-content-between mb-2">
+                                                <div class="text-center" style="flex: 1; min-width: 60px;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Jabatan</small>
+                                                    <span class="fw-bold text-dark fs-6">{{ $sc['jabatan'] }}</span><small class="text-muted" style="font-size: 10px;">/15</small>
+                                                </div>
+                                                <div class="text-center" style="flex: 1; min-width: 60px;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Kompetensi</small>
+                                                    <span class="fw-bold text-dark fs-6">{{ $sc['kompetensi'] }}</span><small class="text-muted" style="font-size: 10px;">/35</small>
+                                                </div>
+                                                <div class="text-center" style="flex: 1; min-width: 60px;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Ketersediaan</small>
+                                                    <span class="fw-bold text-dark fs-6">{{ $sc['ketersediaan'] }}</span><small class="text-muted" style="font-size: 10px;">/25</small>
+                                                </div>
+                                                <div class="text-center" style="flex: 1; min-width: 60px;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Riwayat</small>
+                                                    <span class="fw-bold text-dark fs-6">{{ $sc['riwayat'] }}</span><small class="text-muted" style="font-size: 10px;">/15</small>
+                                                </div>
+                                                <div class="text-center" style="flex: 1; min-width: 60px;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Beban Kerja</small>
+                                                    <span class="fw-bold text-dark fs-6">{{ $sc['beban'] }}</span><small class="text-muted" style="font-size: 10px;">/10</small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="progress" style="height: 6px; border-radius: 3px; background-color: #E2E8F0;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $sc['total'] }}%; border-radius: 3px;" aria-valuenow="{{ $sc['total'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="col-lg-3 col-md-3 text-md-end d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-end gap-2">
+                                            <div class="mb-md-2">
+                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Total Skor</small>
+                                                <h4 class="fw-bold text-success mb-0" style="font-size: 24px;">{{ $sc['total'] }} <span style="font-size: 13px; font-weight: 500;" class="text-secondary">/100</span></h4>
+                                            </div>
+                                            
+                                            <div class="d-flex gap-2">
+                                                <!-- Lead Auditor -->
+                                                <input type="radio" class="btn-check btn-role-lead" name="lead_auditor_id" id="lead_{{ $auditor->id_auditor }}" value="{{ $auditor->id_auditor }}" autocomplete="off" required {{ $isLeadSelected }}>
+                                                <label class="btn btn-outline-primary btn-sm px-3 d-flex align-items-center justify-content-center" for="lead_{{ $auditor->id_auditor }}" style="border-radius: 8px; font-size: 12px; height: 35px;">
+                                                    Lead
+                                                </label>
+
+                                                <!-- Member Auditor -->
+                                                <input type="checkbox" class="btn-check btn-role-member" name="auditor_ids[]" id="member_{{ $auditor->id_auditor }}" value="{{ $auditor->id_auditor }}" autocomplete="off" {{ $isMemberSelected }}>
+                                                <label class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center justify-content-center" for="member_{{ $auditor->id_auditor }}" style="border-radius: 8px; font-size: 12px; height: 35px;">
+                                                    Anggota
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-md-12">
+                                <div class="card shadow-sm border-0 rounded-4 text-center py-5 text-secondary" style="font-size: 15px; background: white;">
+                                    <i class="fas fa-info-circle fa-2x mb-3 text-secondary"></i>
+                                    <p class="mb-0 fw-medium">Tidak ada auditor yang terdaftar di database.</p>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <!-- ================= TOMBOL ================= -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a href="/pji/audit/create" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-arrow-left"></i>
+                            Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-paper-plane"></i>
+                            Simpan & Kirim Review
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <div class="footer text-center py-4">
@@ -473,6 +572,56 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Event Listener logic to handle roles selection and validation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const leadRadios = document.querySelectorAll('.btn-role-lead');
+            const memberChecks = document.querySelectorAll('.btn-role-member');
+            
+            leadRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        const auditorId = this.value;
+                        const correspondingMemberCheck = document.getElementById('member_' + auditorId);
+                        if (correspondingMemberCheck && correspondingMemberCheck.checked) {
+                            correspondingMemberCheck.checked = false;
+                        }
+                    }
+                });
+            });
+
+            memberChecks.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        const auditorId = this.value;
+                        const correspondingLeadRadio = document.getElementById('lead_' + auditorId);
+                        if (correspondingLeadRadio && correspondingLeadRadio.checked) {
+                            correspondingLeadRadio.checked = false;
+                        }
+                    }
+                });
+            });
+
+            const form = document.getElementById('formStoreAudit');
+            form.addEventListener('submit', function(e) {
+                const leadChecked = document.querySelector('.btn-role-lead:checked');
+                const membersChecked = document.querySelectorAll('.btn-role-member:checked');
+                
+                if (!leadChecked) {
+                    alert('Silakan pilih salah satu auditor sebagai Lead Auditor!');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (membersChecked.length === 0) {
+                    alert('Silakan pilih minimal satu auditor sebagai Anggota Tim!');
+                    e.preventDefault();
+                    return;
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

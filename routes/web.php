@@ -78,9 +78,11 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/pji/perusahaan/{id}', [App\Http\Controllers\PerusahaanController::class, 'destroy'])->name('pji.perusahaan.destroy');
 
         Route::get('/pji/audit', [App\Http\Controllers\AuditController::class, 'index'])->name('pji.audit.index');
+        Route::post('/pji/audit', [App\Http\Controllers\AuditController::class, 'store'])->name('pji.audit.store');
         Route::get('/pji/audit/create', [App\Http\Controllers\AuditController::class, 'create'])->name('pji.audit.create');
         Route::view('/pji/audit/edit', 'pji.kelola_audit.edit')->name('pji.audit.edit');
-        Route::view('/pji/audit/generate', 'pji.kelola_audit.generate')->name('pji.audit.generate');
+        Route::post('/pji/audit/generate', [App\Http\Controllers\AuditController::class, 'generate'])->name('pji.audit.generate');
+        Route::delete('/pji/audit/{id}', [App\Http\Controllers\AuditController::class, 'destroy'])->name('pji.audit.destroy');
 
         Route::view('/pji/tim-audit', 'pji.tim_audit.index')->name('pji.timaudit.index');
         Route::view('/pji/review-katim', 'pji.review_katim_pji.index')->name('pji.reviewkatim.index');

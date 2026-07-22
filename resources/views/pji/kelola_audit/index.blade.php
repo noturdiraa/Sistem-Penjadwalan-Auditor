@@ -365,12 +365,94 @@ Buat Audit
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-secondary" style="font-size: 14px;">
-                                <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
-                                <span>Belum ada data audit.</span>
-                            </td>
-                        </tr>
+                        @forelse($audits as $audit)
+                            @php
+                                $firstJadwal = $audit->jadwalAudits->first();
+                                $leadAuditor = '-';
+                                if ($firstJadwal) {
+                                    $leadTim = $firstJadwal->timAudits->where('peran', 'Lead Auditor')->first();
+                                    if ($leadTim && $leadTim->auditor) {
+                                        $leadAuditor = $leadTim->auditor->nama_auditor;
+                                    }
+                                }
+                                $statusBadgeMap = [
+                                    'Menunggu' => 'bg-secondary',
+                                    'Disetujui' => 'bg-success',
+                                    'Selesai' => 'bg-info',
+                                    'Ditolak' => 'bg-danger'
+                                ];
+                                $statusBadge = $statusBadgeMap[$audit->status] ?? 'bg-secondary';
+
+                                $memberNames = [];
+                                if ($firstJadwal) {
+                                    $memberTims = $firstJadwal->timAudits->where('peran', 'Auditor');
+                                    foreach ($memberTims as $mt) {
+                                        if ($mt->auditor) {
+                                            $memberNames[] = $mt->auditor->nama_auditor;
+                                        }
+                                    }
+                                }
+                                $anggotaList = implode(', ', $memberNames) ?: '-';
+                            @endphp
+                            <tr>
+                                <td>
+                                    <strong>{{ $audit->perusahaan->nama_perusahaan ?? '-' }}</strong>
+                                    <span class="d-block text-secondary mt-1" style="font-size: 12px;">Ruang Lingkup: {{ $audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
+                                </td>
+                                <td class="text-center">
+                                    @if($firstJadwal)
+                                        {{ \Carbon\Carbon::parse($firstJadwal->tanggal_mulai)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($firstJadwal->tanggal_selesai)->format('d/m/Y') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ $leadAuditor }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge {{ $statusBadge }}" style="padding: 8px 12px; font-size: 13px; color: white;">
+                                        {{ $audit->status }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <!-- Detail Button -->
+                                        <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center btn-detail" 
+                                                style="border-radius: 8px; padding: 6px 10px;"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#detailAuditModal"
+                                                data-id="{{ $audit->id_audit }}"
+                                                data-perusahaan="{{ $audit->perusahaan->nama_perusahaan ?? '-' }}"
+                                                data-jenis-audit="{{ $audit->jenis_audit ?? '-' }}"
+                                                data-ruang-lingkup="{{ $audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}"
+                                                data-tanggal-mulai="{{ $firstJadwal ? \Carbon\Carbon::parse($firstJadwal->tanggal_mulai)->format('d F Y') : '-' }}"
+                                                data-tanggal-selesai="{{ $firstJadwal ? \Carbon\Carbon::parse($firstJadwal->tanggal_selesai)->format('d F Y') : '-' }}"
+                                                data-lead-auditor="{{ $leadAuditor }}"
+                                                data-anggota="{{ $anggotaList }}"
+                                                data-status="{{ $audit->status }}"
+                                                data-lokasi="{{ $firstJadwal && $firstJadwal->lokasi ? $firstJadwal->lokasi->nama_lokasi : '-' }}"
+                                                data-kategori-wilayah="{{ $firstJadwal && $firstJadwal->lokasi ? $firstJadwal->lokasi->keterangan : '-' }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <!-- Delete Button -->
+                                        <form action="{{ route('pji.audit.destroy', $audit->id_audit) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data audit ini?');" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center justify-content-center" style="border-radius: 8px; padding: 6px 10px;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-secondary" style="font-size: 14px;">
+                                    <i class="fas fa-info-circle fa-2x mb-3 d-block text-secondary"></i>
+                                    <span>Belum ada data audit.</span>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -472,17 +554,55 @@ menu.forEach(item => {
 
 // ================= SEARCH =================
 const search = document.querySelector(".table-search-input");
-const rows = document.querySelectorAll("tbody tr");
+if (search) {
+    search.addEventListener("keyup", function(){
+        let keyword = this.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(function(row){
+            // Ignore empty state row
+            if (row.cells.length === 1) return;
+            row.style.display = row.innerText.toLowerCase().includes(keyword)
+                ? ""
+                : "none";
+        });
+    });
+}
 
-search.addEventListener("keyup", function(){
-    let keyword = this.value.toLowerCase();
-    rows.forEach(function(row){
-        row.style.display = row.innerText.toLowerCase().includes(keyword)
-            ? ""
-            : "none";
+// ================= DETAIL MODAL POPULATOR =================
+document.querySelectorAll('.btn-detail').forEach(button => {
+    button.addEventListener('click', function() {
+        document.getElementById('detailAuditId').textContent = this.getAttribute('data-id');
+        document.getElementById('detailPerusahaan').textContent = this.getAttribute('data-perusahaan');
+        document.getElementById('detailJenisAudit').textContent = this.getAttribute('data-jenis-audit');
+        document.getElementById('detailRuangLingkup').textContent = this.getAttribute('data-ruang-lingkup');
+        document.getElementById('detailTglMulai').textContent = this.getAttribute('data-tanggal-mulai');
+        document.getElementById('detailTglSelesai').textContent = this.getAttribute('data-tanggal-selesai');
+        document.getElementById('detailLeadAuditor').textContent = this.getAttribute('data-lead-auditor');
+        document.getElementById('detailAnggota').textContent = this.getAttribute('data-anggota');
+        document.getElementById('detailLokasi').textContent = this.getAttribute('data-lokasi');
+        document.getElementById('detailKategoriWilayah').textContent = this.getAttribute('data-kategori-wilayah');
+        
+        const status = this.getAttribute('data-status');
+        const statusEl = document.getElementById('detailStatus');
+        statusEl.textContent = status;
+        
+        // Adjust status badge color
+        statusEl.className = 'badge';
+        if (status === 'Disetujui') {
+            statusEl.style.backgroundColor = '#10B981';
+            statusEl.style.color = '#FFF';
+        } else if (status === 'Selesai') {
+            statusEl.style.backgroundColor = '#06B6D4';
+            statusEl.style.color = '#FFF';
+        } else if (status === 'Ditolak') {
+            statusEl.style.backgroundColor = '#EF4444';
+            statusEl.style.color = '#FFF';
+        } else {
+            statusEl.style.backgroundColor = '#6B7280';
+            statusEl.style.color = '#FFF';
+        }
     });
 });
-
 </script>
 
 </body>
