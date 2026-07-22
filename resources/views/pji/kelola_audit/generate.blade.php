@@ -398,7 +398,7 @@
                 <div class="header-card">
                     <div>
                         <h2 class="title">Buat Jadwal Audit</h2>
-                        <p class="subtitle">Hasil perhitungan poin rekomendasi tim auditor secara otomatis.</p>
+                        <p class="subtitle">Isi informasi audit dan generate tim secara otomatis.</p>
                     </div>
                 </div>
 
@@ -410,115 +410,147 @@
                             <div class="step-title">Informasi Audit</div>
                         </div>
                         <div class="step-line"></div>
-                        <div class="step" style="opacity: 1;">
-                            <div class="step-circle bg-primary text-white">2</div>
-                            <div class="step-title fw-bold text-primary">Generate Tim Audit</div>
+                        <div class="step">
+                            <div class="step-circle">2</div>
+                            <div class="step-title">Generate Tim Audit</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ================= RINGKASAN ================= -->
-                <div class="audit-info mb-4" style="background: white; border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(15, 61, 145, 0.06);">
-                    <div class="row text-center text-md-start">
-                        <div class="col-md-4 mb-3 mb-md-0 border-end">
-                            <h6 class="text-secondary fw-semibold mb-1" style="font-size: 12px; text-uppercase: true;">Perusahaan</h6>
-                            <p class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $perusahaan->nama_perusahaan }}</p>
+                <div class="audit-info">
+                    <div class="row">
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <h6>Perusahaan</h6>
+                            <p>{{ $perusahaan->nama_perusahaan }}</p>
                         </div>
-                        <div class="col-md-4 mb-3 mb-md-0 border-end">
-                            <h6 class="text-secondary fw-semibold mb-1" style="font-size: 12px; text-uppercase: true;">Ruang Lingkup & Lembaga</h6>
-                            <p class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ implode(', ', $requestedScopes) ?: 'Lembaga Umum' }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="text-secondary fw-semibold mb-1" style="font-size: 12px; text-uppercase: true;">Periode & Lokasi</h6>
-                            <p class="fw-bold text-dark mb-0" style="font-size: 14px;">
-                                {{ \Carbon\Carbon::parse($request->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($request->tanggal_selesai)->format('d M Y') }}
-                                <span class="d-block text-secondary mt-1 fw-medium" style="font-size: 12px;">📍 {{ $request->lokasi }} ({{ $request->kategori_lokasi }})</span>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <h6>Jenis Audit & Ruang Lingkup</h6>
+                            <p class="mb-0" style="font-size: 14px; line-height: 1.4;">
+                                @php
+                                    $kompetensiData = json_decode($request->kompetensi_json, true);
+                                    $scopesList = [];
+                                    if ($kompetensiData && is_array($kompetensiData)) {
+                                        foreach ($kompetensiData as $lId => $info) {
+                                            $lembName = trim($info['lembaga_name'] ?? '');
+                                            if (!empty($info['scopes'])) {
+                                                $scopesList[] = "<strong>{$lembName}</strong>: " . implode(', ', $info['scopes']);
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                {!! implode('<br>', $scopesList) !!}
                             </p>
+                        </div>
+                        <div class="col-md-2 mb-3 mb-md-0">
+                            <h6>Periode Audit</h6>
+                            <p>{{ \Carbon\Carbon::parse($request->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($request->tanggal_selesai)->format('d M Y') }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h6>Lokasi Audit</h6>
+                            <p class="mb-0">{{ $request->lokasi }}</p>
+                            <span class="badge bg-primary-subtle text-primary mt-1" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                                {{ $request->kategori_lokasi }}
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                <!-- ================= TIM AUDIT FORM ================= -->
+                <!-- ================= FORM PENYIMPANAN ================= -->
                 <form action="{{ route('pji.audit.store') }}" method="POST" id="formStoreAudit">
                     @csrf
+                    <!-- Hidden inputs to carry forward step 1 values -->
                     <input type="hidden" name="id_perusahaan" value="{{ $perusahaan->id_perusahaan }}">
-                    <input type="hidden" name="lokasi" value="{{ $request->lokasi }}">
-                    <input type="hidden" name="kategori_lokasi" value="{{ $request->kategori_lokasi }}">
                     <input type="hidden" name="tanggal_mulai" value="{{ $request->tanggal_mulai }}">
                     <input type="hidden" name="tanggal_selesai" value="{{ $request->tanggal_selesai }}">
+                    <input type="hidden" name="lokasi" value="{{ $request->lokasi }}">
+                    <input type="hidden" name="kategori_lokasi" value="{{ $request->kategori_lokasi }}">
                     <input type="hidden" name="kompetensi_json" value="{{ $request->kompetensi_json }}">
                     <input type="hidden" name="keterangan" value="{{ $request->keterangan }}">
 
+                    <!-- ================= TIM AUDIT ================= -->
                     <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
                         <i class="fas fa-users text-primary"></i>
-                        Rekomendasi Auditor Terurut (Poin Tertinggi)
-                        <span class="badge bg-primary text-white fs-7" style="padding: 6px 12px; border-radius: 8px; font-weight: 500;">
-                            Formula Aktif
+                        Tim Audit Terpilih (Berdasarkan Beban Kerja/Poin Terkecil)
+                        <span class="badge bg-success-subtle text-success fs-7" style="padding: 6px 12px; border-radius: 8px;">
+                            <i class="fas fa-magic me-1"></i> Auto-Generate Aktif
                         </span>
                     </h3>
 
-                    <div class="row">
-                        @forelse($auditors as $index => $auditor)
-                            @php
-                                $sc = $auditor->scoring;
-                                $avatarBgs = ['bg-avatar-blue', 'bg-avatar-green', 'bg-avatar-purple'];
-                                $avatarBg = $avatarBgs[$index % 3];
+                    @php
+                        // Determine default indices to auto-select
+                        $availableIndices = [];
+                        $idx = 0;
+                        foreach ($auditors as $auditor) {
+                            if (!$auditor->scoring['overlap_riwayat'] && !$auditor->scoring['overlap_jadwal']) {
+                                $availableIndices[] = $idx;
+                            }
+                            $idx++;
+                        }
+                        
+                        $leadIdx = $availableIndices[0] ?? -1;
+                        $memberIdx1 = $availableIndices[1] ?? -1;
+                        $memberIdx2 = $availableIndices[2] ?? -1;
+                    @endphp
 
-                                // Auto-select top 1 as Lead and top 2 & 3 as Members by default
-                                $isLeadSelected = ($index === 0) ? 'checked' : '';
-                                $isMemberSelected = ($index === 1 || $index === 2) ? 'checked' : '';
+                    <div class="row">
+                        @forelse ($auditors as $index => $auditor)
+                            @php
+                                $isLeadSelected = ($index === $leadIdx) ? 'checked' : '';
+                                $isMemberSelected = ($index === $memberIdx1 || $index === $memberIdx2) ? 'checked' : '';
+                                
+                                $overlapRiwayat = $auditor->scoring['overlap_riwayat'];
+                                $overlapJadwal = $auditor->scoring['overlap_jadwal'];
+                                $isBusy = $overlapRiwayat || $overlapJadwal;
+                                
+                                $badgeColor = $isBusy ? 'bg-danger' : 'bg-success';
+                                $badgeText = $isBusy ? 'Sibuk' : 'Tersedia';
+                                
+                                // Color avatar based on status
+                                $avatarBg = $isBusy ? 'background: #EF4444;' : 'background: #10B981;';
+                                if ($index === $leadIdx) {
+                                    $avatarBg = 'background: #2563EB;'; // Blue for Lead
+                                }
                             @endphp
                             <div class="col-md-12 mb-3">
-                                <div class="card card-auditor shadow-sm p-4 border border-light" style="border-radius: 14px; background: white;">
+                                <div class="card card-auditor shadow-sm border-0 rounded-4 p-3" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.05) !important;">
                                     <div class="row align-items-center">
-                                        <!-- Profile Info -->
-                                        <div class="col-lg-3 col-md-4 d-flex align-items-center gap-3">
-                                            <div class="auditor-avatar {{ $avatarBg }}">
-                                                {{ strtoupper(substr($auditor->nama_auditor, 0, 1)) }}
+                                        <!-- Avatar & Info -->
+                                        <div class="col-lg-4 col-md-5 d-flex align-items-center gap-3">
+                                            <div class="auditor-avatar flex-shrink-0" style="{{ $avatarBg }} width: 50px; height: 50px; border-radius: 12px; font-size: 18px;">
+                                                {{ strtoupper(substr($auditor->nama_auditor, 0, 2)) }}
                                             </div>
                                             <div>
-                                                <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">{{ $auditor->nama_auditor }}</h5>
-                                                <span class="badge bg-light text-primary border border-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
-                                                    {{ $auditor->posisi }} ({{ $auditor->jenis_auditor }})
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Score breakdown -->
-                                        <div class="col-lg-6 col-md-5 my-3 my-md-0">
-                                            <div class="d-flex flex-wrap gap-2 justify-content-between mb-2">
-                                                <div class="text-center" style="flex: 1; min-width: 60px;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Jabatan</small>
-                                                    <span class="fw-bold text-dark fs-6">{{ $sc['jabatan'] }}</span><small class="text-muted" style="font-size: 10px;">/15</small>
+                                                <h6 class="mb-1 fw-bold text-dark" style="font-size: 15px;">{{ $auditor->nama_auditor }}</h6>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-secondary-subtle text-secondary fs-8" style="padding: 3px 6px;">{{ $auditor->posisi }}</span>
+                                                    <span class="badge {{ $badgeColor }}-subtle text-{{ $isBusy ? 'danger' : 'success' }} fs-8" style="padding: 3px 6px;">
+                                                        {{ $badgeText }}
+                                                    </span>
                                                 </div>
-                                                <div class="text-center" style="flex: 1; min-width: 60px;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Kompetensi</small>
-                                                    <span class="fw-bold text-dark fs-6">{{ $sc['kompetensi'] }}</span><small class="text-muted" style="font-size: 10px;">/35</small>
-                                                </div>
-                                                <div class="text-center" style="flex: 1; min-width: 60px;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Ketersediaan</small>
-                                                    <span class="fw-bold text-dark fs-6">{{ $sc['ketersediaan'] }}</span><small class="text-muted" style="font-size: 10px;">/25</small>
-                                                </div>
-                                                <div class="text-center" style="flex: 1; min-width: 60px;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Riwayat</small>
-                                                    <span class="fw-bold text-dark fs-6">{{ $sc['riwayat'] }}</span><small class="text-muted" style="font-size: 10px;">/15</small>
-                                                </div>
-                                                <div class="text-center" style="flex: 1; min-width: 60px;">
-                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Beban Kerja</small>
-                                                    <span class="fw-bold text-dark fs-6">{{ $sc['beban'] }}</span><small class="text-muted" style="font-size: 10px;">/10</small>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="progress" style="height: 6px; border-radius: 3px; background-color: #E2E8F0;">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $sc['total'] }}%; border-radius: 3px;" aria-valuenow="{{ $sc['total'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </div>
 
-                                        <!-- Actions -->
+                                        <!-- Detail Skor Breakdown -->
+                                        <div class="col-lg-5 col-md-4 my-3 my-md-0">
+                                            <div class="d-flex align-items-center justify-content-around bg-light rounded-3 p-2" style="font-size: 13px;">
+                                                <div class="text-center" style="flex: 1;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700;">Penugasan Lampau</small>
+                                                    <span class="fw-bold text-dark fs-6">{{ $auditor->scoring['penugasan'] }}</span> <small class="text-muted">Poin</small>
+                                                </div>
+                                                <div class="border-start" style="height: 24px;"></div>
+                                                <div class="text-center" style="flex: 1;">
+                                                    <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700;">Beban Wilayah</small>
+                                                    <span class="fw-bold text-dark fs-6">+{{ $auditor->scoring['kategori'] }}</span> <small class="text-muted">Poin</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actions & Total Skor -->
                                         <div class="col-lg-3 col-md-3 text-md-end d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-end gap-2">
-                                            <div class="mb-md-2">
-                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Total Skor</small>
-                                                <h4 class="fw-bold text-success mb-0" style="font-size: 24px;">{{ $sc['total'] }} <span style="font-size: 13px; font-weight: 500;" class="text-secondary">/100</span></h4>
+                                            <div class="mb-md-2 text-md-end">
+                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700;">Total Poin</small>
+                                                <h4 class="fw-bold text-primary mb-0" style="font-size: 22px;">{{ $auditor->scoring['total'] }} <span style="font-size: 12px; font-weight: 500;" class="text-secondary">Poin</span></h4>
                                             </div>
                                             
                                             <div class="d-flex gap-2">
