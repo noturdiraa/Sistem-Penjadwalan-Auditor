@@ -503,7 +503,7 @@
                                 <select class="form-select" name="nama_perusahaan" id="selectCompany" required>
                                     <option value="" disabled selected>Pilih Perusahaan</option>
                                     @foreach(array_keys($companyMap) as $compName)
-                                        <option value="{{ $compName }}">{{ $compName }}</option>
+                                        <option value="{{ $compName }}" {{ old('nama_perusahaan') == $compName ? 'selected' : '' }}>{{ $compName }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -511,7 +511,7 @@
                             <!-- Lokasi -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Lokasi</label>
-                                <input type="text" name="lokasi" class="form-control" placeholder="Masukkan detail lokasi audit (contoh: Palembang)" required>
+                                <input type="text" name="lokasi" class="form-control" placeholder="Masukkan detail lokasi audit (contoh: Palembang)" value="{{ old('lokasi') }}" required>
                             </div>
                         </div>
 
@@ -519,12 +519,12 @@
                             <!-- Tanggal Mulai -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" class="form-control" required>
+                                <input type="date" name="tanggal_mulai" class="form-control" value="{{ old('tanggal_mulai') }}" required>
                             </div>
                             <!-- Tanggal Selesai -->
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" class="form-control" required>
+                                <input type="date" name="tanggal_selesai" class="form-control" value="{{ old('tanggal_selesai') }}" required>
                             </div>
                         </div>
 
@@ -533,12 +533,12 @@
                             <div class="col-md-12 mb-4">
                                 <label class="form-label">Kategori Wilayah</label>
                                 <div class="d-flex flex-wrap gap-2" id="kategoriLokasiGroup">
-                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Dalam Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Dalam Kota</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Pinggiran Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Pinggiran Kota</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Kota</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Negeri')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Negeri</button>
+                                    <button type="button" class="btn {{ old('kategori_lokasi') == 'Dalam Kota' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Dalam Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Dalam Kota</button>
+                                    <button type="button" class="btn {{ old('kategori_lokasi') == 'Pinggiran Kota' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Pinggiran Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Pinggiran Kota</button>
+                                    <button type="button" class="btn {{ old('kategori_lokasi') == 'Luar Kota' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Kota')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Kota</button>
+                                    <button type="button" class="btn {{ old('kategori_lokasi') == 'Luar Negeri' ? 'btn-primary' : 'btn-outline-primary' }} btn-sm px-3 location-btn" onclick="selectKategoriLokasi(this, 'Luar Negeri')" style="height: 38px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: none;">Luar Negeri</button>
                                 </div>
-                                <input type="hidden" name="kategori_lokasi" id="inputKategoriLokasi" value="">
+                                <input type="hidden" name="kategori_lokasi" id="inputKategoriLokasi" value="{{ old('kategori_lokasi') }}">
                             </div>
                         </div>
 
@@ -587,7 +587,7 @@
                         <div class="row">
                             <div class="col-md-12 mb-4">
                                 <label class="form-label">Keterangan</label>
-                                <textarea name="keterangan" class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan..."></textarea>
+                                <textarea name="keterangan" class="form-control" placeholder="Masukkan keterangan tambahan jika diperlukan...">{{ old('keterangan') }}</textarea>
                             </div>
                         </div>
 
@@ -624,19 +624,25 @@
             const selectCompany = document.getElementById('selectCompany');
             const selectLembaga = document.getElementById('selectLembaga');
 
-            document.getElementById('formCreateAudit').addEventListener('submit', function(e) {
-                if (Object.keys(listKompetensi).length === 0) {
-                    alert('Silakan tambah minimal satu Jenis Audit & Ruang Lingkup!');
-                    e.preventDefault();
-                    return;
-                }
-                if (!document.getElementById('inputKategoriLokasi').value) {
-                    alert('Silakan pilih Kategori Wilayah terlebih dahulu!');
-                    e.preventDefault();
-                    return;
-                }
-                document.getElementById('inputKompetensiJson').value = JSON.stringify(listKompetensi);
-            });
+            const form = document.getElementById('formCreateAudit') || document.querySelector('form[action*="generate"]');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (Object.keys(listKompetensi).length === 0) {
+                        alert('Silakan tambah minimal satu Jenis Audit & Ruang Lingkup!');
+                        e.preventDefault();
+                        return;
+                    }
+                    if (!document.getElementById('inputKategoriLokasi').value) {
+                        alert('Silakan pilih Kategori Wilayah terlebih dahulu!');
+                        e.preventDefault();
+                        return;
+                    }
+                    document.getElementById('inputKompetensiJson').value = JSON.stringify(listKompetensi);
+                });
+            }
+
+            // Render existing competencies if page reloads on validation error
+            renderKompetensiList();
             
             selectCompany.addEventListener('change', function() {
                 const compName = this.value;
@@ -670,7 +676,7 @@
             });
         });
 
-        const listKompetensi = {};
+        const listKompetensi = @json(old('kompetensi_json') ? json_decode(old('kompetensi_json'), true) : (object)[]);
 
         function loadRuangLingkup() {
             const select = document.getElementById('selectLembaga');
