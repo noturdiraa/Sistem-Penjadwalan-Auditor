@@ -141,73 +141,33 @@ class AuditController extends Controller
         $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])->get();
 
         foreach ($auditors as $auditor) {
-            // 1. JABATAN (Posisi) - Max 15 Poin
-            $scoreJabatan = 5;
-            if ($auditor->posisi === 'AMMI') {
-                $scoreJabatan = 15;
-            } elseif ($auditor->posisi === 'Non AMMI') {
-                $scoreJabatan = 10;
-            }
-
-            // 2. KOMPETENSI (Lembaga & Ruang Lingkup) - Max 35 Poin
-            $scoreKompetensi = 0;
-            $auditorScopes = $auditor->detailAuditors->map(fn($d) => trim($d->ruangLingkup->nama_ruang_lingkup ?? ''))->toArray();
-            
-            if (!empty($requestedScopes)) {
-                $matchCount = 0;
-                foreach ($requestedScopes as $rScope) {
-                    if (in_array(trim($rScope), $auditorScopes)) {
-                        $matchCount++;
-                    }
-                }
-                
-                $totalRequested = count($requestedScopes);
-                if ($matchCount == $totalRequested) {
-                    $scoreKompetensi = 35;
-                } elseif ($matchCount > 0) {
-                    $scoreKompetensi = 20;
-                }
-            } else {
-                $hasLembaga = $auditor->detailAuditors->contains(function($d) use ($selectedLembagaIds) {
-                    return in_array($d->ruangLingkup->id_lembaga ?? null, $selectedLembagaIds);
-                });
-                if ($hasLembaga) {
-                    $scoreKompetensi = 15;
-                }
-            }
-
-            // 3. KETERSEDIAAN (Availability) - Max 25 Poin
-            $overlapRiwayat = \App\Models\RiwayatAuditor::where('id_auditor', $auditor->id_auditor)
-                ->where(function($q) use ($request) {
-                    $q->where('tanggal_mulai', '<=', $request->tanggal_selesai)
-                      ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
-                })->exists();
-
-            $overlapJadwal = \App\Models\TimAudit::where('id_auditor', $auditor->id_auditor)
-                ->whereHas('jadwalAudit', function($q) use ($request) {
-                    $q->where('tanggal_mulai', '<=', $request->tanggal_selesai)
-                      ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
-                })->exists();
-
-            $scoreKetersediaan = ($overlapRiwayat || $overlapJadwal) ? 0 : 25;
-
-            // 4. RIWAYAT AUDIT - Max 15 Poin
-            $hasAuditedBefore = \App\Models\TimAudit::where('id_auditor', $auditor->id_auditor)
-                ->whereHas('jadwalAudit.audit', function($q) use ($request) {
-                    $q->where('id_perusahaan', $request->id_perusahaan);
-                })->exists();
-            $scoreRiwayat = $hasAuditedBefore ? 15 : 0;
-
-            // 5. BEBAN KERJA (Workload) - Max 10 Poin
             $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
-            $scoreBeban = 0;
+            
+            $scorePenugasan = 1;
             if ($workloadCount <= 2) {
-                $scoreBeban = 10;
+                $scorePenugasan = 1;
             } elseif ($workloadCount <= 4) {
-                $scoreBeban = 5;
+                $scorePenugasan = 2;
+            } elseif ($workloadCount <= 6) {
+                $scorePenugasan = 3;
+            } else {
+                $scorePenugasan = 4;
             }
 
-            $totalScore = $scoreJabatan + $scoreKompetensi + $scoreKetersediaan + $scoreRiwayat + $scoreBeban;
+            $currentKategori = trim($request->kategori_lokasi);
+            $scoreKategori = 1;
+            if ($currentKategori === 'Dalam Kota') {
+                $scoreKategori = 1;
+            } elseif ($currentKategori === 'Pinggiran Kota') {
+                $scoreKategori = 2;
+            } elseif ($currentKategori === 'Luar Kota') {
+                $scoreKategori = 3;
+            } elseif ($currentKategori === 'Luar Negeri') {
+                $scoreKategori = 4;
+            }
+
+            // Gabungkan skala 2-8, lalu petakan/skalakan kembali ke 1-4 agar sesuai grafik kepala balai
+            $totalScore = (int) ceil(($scorePenugasan + $scoreKategori) / 2);
 
             // Save to rekomendasi_auditors
             \App\Models\RekomendasiAuditor::create([
@@ -283,42 +243,7 @@ class AuditController extends Controller
         });
 
         foreach ($auditors as $auditor) {
-            // 1. JABATAN (Posisi) - Max 15 Poin
-            $scoreJabatan = 5;
-            if ($auditor->posisi === 'AMMI') {
-                $scoreJabatan = 15;
-            } elseif ($auditor->posisi === 'Non AMMI') {
-                $scoreJabatan = 10;
-            }
-
-            // 2. KOMPETENSI (Lembaga & Ruang Lingkup) - Max 35 Poin
-            $scoreKompetensi = 0;
-            $auditorScopes = $auditor->detailAuditors->map(fn($d) => trim($d->ruangLingkup->nama_ruang_lingkup ?? ''))->toArray();
-            
-            if (!empty($requestedScopes)) {
-                $matchCount = 0;
-                foreach ($requestedScopes as $rScope) {
-                    if (in_array(trim($rScope), $auditorScopes)) {
-                        $matchCount++;
-                    }
-                }
-                
-                $totalRequested = count($requestedScopes);
-                if ($matchCount == $totalRequested) {
-                    $scoreKompetensi = 35;
-                } elseif ($matchCount > 0) {
-                    $scoreKompetensi = 20;
-                }
-            } else {
-                $hasLembaga = $auditor->detailAuditors->contains(function($d) use ($selectedLembagaIds) {
-                    return in_array($d->ruangLingkup->id_lembaga ?? null, $selectedLembagaIds);
-                });
-                if ($hasLembaga) {
-                    $scoreKompetensi = 15;
-                }
-            }
-
-            // 3. KETERSEDIAAN (Availability) - Max 25 Poin
+            // Check availability (overlap check)
             $overlapRiwayat = \App\Models\RiwayatAuditor::where('id_auditor', $auditor->id_auditor)
                 ->where(function($q) use ($request) {
                     $q->where('tanggal_mulai', '<=', $request->tanggal_selesai)
@@ -331,32 +256,37 @@ class AuditController extends Controller
                       ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
                 })->exists();
 
-            $scoreKetersediaan = ($overlapRiwayat || $overlapJadwal) ? 0 : 25;
-
-            // 4. RIWAYAT AUDIT - Max 15 Poin
-            $hasHistory = \App\Models\TimAudit::where('id_auditor', $auditor->id_auditor)
-                ->whereHas('jadwalAudit.audit', function($q) use ($perusahaan) {
-                    $q->where('id_perusahaan', $perusahaan->id_perusahaan);
-                })->exists();
-            $scoreRiwayat = $hasHistory ? 15 : 0;
-
-            // 5. BEBAN KERJA (Workload) - Max 10 Poin
             $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
-            $scoreBeban = 0;
+            
+            $scorePenugasan = 1;
             if ($workloadCount <= 2) {
-                $scoreBeban = 10;
+                $scorePenugasan = 1;
             } elseif ($workloadCount <= 4) {
-                $scoreBeban = 5;
+                $scorePenugasan = 2;
+            } elseif ($workloadCount <= 6) {
+                $scorePenugasan = 3;
+            } else {
+                $scorePenugasan = 4;
             }
 
-            $totalScore = $scoreJabatan + $scoreKompetensi + $scoreKetersediaan + $scoreRiwayat + $scoreBeban;
+            $currentKategori = trim($request->kategori_lokasi);
+            $scoreKategori = 1;
+            if ($currentKategori === 'Dalam Kota') {
+                $scoreKategori = 1;
+            } elseif ($currentKategori === 'Pinggiran Kota') {
+                $scoreKategori = 2;
+            } elseif ($currentKategori === 'Luar Kota') {
+                $scoreKategori = 3;
+            } elseif ($currentKategori === 'Luar Negeri') {
+                $scoreKategori = 4;
+            }
+
+            // Gabungkan skala 2-8, lalu petakan/skalakan kembali ke 1-4 agar sesuai grafik kepala balai
+            $totalScore = (int) ceil(($scorePenugasan + $scoreKategori) / 2);
 
             $auditor->scoring = [
-                'jabatan' => $scoreJabatan,
-                'kompetensi' => $scoreKompetensi,
-                'ketersediaan' => $scoreKetersediaan,
-                'riwayat' => $scoreRiwayat,
-                'beban' => $scoreBeban,
+                'penugasan' => $scorePenugasan,
+                'kategori' => $scoreKategori,
                 'overlap_riwayat' => $overlapRiwayat,
                 'overlap_jadwal' => $overlapJadwal,
                 'ketersediaan_status' => ($overlapRiwayat || $overlapJadwal) ? 'Sibuk' : 'Tersedia',
@@ -364,8 +294,8 @@ class AuditController extends Controller
             ];
         }
 
-        // Sort by total score descending (highest points first)
-        $auditors = $auditors->sortByDesc(fn($a) => $a->scoring['total']);
+        // Sort by total score ascending (smallest workload/points first)
+        $auditors = $auditors->sortBy(fn($a) => $a->scoring['total']);
 
         // Prioritize available auditors and take exactly 3
         $availableAuditors = $auditors->filter(fn($a) => $a->scoring['ketersediaan_status'] === 'Tersedia');

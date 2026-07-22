@@ -471,7 +471,7 @@
                     <!-- ================= TIM AUDIT ================= -->
                     <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
                         <i class="fas fa-users text-primary"></i>
-                        Tim Audit Terpilih (Berdasarkan Beban Kerja/Poin Terkecil)
+                        Tim Audit Terpilih (Berdasarkan Poin Terkecil)
                         <span class="badge bg-success-subtle text-success fs-7" style="padding: 6px 12px; border-radius: 8px;">
                             <i class="fas fa-magic me-1"></i> Auto-Generate Aktif
                         </span>
@@ -565,34 +565,22 @@
 
                                     <!-- Bagian Bawah: Skor & Aksi -->
                                     <div>
-                                        <!-- Rincian Poin (100 Poin Scale) -->
-                                        <div class="bg-light rounded-3 p-3 mb-3" style="font-size: 11px; line-height: 1.4;">
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <span class="text-secondary">1. Jabatan:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['jabatan'] }} <span class="text-muted">/15</span></strong>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <span class="text-secondary">2. Kompetensi:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['kompetensi'] }} <span class="text-muted">/35</span></strong>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <span class="text-secondary">3. Ketersediaan:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['ketersediaan'] }} <span class="text-muted">/25</span></strong>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-1">
-                                                <span class="text-secondary">4. Riwayat Audit:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['riwayat'] }} <span class="text-muted">/15</span></strong>
+                                        <!-- Rincian Poin (Skala 1-4) -->
+                                        <div class="bg-light rounded-3 p-3 mb-3" style="font-size: 12px; line-height: 1.5;">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">1. Penugasan Audit:</span>
+                                                <strong class="text-dark">{{ $auditor->scoring['penugasan'] }} <span class="text-muted">/4 Poin</span></strong>
                                             </div>
                                             <div class="d-flex justify-content-between">
-                                                <span class="text-secondary">5. Beban Kerja:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['beban'] }} <span class="text-muted">/10</span></strong>
+                                                <span class="text-secondary">2. Kategori Wilayah:</span>
+                                                <strong class="text-dark">{{ $auditor->scoring['kategori'] }} <span class="text-muted">/4 Poin</span></strong>
                                             </div>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div>
-                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Total Skor</small>
-                                                <h4 class="fw-bold text-primary mb-0" style="font-size: 22px;">{{ $auditor->scoring['total'] }} <span style="font-size: 12px; font-weight: 500;" class="text-secondary">/100 Poin</span></h4>
+                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Skor Rekomendasi</small>
+                                                <h4 class="fw-bold text-primary mb-0" style="font-size: 22px;">{{ $auditor->scoring['total'] }} <span style="font-size: 12px; font-weight: 500;" class="text-secondary">/4 Poin</span></h4>
                                             </div>
 
                                             <div class="d-flex align-items-center">
