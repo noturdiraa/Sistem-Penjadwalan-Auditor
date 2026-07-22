@@ -277,6 +277,14 @@ class AuditController extends Controller
         // Sort by total score ascending (smallest workload first)
         $auditors = $auditors->sortBy(fn($a) => $a->scoring['total']);
 
+        // Prioritize available auditors and take exactly 3
+        $availableAuditors = $auditors->filter(fn($a) => $a->scoring['ketersediaan'] === 'Tersedia');
+        if ($availableAuditors->count() >= 3) {
+            $auditors = $availableAuditors->take(3)->values();
+        } else {
+            $auditors = $auditors->take(3)->values();
+        }
+
         return view('pji.kelola_audit.generate', compact('auditors', 'request', 'perusahaan', 'requestedScopes'));
     }
 

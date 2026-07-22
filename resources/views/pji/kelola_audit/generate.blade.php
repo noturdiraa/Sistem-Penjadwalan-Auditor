@@ -478,19 +478,11 @@
                     </h3>
 
                     @php
-                        // Determine default indices to auto-select
-                        $availableIndices = [];
-                        $idx = 0;
-                        foreach ($auditors as $auditor) {
-                            if (!$auditor->scoring['overlap_riwayat'] && !$auditor->scoring['overlap_jadwal']) {
-                                $availableIndices[] = $idx;
-                            }
-                            $idx++;
-                        }
-                        
-                        $leadIdx = $availableIndices[0] ?? -1;
-                        $memberIdx1 = $availableIndices[1] ?? -1;
-                        $memberIdx2 = $availableIndices[2] ?? -1;
+                        // Since there are only exactly 3 auditors shown, 
+                        // we auto-select the first one as Lead, and the next two as members.
+                        $leadIdx = 0;
+                        $memberIdx1 = 1;
+                        $memberIdx2 = 2;
                     @endphp
 
                     <div class="row">
