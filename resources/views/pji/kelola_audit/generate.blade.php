@@ -595,18 +595,20 @@
                                                 <h4 class="fw-bold text-primary mb-0" style="font-size: 22px;">{{ $auditor->scoring['total'] }} <span style="font-size: 12px; font-weight: 500;" class="text-secondary">/100 Poin</span></h4>
                                             </div>
 
-                                            <div class="d-flex gap-2">
-                                                <!-- Lead Auditor -->
-                                                <input type="radio" class="btn-check btn-role-lead" name="lead_auditor_id" id="lead_{{ $auditor->id_auditor }}" value="{{ $auditor->id_auditor }}" autocomplete="off" required {{ $isLeadSelected }}>
-                                                <label class="btn btn-outline-primary btn-sm px-3 d-flex align-items-center justify-content-center" for="lead_{{ $auditor->id_auditor }}" style="border-radius: 8px; font-size: 12px; height: 35px;">
-                                                    Lead
-                                                </label>
-
-                                                <!-- Member Auditor -->
-                                                <input type="checkbox" class="btn-check btn-role-member" name="auditor_ids[]" id="member_{{ $auditor->id_auditor }}" value="{{ $auditor->id_auditor }}" autocomplete="off" {{ $isMemberSelected }}>
-                                                <label class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center justify-content-center" for="member_{{ $auditor->id_auditor }}" style="border-radius: 8px; font-size: 12px; height: 35px;">
-                                                    Anggota
-                                                </label>
+                                            <div class="d-flex align-items-center">
+                                                @if($index === $leadIdx)
+                                                    <!-- Hidden Lead input to submit -->
+                                                    <input type="hidden" name="lead_auditor_id" value="{{ $auditor->id_auditor }}">
+                                                    <span class="badge bg-primary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
+                                                        <i class="fas fa-crown me-1 text-warning"></i> Lead
+                                                    </span>
+                                                @else
+                                                    <!-- Hidden Member inputs to submit -->
+                                                    <input type="hidden" name="auditor_ids[]" value="{{ $auditor->id_auditor }}">
+                                                    <span class="badge bg-secondary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
+                                                        Anggota
+                                                    </span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -648,55 +650,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Event Listener logic to handle roles selection and validation -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const leadRadios = document.querySelectorAll('.btn-role-lead');
-            const memberChecks = document.querySelectorAll('.btn-role-member');
-            
-            leadRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    if (this.checked) {
-                        const auditorId = this.value;
-                        const correspondingMemberCheck = document.getElementById('member_' + auditorId);
-                        if (correspondingMemberCheck && correspondingMemberCheck.checked) {
-                            correspondingMemberCheck.checked = false;
-                        }
-                    }
-                });
-            });
-
-            memberChecks.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        const auditorId = this.value;
-                        const correspondingLeadRadio = document.getElementById('lead_' + auditorId);
-                        if (correspondingLeadRadio && correspondingLeadRadio.checked) {
-                            correspondingLeadRadio.checked = false;
-                        }
-                    }
-                });
-            });
-
-            const form = document.getElementById('formStoreAudit');
-            form.addEventListener('submit', function(e) {
-                const leadChecked = document.querySelector('.btn-role-lead:checked');
-                const membersChecked = document.querySelectorAll('.btn-role-member:checked');
-                
-                if (!leadChecked) {
-                    alert('Silakan pilih salah satu auditor sebagai Lead Auditor!');
-                    e.preventDefault();
-                    return;
-                }
-
-                if (membersChecked.length === 0) {
-                    alert('Silakan pilih minimal satu auditor sebagai Anggota Tim!');
-                    e.preventDefault();
-                    return;
-                }
-            });
-        });
-    </script>
+    <!-- No client-side selection validation needed as Lead and Anggota roles are auto-assigned and static -->
 </body>
 
 </html>
