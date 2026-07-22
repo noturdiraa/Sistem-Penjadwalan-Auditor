@@ -77,8 +77,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/pji/perusahaan/{id}', [App\Http\Controllers\PerusahaanController::class, 'update'])->name('pji.perusahaan.update');
         Route::delete('/pji/perusahaan/{id}', [App\Http\Controllers\PerusahaanController::class, 'destroy'])->name('pji.perusahaan.destroy');
 
-        Route::view('/pji/audit', 'pji.kelola_audit.index')->name('pji.audit.index');
-        Route::view('/pji/audit/create', 'pji.kelola_audit.create')->name('pji.audit.create');
+        Route::get('/pji/audit', [App\Http\Controllers\AuditController::class, 'index'])->name('pji.audit.index');
+        Route::get('/pji/audit/create', [App\Http\Controllers\AuditController::class, 'create'])->name('pji.audit.create');
         Route::view('/pji/audit/edit', 'pji.kelola_audit.edit')->name('pji.audit.edit');
         Route::view('/pji/audit/generate', 'pji.kelola_audit.generate')->name('pji.audit.generate');
 
