@@ -510,7 +510,7 @@
                     selectLembaga.disabled = false;
                     services.forEach(item => {
                         const opt = document.createElement('option');
-                        opt.value = item.id_lembaga || '';
+                        opt.value = item.id_lembaga || '0';
                         opt.textContent = item.status_jasa;
                         opt.setAttribute('data-id-perusahaan', item.id_perusahaan);
                         selectLembaga.appendChild(opt);

@@ -522,11 +522,12 @@
                     let matched = false;
                     services.forEach(item => {
                         const opt = document.createElement('option');
-                        opt.value = item.id_lembaga || '';
+                        opt.value = item.id_lembaga || '0';
                         opt.textContent = item.status_jasa;
                         opt.setAttribute('data-id-perusahaan', item.id_perusahaan);
 
-                        if (selectedLembagaVal && item.id_lembaga == selectedLembagaVal) {
+                        const isValMatched = (selectedLembagaVal == item.id_lembaga) || (!selectedLembagaVal && !item.id_lembaga);
+                        if (isValMatched) {
                             opt.selected = true;
                             matched = true;
                             inputIdPerusahaan.value = item.id_perusahaan;

@@ -70,10 +70,14 @@ class RiwayatAuditorController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->id_lembaga == '0' || $request->id_lembaga === 0 || empty($request->id_lembaga)) {
+            $request->merge(['id_lembaga' => null]);
+        }
+
         $request->validate([
             'id_auditor' => 'required|exists:auditors,id_auditor',
             'id_perusahaan' => 'required|exists:perusahaans,id_perusahaan',
-            'id_lembaga' => 'required|exists:lembagas,id_lembaga',
+            'id_lembaga' => 'nullable|exists:lembagas,id_lembaga',
             'jenis_audit' => 'required|string|max:255',
             'peran_auditor' => 'required|in:Lead Auditor,Auditor',
             'status_penugasan' => 'required|in:Berlangsung,Selesai',
@@ -159,10 +163,14 @@ class RiwayatAuditorController extends Controller
     {
         $riwayat = RiwayatAuditor::findOrFail($id);
 
+        if ($request->id_lembaga == '0' || $request->id_lembaga === 0 || empty($request->id_lembaga)) {
+            $request->merge(['id_lembaga' => null]);
+        }
+
         $request->validate([
             'id_auditor' => 'required|exists:auditors,id_auditor',
             'id_perusahaan' => 'required|exists:perusahaans,id_perusahaan',
-            'id_lembaga' => 'required|exists:lembagas,id_lembaga',
+            'id_lembaga' => 'nullable|exists:lembagas,id_lembaga',
             'jenis_audit' => 'required|string|max:255',
             'peran_auditor' => 'required|in:Lead Auditor,Auditor',
             'status_penugasan' => 'required|in:Berlangsung,Selesai',

@@ -466,7 +466,7 @@
                                                 data-auditor="{{ $riwayat->auditor->nama_auditor ?? '-' }}"
                                                 data-nip="{{ $riwayat->auditor->nip ?? '-' }}"
                                                 data-perusahaan="{{ $riwayat->perusahaan->nama_perusahaan ?? $riwayat->audit->perusahaan->nama_perusahaan ?? '-' }}"
-                                                data-lembaga="{{ $riwayat->lembaga->nama_lembaga ?? $riwayat->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
+                                                data-lembaga="{{ $riwayat->lembaga->nama_lembaga ?? $riwayat->perusahaan->status_jasa ?? $riwayat->audit->ruangLingkup->lembaga->nama_lembaga ?? '-' }}"
                                                 data-jenis-audit="{{ $riwayat->jenis_audit ?? $riwayat->audit->jenis_audit ?? '-' }}"
                                                 data-peran="{{ $riwayat->peran_auditor }}"
                                                 data-tanggal-mulai="{{ \Carbon\Carbon::parse($riwayat->tanggal_mulai)->format('d M Y') }}"
