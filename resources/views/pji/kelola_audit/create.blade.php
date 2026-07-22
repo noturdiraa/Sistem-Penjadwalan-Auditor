@@ -502,8 +502,8 @@
                                 <label class="form-label">Perusahaan yang Diaudit</label>
                                 <select class="form-select" name="nama_perusahaan" id="selectCompany" required>
                                     <option value="" disabled selected>Pilih Perusahaan</option>
-                                    @foreach(array_keys($companyMap) as $compName)
-                                        <option value="{{ $compName }}" {{ old('nama_perusahaan') == $compName ? 'selected' : '' }}>{{ $compName }}</option>
+                                    @foreach($perusahaans as $p)
+                                        <option value="{{ $p->nama_perusahaan }}" {{ old('nama_perusahaan') == $p->nama_perusahaan ? 'selected' : '' }}>{{ $p->nama_perusahaan }}</option>
                                     @endforeach
                                 </select>
                             </div>
