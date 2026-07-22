@@ -64,7 +64,13 @@ class AuditController extends Controller
             }
         }
 
-        return view('pji.kelola_audit.create', compact('perusahaans', 'companyMap', 'lembagas', 'dataRuangLingkup'));
+        // Build mapping of company name to its address
+        $companyAddresses = [];
+        foreach ($perusahaans as $p) {
+            $companyAddresses[trim($p->nama_perusahaan)] = $p->alamat ?? '';
+        }
+
+        return view('pji.kelola_audit.create', compact('perusahaans', 'companyMap', 'lembagas', 'dataRuangLingkup', 'companyAddresses'));
     }
 
     /**

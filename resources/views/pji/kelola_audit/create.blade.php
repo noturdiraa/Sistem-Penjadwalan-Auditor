@@ -622,6 +622,7 @@
     <script>
         const companyData = @json($companyMap);
         const dataRuangLingkup = @json($dataRuangLingkup);
+        const companyAddresses = @json($companyAddresses);
 
         document.addEventListener('DOMContentLoaded', function() {
             const selectCompany = document.getElementById('selectCompany');
@@ -646,6 +647,18 @@
 
             // Render existing competencies if page reloads on validation error
             renderKompetensiList();
+
+            // Auto fill location input when company changes
+            if (selectCompany) {
+                selectCompany.addEventListener('change', function() {
+                    const compName = this.value;
+                    const address = companyAddresses[compName] || '';
+                    const inputLokasi = document.querySelector('input[name="lokasi"]');
+                    if (inputLokasi) {
+                        inputLokasi.value = address;
+                    }
+                });
+            }
         });
 
         const listKompetensi = @json(old('kompetensi_json') ? json_decode(old('kompetensi_json'), true) : (object)[]);
