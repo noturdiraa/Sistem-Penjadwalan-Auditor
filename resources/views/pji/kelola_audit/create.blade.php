@@ -492,7 +492,7 @@
                 <div class="form-card">
                     <h3>Informasi Dasar Audit</h3>
 
-                    <form action="{{ route('pji.audit.generate') }}" method="POST">
+                    <form action="{{ route('pji.audit.generate') }}" method="POST" id="formCreateAudit">
                         @csrf
                         <input type="hidden" name="kompetensi_json" id="inputKompetensiJson">
 
@@ -624,7 +624,7 @@
             const selectCompany = document.getElementById('selectCompany');
             const selectLembaga = document.getElementById('selectLembaga');
 
-            document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('formCreateAudit').addEventListener('submit', function(e) {
                 if (Object.keys(listKompetensi).length === 0) {
                     alert('Silakan tambah minimal satu Jenis Audit & Ruang Lingkup!');
                     e.preventDefault();
