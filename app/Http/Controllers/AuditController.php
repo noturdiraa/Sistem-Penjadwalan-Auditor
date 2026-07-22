@@ -24,34 +24,6 @@ class AuditController extends Controller
         $lembagas = \App\Models\Lembaga::all();
         $ruangLingkups = \App\Models\RuangLingkup::with('lembaga')->get();
 
-        // Build mapping of unique company names to their records
-        $companyMap = [];
-        foreach ($perusahaans as $p) {
-            $compName = trim($p->nama_perusahaan);
-            $statusJasa = trim($p->status_jasa ?? '');
-
-            // Find matching id_lembaga
-            $idLembaga = null;
-            if ($statusJasa) {
-                $matchedLembaga = $lembagas->first(function ($l) use ($statusJasa) {
-                    return strcasecmp(trim($l->nama_lembaga), $statusJasa) === 0;
-                });
-                if ($matchedLembaga) {
-                    $idLembaga = $matchedLembaga->id_lembaga;
-                }
-            }
-
-            if (!isset($companyMap[$compName])) {
-                $companyMap[$compName] = [];
-            }
-
-            $companyMap[$compName][] = [
-                'id_perusahaan' => $p->id_perusahaan,
-                'status_jasa'   => $statusJasa ?: 'Lembaga Umum',
-                'id_lembaga'    => $idLembaga,
-            ];
-        }
-
         // Build mapping of id_lembaga to array of ruang_lingkup names
         $dataRuangLingkup = [];
         foreach ($ruangLingkups as $rl) {
@@ -70,7 +42,7 @@ class AuditController extends Controller
             $companyAddresses[trim($p->nama_perusahaan)] = $p->alamat ?? '';
         }
 
-        return view('pji.kelola_audit.create', compact('perusahaans', 'companyMap', 'lembagas', 'dataRuangLingkup', 'companyAddresses'));
+        return view('pji.kelola_audit.create', compact('perusahaans', 'lembagas', 'dataRuangLingkup', 'companyAddresses'));
     }
 
     /**

@@ -31,10 +31,6 @@ class PerusahaanController extends Controller
     {
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
-            'status_jasa' => 'nullable|string|max:255',
-            'ruang_lingkup' => 'nullable|string|max:255',
-            'bidang_usaha' => 'nullable|string|max:255',
-            'skala' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
             'alamat' => 'required|string',
@@ -64,10 +60,6 @@ class PerusahaanController extends Controller
 
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
-            'status_jasa' => 'nullable|string|max:255',
-            'ruang_lingkup' => 'nullable|string|max:255',
-            'bidang_usaha' => 'nullable|string|max:255',
-            'skala' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
             'alamat' => 'required|string',

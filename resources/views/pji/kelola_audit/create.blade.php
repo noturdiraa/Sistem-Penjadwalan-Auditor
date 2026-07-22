@@ -620,7 +620,6 @@
     
     <!-- ================= JAVASCRIPT UNTUK DYNAMIC KOMPETENSI & RUANG LINGKUP ================= -->
     <script>
-        const companyData = @json($companyMap);
         const dataRuangLingkup = @json($dataRuangLingkup);
         const companyAddresses = @json($companyAddresses);
 

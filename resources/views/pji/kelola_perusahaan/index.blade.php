@@ -417,10 +417,6 @@
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#perusahaanDetailModal"
                                                     data-nama="{{ $p->nama_perusahaan }}"
-                                                    data-status-jasa="{{ $p->status_jasa ?? '-' }}"
-                                                    data-ruang-lingkup="{{ $p->ruang_lingkup ?? '-' }}"
-                                                    data-bidang-usaha="{{ $p->bidang_usaha ?? '-' }}"
-                                                    data-skala="{{ $p->skala ?? '-' }}"
                                                     data-telepon="{{ $p->no_telepon ?? '-' }}"
                                                     data-email="{{ $p->email ?? '-' }}"
                                                     data-alamat="{{ $p->alamat }}"
@@ -461,46 +457,30 @@
                     </div>
                     <div class="modal-body" style="padding: 24px; font-size: 14px;">
                         <div class="row">
-                            <!-- Left Column -->
-                            <div class="col-md-6 border-end">
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">NAMA PERUSAHAAN</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalNamaPerusahaan">-</p>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">STATUS JASA</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalStatusJasa">-</p>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">RUANG LINGKUP</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalRuangLingkup">-</p>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">BIDANG USAHA</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalBidangUsaha">-</p>
-                                </div>
-                            </div>
-                            <!-- Right Column -->
-                            <div class="col-md-6 ps-md-4">
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">SKALA</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalSkala">-</p>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">TELEPON / HP</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalTelepon">-</p>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">EMAIL</span>
-                                    <p class="text-dark fw-bold mb-0" id="modalEmail">-</p>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="text-muted small fw-semibold">STATUS PERUSAHAAN</span>
-                                    <div>
-                                        <span class="badge bg-success" id="modalStatusPerusahaan">Aktif</span>
-                                    </div>
-                                </div>
-                            </div>
+                             <!-- Left Column -->
+                             <div class="col-md-6 border-end">
+                                 <div class="mb-3">
+                                     <span class="text-muted small fw-semibold">NAMA PERUSAHAAN</span>
+                                     <p class="text-dark fw-bold mb-0" id="modalNamaPerusahaan">-</p>
+                                 </div>
+                                 <div class="mb-3">
+                                     <span class="text-muted small fw-semibold">TELEPON / HP</span>
+                                     <p class="text-dark fw-bold mb-0" id="modalTelepon">-</p>
+                                 </div>
+                             </div>
+                             <!-- Right Column -->
+                             <div class="col-md-6 ps-md-4">
+                                 <div class="mb-3">
+                                     <span class="text-muted small fw-semibold">EMAIL</span>
+                                     <p class="text-dark fw-bold mb-0" id="modalEmail">-</p>
+                                 </div>
+                                 <div class="mb-3">
+                                     <span class="text-muted small fw-semibold">STATUS PERUSAHAAN</span>
+                                     <div>
+                                         <span class="badge bg-success" id="modalStatusPerusahaan">Aktif</span>
+                                     </div>
+                                 </div>
+                             </div>
                             <!-- Full Width Address -->
                             <div class="col-12 border-top pt-3 mt-3">
                                 <span class="text-muted small fw-semibold">ALAMAT LENGKAP</span>
@@ -555,10 +535,6 @@
             
             // Get data attributes
             const nama = button.getAttribute('data-nama');
-            const statusJasa = button.getAttribute('data-status-jasa');
-            const ruangLingkup = button.getAttribute('data-ruang-lingkup');
-            const bidangUsaha = button.getAttribute('data-bidang-usaha');
-            const skala = button.getAttribute('data-skala');
             const telepon = button.getAttribute('data-telepon');
             const email = button.getAttribute('data-email');
             const alamat = button.getAttribute('data-alamat');
@@ -566,10 +542,6 @@
 
             // Populate elements
             document.getElementById('modalNamaPerusahaan').innerText = nama;
-            document.getElementById('modalStatusJasa').innerText = statusJasa;
-            document.getElementById('modalRuangLingkup').innerText = ruangLingkup;
-            document.getElementById('modalBidangUsaha').innerText = bidangUsaha;
-            document.getElementById('modalSkala').innerText = skala;
             document.getElementById('modalTelepon').innerText = telepon;
             document.getElementById('modalEmail').innerText = email;
             document.getElementById('modalAlamat').innerText = alamat;

@@ -321,37 +321,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label fw-semibold">Status Jasa</label>
-                                <input type="text" name="status_jasa" class="form-control @error('status_jasa') is-invalid @enderror" value="{{ old('status_jasa') }}" placeholder="Masukkan status jasa">
-                                @error('status_jasa')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label fw-semibold">Ruang Lingkup</label>
-                                <input type="text" name="ruang_lingkup" class="form-control @error('ruang_lingkup') is-invalid @enderror" value="{{ old('ruang_lingkup') }}" placeholder="Masukkan ruang lingkup">
-                                @error('ruang_lingkup')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label fw-semibold">Bidang Usaha</label>
-                                <input type="text" name="bidang_usaha" class="form-control @error('bidang_usaha') is-invalid @enderror" value="{{ old('bidang_usaha') }}" placeholder="Masukkan bidang usaha">
-                                @error('bidang_usaha')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label fw-semibold">Skala</label>
-                                <input type="text" name="skala" class="form-control @error('skala') is-invalid @enderror" value="{{ old('skala') }}" placeholder="Masukkan skala (contoh: Kecil, Menengah, Besar)">
-                                @error('skala')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
                             <div class="col-md-6 mb-4">
                                 <label class="form-label fw-semibold">Telepon / HP</label>
