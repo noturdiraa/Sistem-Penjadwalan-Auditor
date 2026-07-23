@@ -453,7 +453,13 @@
         $formattedReviews = [];
         foreach ($reviews as $rev) {
             $jadwal = $rev->jadwalAudit;
+            if (!$jadwal) {
+                continue;
+            }
             $audit = $jadwal->audit ?? null;
+            if (!$audit) {
+                continue;
+            }
             $perusahaan = $audit->perusahaan ?? null;
             $ruangLingkup = $audit->ruangLingkup ?? null;
             $lokasi = $jadwal->lokasi ?? null;
