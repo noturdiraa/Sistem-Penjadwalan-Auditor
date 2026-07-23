@@ -1,23 +1,43 @@
 @php
-    $jadwal = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'lokasi'])->first();
-    $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup'])->get();
+    $jadwalId = request()->query('id');
+    $allJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Menunggu')->get();
+    
+    if ($jadwalId) {
+        $jadwal = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'lokasi'])->find($jadwalId);
+    } else {
+        $jadwal = $allJadwals->first();
+    }
+    
+    $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'timAudits', 'riwayatAuditors'])->get();
+    $lembagas = \App\Models\Lembaga::with('ruangLingkups')->get();
+    $ruangLingkups = \App\Models\RuangLingkup::all();
 
     $dbAuditors = [];
     foreach ($auditors as $aud) {
-        $rlingkup = $aud->detailAuditors->first()->ruangLingkup->nama_ruang_lingkup ?? 'Umum';
+        $compLembagas = $aud->detailAuditors->map(fn($d) => $d->ruangLingkup->lembaga->nama_lembaga ?? '')->filter()->unique()->values()->all();
+        $compRuangs = $aud->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique()->values()->all();
+        
+        $totalAudit = $aud->riwayatAuditors->count() + $aud->timAudits->count();
+        
+        $point = 0;
+        if ($jadwal) {
+            $rekomendasi = \App\Models\RekomendasiAuditor::where('id_jadwal', $jadwal->id_jadwal)->where('id_auditor', $aud->id_auditor)->first();
+            $point = $rekomendasi ? (float)$rekomendasi->nilai_rekomendasi : 0;
+        }
+
         $dbAuditors[] = [
             'id' => $aud->id_auditor,
             'name' => $aud->nama_auditor,
-            'nip' => $aud->nip,
-            'role' => $aud->jenis_auditor,
-            'subrole' => $aud->jenis_auditor,
-            'lembaga' => 'LSPRO',
-            'ruangLingkup' => $rlingkup,
-            'point' => 0,
-            'totalAudit' => $aud->timAudits()->count(),
-            'lokasi' => 'Dalam Kota',
+            'nip' => $aud->nip ?? '-',
+            'role' => $aud->jenis_auditor ?? 'Auditor',
+            'subrole' => $aud->posisi ?? 'Auditor',
+            'lembaga' => count($compLembagas) > 0 ? implode(', ', $compLembagas) : '-',
+            'ruangLingkup' => count($compRuangs) > 0 ? $compRuangs[0] : '-',
+            'point' => $point,
+            'totalAudit' => $totalAudit,
+            'lokasi' => $jadwal ? ($jadwal->lokasi->kategori_wilayah ?? 'Dalam Kota') : 'Dalam Kota',
             'status' => 'Tersedia',
-            'badges' => ['LSPRO']
+            'badges' => $compLembagas
         ];
     }
 @endphp
