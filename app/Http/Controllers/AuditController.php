@@ -87,7 +87,7 @@ class AuditController extends Controller
             'id_ruang_lingkup' => $idRuangLingkup,
             'tanggal_permohonan' => now()->format('Y-m-d'),
             'jenis_audit' => $firstLembagaName,
-            'status' => 'Menunggu',
+            'status' => 'Menunggu Review',
         ]);
 
         // 2. Create Lokasi
@@ -103,7 +103,7 @@ class AuditController extends Controller
             'id_lokasi' => $lokasi->id_lokasi,
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
-            'status_jadwal' => 'Menunggu',
+            'status_jadwal' => 'Menunggu Review',
             'keterangan' => $request->keterangan,
         ]);
 

@@ -520,7 +520,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                             <span class="text-secondary" style="font-size: 14px;">
                                 <i class="far fa-calendar me-1"></i> {{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}
                             </span>
-                            <a href="/operasional/review-jadwal/review" class="btn btn-primary" style="border-radius: 10px; padding: 8px 24px; font-size: 14px; font-weight: 500; height: 38px; display: inline-flex; align-items: center; justify-content: center; transition: none;">Review</a>
+                            <a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="btn btn-primary" style="border-radius: 10px; padding: 8px 24px; font-size: 14px; font-weight: 500; height: 38px; display: inline-flex; align-items: center; justify-content: center; transition: none;">Review</a>
                         </div>
                     </div>
                 </div>

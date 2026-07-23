@@ -97,6 +97,46 @@ Route::middleware(['auth'])->group(function () {
 
         Route::view('/operasional/review-jadwal', 'operasional.review_jadwal_audit.index')->name('operasional.reviewjadwal.index');
         Route::view('/operasional/review-jadwal/review', 'operasional.review_jadwal_audit.review')->name('operasional.reviewjadwal.review');
+        Route::post('/operasional/review-jadwal/review/{id}', function(\Illuminate\Http\Request $request, $id) {
+            $request->validate([
+                'status' => 'required|in:setuju,tolak',
+                'catatan' => 'nullable|string',
+            ]);
+
+            $jadwal = \App\Models\JadwalAudit::findOrFail($id);
+            if ($request->status === 'setuju') {
+                $jadwal->status_jadwal = 'Disetujui';
+                $jadwal->audit->status = 'Disetujui';
+                
+                \App\Models\ReviewOperasional::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_user' => auth()->id(),
+                    'status_review' => 'Disetujui',
+                    'catatan' => $request->catatan,
+                ]);
+            } else {
+                $jadwal->status_jadwal = 'Dikembalikan';
+                $jadwal->audit->status = 'Dikembalikan';
+                
+                $review = \App\Models\ReviewOperasional::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_user' => auth()->id(),
+                    'status_review' => 'Dikembalikan',
+                    'catatan' => $request->catatan,
+                ]);
+
+                if ($request->catatan) {
+                    \App\Models\AlasanPenolakan::create([
+                        'id_review_operasional' => $review->id_review_operasional,
+                        'alasan_penolakan' => $request->catatan,
+                    ]);
+                }
+            }
+            $jadwal->save();
+            $jadwal->audit->save();
+
+            return redirect()->route('operasional.reviewjadwal.index')->with('success', 'Keputusan review berhasil disimpan.');
+        })->name('operasional.reviewjadwal.submit');
 
         Route::view('/operasional/input-auditor', 'operasional.input_auditor_manual.index')->name('operasional.inputauditor.index');
         Route::view('/operasional/input-auditor/create', 'operasional.input_auditor_manual.create')->name('operasional.inputauditor.create');

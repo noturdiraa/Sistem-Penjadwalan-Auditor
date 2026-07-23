@@ -518,7 +518,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
             @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
                     <tr>
-                        <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
+                        <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
                         <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
                         <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
                         <td class="text-center"><span class="badge bg-warning text-dark">{{ $jadwal->status_jadwal ?? '-' }}</span></td>

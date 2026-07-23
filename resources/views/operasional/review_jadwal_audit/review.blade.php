@@ -1,3 +1,9 @@
+@php
+    $jadwalId = request()->query('id');
+    $jadwal = \App\Models\JadwalAudit::with(['audit.perusahaan', 'lokasi', 'timAudits.auditor.detailAuditors.ruangLingkup'])->findOrFail($jadwalId);
+    $perusahaan = $jadwal->audit->perusahaan;
+    $lokasi = $jadwal->lokasi;
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -268,7 +274,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Perusahaan</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">PT ABC Indonesia</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $perusahaan->nama_perusahaan ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <!-- Jenis Audit -->
@@ -278,7 +284,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Jenis Audit</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">LSSM</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->jenis_audit ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <!-- Tanggal Mulai -->
@@ -288,7 +294,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Tanggal Mulai</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">25 Juni 2026</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d F Y') : '-' }}</span>
                                     </div>
                                 </div>
                                 <!-- Ruang Lingkup -->
@@ -298,7 +304,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Ruang Lingkup</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">ISO 9001:2015 – Sistem Manajemen Mutu</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -311,7 +317,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Lokasi</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">Jl. Jend. Sudirman No. 45, Palembang</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $lokasi->nama_lokasi ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <!-- Kategori Wilayah -->
@@ -321,7 +327,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Kategori Wilayah</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">Dalam Kota</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $lokasi->kategori_wilayah ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <!-- Tanggal Selesai -->
@@ -331,7 +337,7 @@
                                     </div>
                                     <div>
                                         <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Tanggal Selesai</small>
-                                        <span class="fw-bold text-dark" style="font-size: 14px;">27 Juni 2026</span>
+                                        <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d F Y') : '-' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -344,43 +350,53 @@
                             <i class="fas fa-users-gear me-2 text-primary"></i>Tim Audit
                         </h5>
                         
-                        <!-- Auditor Card -->
-                        <div class="card p-3 border rounded-3 bg-white mb-0" style="border-color: #E2E8F0 !important; box-shadow: 0 4px 12px rgba(15, 61, 145, 0.02);">
-                            <div class="d-flex align-items-start gap-3">
-                                <!-- Initial circle -->
-                                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width: 48px; height: 48px; font-size: 18px; flex-shrink: 0;">
-                                    P
-                                </div>
-                                
-                                <!-- Auditor Info -->
-                                <div class="flex-grow-1">
-                                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                                        <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Popy Marlina</h6>
-                                        <span class="badge" style="background: #FAF5FF; color: #7E3AF2; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">Lead Auditor</span>
-                                    </div>
-                                    <small class="text-secondary d-block mb-3" style="font-size: 12px; font-weight: 500;">Lead Auditor</small>
-                                    
-                                    <!-- Details Grid -->
-                                    <div class="row g-2 mb-3">
-                                        <div class="col-sm-6">
-                                            <small class="text-secondary d-block" style="font-size: 12px;">Jenis Audit: <strong class="text-dark">LSSM</strong></small>
-                                            <small class="text-secondary d-block mt-1" style="font-size: 12px;">Total Audit: <strong class="text-dark">48</strong></small>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <small class="text-secondary d-block" style="font-size: 12px;">Point: <strong class="text-success">0</strong></small>
-                                            <small class="text-secondary d-block mt-1" style="font-size: 12px;">Lokasi: <strong class="text-dark">Dalam Kota</strong></small>
-                                        </div>
+                        @foreach($jadwal->timAudits as $index => $timAudit)
+                            @php
+                                $auditor = $timAudit->auditor;
+                                $initial = strtoupper(substr($auditor->nama_auditor ?? 'A', 0, 1));
+                                $totalAudit = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+                                $rekomendasi = \App\Models\RekomendasiAuditor::where('id_jadwal', $jadwal->id_jadwal)->where('id_auditor', $auditor->id_auditor)->first();
+                                $scoreVal = $rekomendasi ? $rekomendasi->nilai_rekomendasi : '-';
+                                $competencies = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique();
+                            @endphp
+                            <!-- Auditor Card -->
+                            <div class="card p-3 border rounded-3 bg-white mb-3" style="border-color: #E2E8F0 !important; box-shadow: 0 4px 12px rgba(15, 61, 145, 0.02);">
+                                <div class="d-flex align-items-start gap-3">
+                                    <!-- Initial circle -->
+                                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width: 48px; height: 48px; font-size: 18px; flex-shrink: 0;">
+                                        {{ $initial }}
                                     </div>
                                     
-                                    <!-- Competency Badges -->
-                                    <div class="d-flex gap-1 flex-wrap">
-                                        <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">LSPRO</span>
-                                        <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">LSSM</span>
-                                        <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">LSSML</span>
+                                    <!-- Auditor Info -->
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                            <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $auditor->nama_auditor }}</h6>
+                                            <span class="badge" style="background: {{ $timAudit->peran === 'Lead Auditor' ? '#FAF5FF' : '#E0F2FE' }}; color: {{ $timAudit->peran === 'Lead Auditor' ? '#7E3AF2' : '#0369A1' }}; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">{{ $timAudit->peran }}</span>
+                                        </div>
+                                        <small class="text-secondary d-block mb-3" style="font-size: 12px; font-weight: 500;">NIP: {{ $auditor->nip ?? '-' }}</small>
+                                        
+                                        <!-- Details Grid -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-sm-6">
+                                                <small class="text-secondary d-block" style="font-size: 12px;">Posisi: <strong class="text-dark">{{ $auditor->posisi ?? '-' }}</strong></small>
+                                                <small class="text-secondary d-block mt-1" style="font-size: 12px;">Total Penugasan: <strong class="text-dark">{{ $totalAudit }}</strong></small>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <small class="text-secondary d-block" style="font-size: 12px;">Poin Rekomendasi: <strong class="text-success">{{ $scoreVal }} / 4</strong></small>
+                                                <small class="text-secondary d-block mt-1" style="font-size: 12px;">Status: <strong class="text-dark">{{ $auditor->status ?? '-' }}</strong></small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Competency Badges -->
+                                        <div class="d-flex gap-1 flex-wrap">
+                                            @foreach($competencies as $comp)
+                                                <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">{{ $comp }}</span>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
@@ -390,7 +406,8 @@
                         <h5 class="fw-bold mb-4 text-dark" style="font-size: 18px;">
                             <i class="fas fa-circle-check me-2 text-primary"></i>Keputusan Review
                         </h5>
-                        <form action="/operasional/review-jadwal" method="GET">
+                        <form action="{{ route('operasional.reviewjadwal.submit', $jadwal->id_jadwal) }}" method="POST">
+                            @csrf
                             <div class="mb-4">
                                 <label class="form-label fw-semibold mb-2">Tindakan</label>
                                 <div class="row g-2">
@@ -410,7 +427,7 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label fw-semibold mb-2">Catatan Review</label>
-                                <textarea class="form-control" rows="4" placeholder="Tuliskan catatan review di sini..." style="border-radius: 12px;"></textarea>
+                                <textarea name="catatan" class="form-control" rows="4" placeholder="Tuliskan catatan review di sini..." style="border-radius: 12px;"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" style="border-radius: 12px;">
                                 <i class="fas fa-paper-plane me-1"></i> Kirim Keputusan
