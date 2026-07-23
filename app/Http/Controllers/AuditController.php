@@ -138,7 +138,14 @@ class AuditController extends Controller
             }
         }
 
-        $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])->get();
+        $selectedAuditorIds = array_merge(
+            [$request->lead_auditor_id],
+            $request->auditor_ids ?? []
+        );
+
+        $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])
+            ->whereIn('id_auditor', $selectedAuditorIds)
+            ->get();
 
         foreach ($auditors as $auditor) {
             $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
