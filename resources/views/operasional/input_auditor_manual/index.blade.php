@@ -296,7 +296,7 @@
                 </div>
             </div>
 
-            @if($allJadwals->count() > 0)
+            @if($allJadwals->count() > 0 && $jadwal)
             <!-- Select Schedule Dropdown -->
             <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
                 <div class="row align-items-center">
@@ -313,7 +313,6 @@
                 </div>
             </div>
 
-            @if($jadwal)
             <!-- Target Audit Card -->
             <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
                 <h6 class="fw-bold text-primary mb-4" style="font-size: 16px;">
