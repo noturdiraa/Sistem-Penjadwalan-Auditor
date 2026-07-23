@@ -296,6 +296,23 @@
                 </div>
             </div>
 
+            @if($allJadwals->count() > 0)
+            <!-- Select Schedule Dropdown -->
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label fw-bold text-dark mb-2"><i class="fas fa-list-check me-1 text-primary"></i> Pilih Perusahaan & Jadwal Audit:</label>
+                        <select class="form-select" onchange="location = this.value;" style="border-radius: 10px; font-weight: 500;">
+                            @foreach($allJadwals as $j)
+                                <option value="/operasional/input-auditor?id={{ $j->id_jadwal }}" {{ $jadwal && $jadwal->id_jadwal == $j->id_jadwal ? 'selected' : '' }}>
+                                    {{ $j->audit->perusahaan->nama_perusahaan ?? '-' }} ({{ $j->audit->jenis_audit ?? '-' }} - {{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d M Y') : '-' }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             @if($jadwal)
             <!-- Target Audit Card -->
             <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
@@ -396,13 +413,16 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-6">
-                                <select class="form-select" id="filterLembaga" disabled>
-                                    <option value="" selected>Pilih Jenis Audit...</option>
+                                <select class="form-select" id="filterLembaga" onchange="updateRuangLingkupOptions()">
+                                    <option value="" selected>Semua Jenis Audit</option>
+                                    @foreach($lembagas as $l)
+                                        <option value="{{ $l->nama_lembaga }}">{{ $l->nama_lembaga }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4 col-6">
-                                <select class="form-select" id="filterRuangLingkup" disabled>
-                                    <option value="" selected>Pilih Ruang Lingkup...</option>
+                                <select class="form-select" id="filterRuangLingkup" onchange="renderAuditors()">
+                                    <option value="" selected>Semua Ruang Lingkup</option>
                                 </select>
                             </div>
                         </div>
@@ -456,85 +476,29 @@
             </p>
         </div>
     </div>
+    @if($jadwal)
+    <!-- Hidden Form for submission -->
+    <form id="formSimpanTeam" action="/operasional/input-auditor/save/{{ $jadwal->id_jadwal }}" method="POST" class="d-none">
+        @csrf
+        <div id="hiddenFieldsContainer"></div>
+    </form>
+    @endif
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Ruang Lingkup mappings based on Lembaga
-        const ruangLingkupByLembaga = {};
+        const ruangLingkupByLembaga = {
+            @foreach($lembagas as $l)
+                '{{ $l->nama_lembaga }}': [
+                    @foreach($l->ruangLingkups as $rl)
+                        '{{ $rl->nama_ruang_lingkup }}',
+                    @endforeach
+                ],
+            @endforeach
+        };
 
-        // Auditor Dummy Data
-        const dbAuditors = [
-            {
-                id: 1,
-                name: "Popy Marlina",
-                nip: "197805152003122001",
-                role: "Lead Auditor",
-                subrole: "Lead Auditor",
-                lembaga: "LSSM",
-                ruangLingkup: "Sistem Manajemen Mutu (ISO 9001)",
-                point: 0,
-                totalAudit: 48,
-                lokasi: "Dalam Kota",
-                status: "Tersedia", // Available
-                badges: ["LSPRO", "LSSM"]
-            },
-            {
-                id: 2,
-                name: "Andi Saputra",
-                nip: "19890102012011003",
-                role: "Auditor",
-                subrole: "Auditor",
-                lembaga: "LSPRO",
-                ruangLingkup: "Semen Portland",
-                point: 2,
-                totalAudit: 30,
-                lokasi: "Luar Kota",
-                status: "Sedang Audit", // Busy/Ongoing Audit (Cannot be chosen)
-                badges: ["LSPRO"]
-            },
-            {
-                id: 3,
-                name: "Rina Wijaya",
-                nip: "198506142010122002",
-                role: "Lead Auditor",
-                subrole: "Lead Auditor",
-                lembaga: "LSSML",
-                ruangLingkup: "Sistem Manajemen Lingkungan (ISO 14001)",
-                point: 0,
-                totalAudit: 40,
-                lokasi: "Dalam Kota",
-                status: "Tersedia", // Available
-                badges: ["LSSM", "LSSML"]
-            },
-            {
-                id: 4,
-                name: "Hendra Kusuma",
-                nip: "199203112018081001",
-                role: "Auditor",
-                subrole: "Auditor",
-                lembaga: "LSPRO",
-                ruangLingkup: "Air Mineral",
-                point: 4,
-                totalAudit: 15,
-                lokasi: "Pinggiran Kota",
-                status: "Sedang Audit", // Busy/Ongoing Audit (Cannot be chosen)
-                badges: ["LSPRO", "LSHACCP"]
-            },
-            {
-                id: 5,
-                name: "Siti Aminah",
-                nip: "198007242005012003",
-                role: "Lead Auditor",
-                subrole: "Lead Auditor",
-                lembaga: "LSPRO",
-                ruangLingkup: "Air Mineral",
-                point: 0,
-                totalAudit: 52,
-                lokasi: "Dalam Kota",
-                status: "Tersedia", // Available
-                badges: ["LSPRO"]
-            }
-        ];
+        // Auditor Dynamic Data from Database
+        const dbAuditors = @json($dbAuditors);
 
         let selectedAuditorIds = [];
 
@@ -545,12 +509,9 @@
             const selectedLembaga = lembagaSelect.value;
 
             // Reset Ruang Lingkup Select
-            ruangSelect.innerHTML = '<option value="" selected>Pilih Ruang Lingkup...</option>';
+            ruangSelect.innerHTML = '<option value="" selected>Semua Ruang Lingkup</option>';
 
-            if (selectedLembaga === "") {
-                ruangSelect.disabled = true;
-            } else {
-                ruangSelect.disabled = false;
+            if (selectedLembaga !== "") {
                 const options = ruangLingkupByLembaga[selectedLembaga] || [];
                 options.forEach(opt => {
                     const el = document.createElement('option');
@@ -566,6 +527,7 @@
         // Render functions
         function renderAuditors() {
             const container = document.getElementById('auditorCardsContainer');
+            if (!container) return;
             const searchVal = document.getElementById('searchAuditor').value.toLowerCase().trim();
             const filterLembaga = document.getElementById('filterLembaga').value;
             const filterRuang = document.getElementById('filterRuangLingkup').value;
@@ -577,7 +539,7 @@
                 // Lembaga
                 const matchLembaga = filterLembaga === "" || item.lembaga === filterLembaga || item.badges.includes(filterLembaga);
                 // Ruang Lingkup
-                const matchRuang = filterRuang === "" || item.ruangLingkup === filterRuang;
+                const matchRuang = filterRuang === "" || item.ruangLingkup === filterRuang || item.ruangLingkup.includes(filterRuang);
 
                 return matchSearch && matchLembaga && matchRuang;
             });
@@ -627,12 +589,12 @@
                                         <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">${item.name}</h6>
                                         <span class="badge" style="background: #FAF5FF; color: #7E3AF2; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">${item.role}</span>
                                     </div>
-                                    <small class="text-secondary d-block mb-2" style="font-size: 12px;">${item.nip} · ${item.subrole}</small>
+                                    <small class="text-secondary d-block mb-2" style="font-size: 12px;">NIP: ${item.nip} · ${item.subrole}</small>
                                     
                                     <div class="d-flex gap-4 flex-wrap text-secondary" style="font-size: 12px;">
                                         <div>Jenis Audit: <strong class="text-dark">${item.lembaga}</strong></div>
-                                        <div>Total Audit: <strong class="text-dark">${item.totalAudit}</strong></div>
-                                        <div>Point: <strong class="text-dark">${item.point}</strong></div>
+                                        <div>Total Penugasan: <strong class="text-dark">${item.totalAudit}</strong></div>
+                                        <div>Poin: <strong class="text-dark">${item.point} / 4</strong></div>
                                         <div>Lokasi: <strong class="text-dark">${item.lokasi}</strong></div>
                                     </div>
                                 </div>
@@ -670,6 +632,8 @@
             const emptyState = document.getElementById('selectedEmptyState');
             const btnSave = document.getElementById('btnSimpanTeam');
 
+            if (!listContainer) return;
+
             countText.innerText = `${selectedAuditorIds.length} auditor dipilih`;
 
             if (selectedAuditorIds.length === 0) {
@@ -696,9 +660,9 @@
                 div.style.borderColor = '#e2e8f0';
 
                 // Determine default selected based on role
-                const isLead = item.role.toLowerCase().includes('lead');
+                const isLead = item.role.toLowerCase().includes('lead') || item.subrole.toLowerCase().includes('lead');
                 const roleSelectHtml = `
-                    <select class="form-select form-select-sm mt-2" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
+                    <select class="role-select form-select form-select-sm mt-2" data-auditor-id="${item.id}" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
                         <option value="Ketua Tim" ${isLead ? 'selected' : ''}>Ketua Tim</option>
                         <option value="Anggota" ${!isLead ? 'selected' : ''}>Anggota</option>
                     </select>
@@ -726,17 +690,38 @@
         }
 
         function simpanTetapkan() {
-            alert('Sukses! Tim audit manual berhasil disimpan dan ditetapkan.');
-            window.location.href = '/dashboard-operasional';
+            const form = document.getElementById('formSimpanTeam');
+            const container = document.getElementById('hiddenFieldsContainer');
+            if (!form || !container) return;
+
+            container.innerHTML = '';
+            
+            selectedAuditorIds.forEach((id, index) => {
+                const selectEl = document.querySelector(`.role-select[data-auditor-id="${id}"]`);
+                const roleVal = selectEl ? selectEl.value : 'Anggota';
+                const dbRole = roleVal === 'Ketua Tim' ? 'Lead Auditor' : 'Auditor';
+                
+                container.innerHTML += `
+                    <input type="hidden" name="auditors[${index}][id_auditor]" value="${id}">
+                    <input type="hidden" name="auditors[${index}][peran]" value="${dbRole}">
+                `;
+            });
+            
+            form.submit();
         }
 
         // Event listeners
-        document.getElementById('searchAuditor').addEventListener('input', renderAuditors);
-        document.getElementById('filterRuangLingkup').addEventListener('change', renderAuditors);
+        const searchInput = document.getElementById('searchAuditor');
+        if (searchInput) {
+            searchInput.addEventListener('input', renderAuditors);
+        }
+        const ruangFilter = document.getElementById('filterRuangLingkup');
+        if (ruangFilter) {
+            ruangFilter.addEventListener('change', renderAuditors);
+        }
 
         // Initial render
         renderAuditors();
     </script>
 </body>
-
 </html>

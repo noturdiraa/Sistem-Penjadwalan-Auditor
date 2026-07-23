@@ -139,6 +139,29 @@ Route::middleware(['auth'])->group(function () {
         })->name('operasional.reviewjadwal.submit');
 
         Route::view('/operasional/input-auditor', 'operasional.input_auditor_manual.index')->name('operasional.inputauditor.index');
+        Route::post('/operasional/input-auditor/save/{id}', function(\Illuminate\Http\Request $request, $id) {
+            $request->validate([
+                'auditors' => 'required|array|min:1',
+                'auditors.*.id_auditor' => 'required|exists:auditors,id_auditor',
+                'auditors.*.peran' => 'required|in:Lead Auditor,Auditor',
+            ]);
+
+            $jadwal = \App\Models\JadwalAudit::findOrFail($id);
+
+            // Delete existing tim audit for this schedule
+            \App\Models\TimAudit::where('id_jadwal', $jadwal->id_jadwal)->delete();
+
+            // Insert new team members
+            foreach ($request->auditors as $audItem) {
+                \App\Models\TimAudit::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_auditor' => $audItem['id_auditor'],
+                    'peran' => $audItem['peran'],
+                ]);
+            }
+
+            return redirect()->route('operasional.reviewjadwal.index')->with('success', 'Tim audit manual berhasil disimpan.');
+        })->name('operasional.inputauditor.save');
         Route::view('/operasional/input-auditor/create', 'operasional.input_auditor_manual.create')->name('operasional.inputauditor.create');
         Route::view('/operasional/input-auditor/edit', 'operasional.input_auditor_manual.edit')->name('operasional.inputauditor.edit');
 
