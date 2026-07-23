@@ -403,9 +403,9 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 <div class="stats-row cards-row">
 
     @php
-        $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu Review')->count();
+        $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu')->count();
         $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
-        $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Dikembalikan')->count();
+        $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Revisi')->count();
         $countTotal = \App\Models\JadwalAudit::count();
     @endphp
 
@@ -513,7 +513,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
         <tbody>
             @php
-                $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Menunggu Review')->take(5)->get();
+                $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Menunggu')->take(5)->get();
             @endphp
             @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
