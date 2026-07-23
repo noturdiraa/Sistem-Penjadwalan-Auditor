@@ -364,16 +364,14 @@
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Nama Perusahaan</label>
                             @php
-                                $currentCompName = $riwayat->perusahaan->nama_perusahaan ?? $riwayat->audit->perusahaan->nama_perusahaan ?? '';
                                 $currentLembagaId = $riwayat->id_lembaga ?? $riwayat->audit->ruangLingkup->id_lembaga ?? '';
                                 $currentPerusahaanId = $riwayat->id_perusahaan ?? $riwayat->audit->id_perusahaan ?? '';
                             @endphp
-                            <input type="hidden" name="id_perusahaan" id="id_perusahaan" value="{{ old('id_perusahaan', $currentPerusahaanId) }}" required>
-                            <select id="selectCompany" class="form-select @error('id_perusahaan') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
+                            <select name="id_perusahaan" id="id_perusahaan" class="form-select @error('id_perusahaan') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
                                 <option value="" disabled>Cari / Pilih Perusahaan...</option>
-                                @foreach(array_keys($companyMap) as $compName)
-                                    <option value="{{ $compName }}" {{ ($currentCompName == $compName) ? 'selected' : '' }}>
-                                        {{ $compName }}
+                                @foreach($perusahaans as $p)
+                                    <option value="{{ $p->id_perusahaan }}" {{ (old('id_perusahaan', $currentPerusahaanId) == $p->id_perusahaan) ? 'selected' : '' }}>
+                                        {{ $p->nama_perusahaan }}
                                     </option>
                                 @endforeach
                             </select>
@@ -386,7 +384,12 @@
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Jenis Lembaga</label>
                             <select name="id_lembaga" id="id_lembaga" class="form-select @error('id_lembaga') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
-                                <option value="" disabled>Pilih Jenis Lembaga...</option>
+                                <option value="" disabled>Cari / Pilih Jenis Lembaga...</option>
+                                @foreach($lembagas as $l)
+                                    <option value="{{ $l->id_lembaga }}" {{ (old('id_lembaga', $currentLembagaId) == $l->id_lembaga) ? 'selected' : '' }}>
+                                        {{ $l->nama_lembaga }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('id_lembaga')
                                 <div class="text-danger mt-1 small">{{ $message }}</div>
@@ -504,60 +507,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             new TomSelect('#id_auditor', { create: false });
             new TomSelect('#tim_audit', { create: false, plugins: ['remove_button'] });
-
-            const companyData = @json($companyMap);
-            const selectCompany = document.getElementById('selectCompany');
-            const selectLembaga = document.getElementById('id_lembaga');
-            const inputIdPerusahaan = document.getElementById('id_perusahaan');
-
-            const currentCompName = @json($currentCompName);
-            const currentLembagaId = @json($currentLembagaId);
-
-            function renderLembagaOptions(selectedComp, selectedLembagaVal) {
-                const services = companyData[selectedComp] || [];
-                selectLembaga.innerHTML = '<option value="" disabled>Cari / Pilih Jenis Lembaga...</option>';
-
-                if (services.length > 0) {
-                    selectLembaga.disabled = false;
-                    let matched = false;
-                    services.forEach(item => {
-                        const opt = document.createElement('option');
-                        opt.value = item.id_lembaga || '0';
-                        opt.textContent = item.status_jasa;
-                        opt.setAttribute('data-id-perusahaan', item.id_perusahaan);
-
-                        const isValMatched = (selectedLembagaVal == item.id_lembaga) || (!selectedLembagaVal && !item.id_lembaga);
-                        if (isValMatched) {
-                            opt.selected = true;
-                            matched = true;
-                            inputIdPerusahaan.value = item.id_perusahaan;
-                        }
-                        selectLembaga.appendChild(opt);
-                    });
-
-                    if (!matched && services.length > 0) {
-                        selectLembaga.selectedIndex = 1;
-                        inputIdPerusahaan.value = services[0].id_perusahaan;
-                    }
-                } else {
-                    selectLembaga.disabled = true;
-                }
-            }
-
-            if (selectCompany.value) {
-                renderLembagaOptions(selectCompany.value, currentLembagaId);
-            }
-
-            selectCompany.addEventListener('change', function() {
-                renderLembagaOptions(this.value, null);
-            });
-
-            selectLembaga.addEventListener('change', function() {
-                const selectedOpt = this.options[this.selectedIndex];
-                if (selectedOpt) {
-                    inputIdPerusahaan.value = selectedOpt.getAttribute('data-id-perusahaan') || '';
-                }
-            });
+            new TomSelect('#id_perusahaan', { create: false });
+            new TomSelect('#id_lembaga', { create: false });
         });
     </script>
 </body>

@@ -363,11 +363,12 @@
                         <!-- Nama Perusahaan -->
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Nama Perusahaan</label>
-                            <input type="hidden" name="id_perusahaan" id="id_perusahaan" value="{{ old('id_perusahaan') }}" required>
-                            <select id="selectCompany" class="form-select @error('id_perusahaan') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
+                            <select name="id_perusahaan" id="id_perusahaan" class="form-select @error('id_perusahaan') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
                                 <option value="" selected disabled>Cari / Pilih Perusahaan...</option>
-                                @foreach(array_keys($companyMap) as $compName)
-                                    <option value="{{ $compName }}">{{ $compName }}</option>
+                                @foreach($perusahaans as $p)
+                                    <option value="{{ $p->id_perusahaan }}" {{ old('id_perusahaan') == $p->id_perusahaan ? 'selected' : '' }}>
+                                        {{ $p->nama_perusahaan }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('id_perusahaan')
@@ -378,8 +379,13 @@
                         <!-- Jenis Lembaga -->
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Jenis Lembaga</label>
-                            <select name="id_lembaga" id="id_lembaga" class="form-select @error('id_lembaga') is-invalid @enderror" required style="height: 48px; border-radius: 10px;" disabled>
-                                <option value="" selected disabled>Pilih Perusahaan Terlebih Dahulu...</option>
+                            <select name="id_lembaga" id="id_lembaga" class="form-select @error('id_lembaga') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
+                                <option value="" selected disabled>Cari / Pilih Jenis Lembaga...</option>
+                                @foreach($lembagas as $l)
+                                    <option value="{{ $l->id_lembaga }}" {{ old('id_lembaga') == $l->id_lembaga ? 'selected' : '' }}>
+                                        {{ $l->nama_lembaga }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('id_lembaga')
                                 <div class="text-danger mt-1 small">{{ $message }}</div>
@@ -494,46 +500,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             new TomSelect('#id_auditor', { create: false });
             new TomSelect('#tim_audit', { create: false, plugins: ['remove_button'] });
-
-            const companyData = @json($companyMap);
-            const selectCompany = document.getElementById('selectCompany');
-            const selectLembaga = document.getElementById('id_lembaga');
-            const inputIdPerusahaan = document.getElementById('id_perusahaan');
-
-            selectCompany.addEventListener('change', function() {
-                const selectedComp = this.value;
-                const services = companyData[selectedComp] || [];
-
-                selectLembaga.innerHTML = '<option value="" selected disabled>Cari / Pilih Jenis Lembaga...</option>';
-                
-                if (services.length > 0) {
-                    selectLembaga.disabled = false;
-                    services.forEach(item => {
-                        const opt = document.createElement('option');
-                        opt.value = item.id_lembaga || '0';
-                        opt.textContent = item.status_jasa;
-                        opt.setAttribute('data-id-perusahaan', item.id_perusahaan);
-                        selectLembaga.appendChild(opt);
-                    });
-
-                    if (services.length === 1) {
-                        selectLembaga.selectedIndex = 1;
-                        inputIdPerusahaan.value = services[0].id_perusahaan;
-                    } else {
-                        inputIdPerusahaan.value = '';
-                    }
-                } else {
-                    selectLembaga.disabled = true;
-                    inputIdPerusahaan.value = '';
-                }
-            });
-
-            selectLembaga.addEventListener('change', function() {
-                const selectedOpt = this.options[this.selectedIndex];
-                if (selectedOpt) {
-                    inputIdPerusahaan.value = selectedOpt.getAttribute('data-id-perusahaan') || '';
-                }
-            });
+            new TomSelect('#id_perusahaan', { create: false });
+            new TomSelect('#id_lembaga', { create: false });
         });
     </script>
 </body>
