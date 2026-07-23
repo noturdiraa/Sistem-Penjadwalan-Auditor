@@ -471,10 +471,7 @@
                     <!-- ================= TIM AUDIT ================= -->
                     <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
                         <i class="fas fa-users text-primary"></i>
-                        Tim Audit Terpilih (Berdasarkan Poin Terkecil)
-                        <span class="badge bg-success-subtle text-success fs-7" style="padding: 6px 12px; border-radius: 8px;">
-                            <i class="fas fa-magic me-1"></i> Auto-Generate Aktif
-                        </span>
+                        Tim Audit Terpilih
                     </h3>
 
                     @php
@@ -565,17 +562,7 @@
 
                                     <!-- Bagian Bawah: Skor & Aksi -->
                                     <div>
-                                        <!-- Rincian Poin (Skala 1-4) -->
-                                        <div class="bg-light rounded-3 p-3 mb-3" style="font-size: 12px; line-height: 1.5;">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="text-secondary">1. Penugasan Audit:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['penugasan'] }} <span class="text-muted">/4 Poin</span></strong>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <span class="text-secondary">2. Kategori Wilayah:</span>
-                                                <strong class="text-dark">{{ $auditor->scoring['kategori'] }} <span class="text-muted">/4 Poin</span></strong>
-                                            </div>
-                                        </div>
+
 
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div>
