@@ -467,12 +467,12 @@
                     if ($auditor) {
                         $item = [
                             'name' => $auditor->nama_auditor ?? '',
-                            'role' => $tim->jabatan ?? 'Auditor',
+                            'role' => $tim->peran ?? 'Auditor',
                             'NIP' => $auditor->nip ?? '',
                             'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
                             'point' => 0
                         ];
-                        if (strtolower($tim->jabatan) === 'ketua' || strtolower($tim->jabatan) === 'lead auditor') {
+                        if (strtolower($tim->peran) === 'ketua tim' || strtolower($tim->peran) === 'lead auditor') {
                             $ketua = $item;
                         } else {
                             $anggotaList[] = $item;
@@ -667,12 +667,12 @@
                             <small class="text-secondary d-block mb-2" style="font-size: 12px; font-weight: 500;">Ketua Tim</small>
                             <div class="d-flex align-items-center gap-2 border rounded-3 p-2 bg-light">
                                 <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width: 32px; height: 32px; font-size: 13px; flex-shrink: 0;">
-                                    ${item.timAudit.ketua.name.charAt(0)}
+                                    ${item.timAudit.ketua ? item.timAudit.ketua.name.charAt(0) : '-'}
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">${item.timAudit.ketua.name}</h6>
-                                    <small class="text-secondary d-block" style="font-size: 11px;">${item.timAudit.ketua.NIP} · Ketua (${item.timAudit.ketua.jenisAudit})</small>
-                                    <small class="text-dark fw-semibold" style="font-size: 11px;">Point: <span class="text-success">${item.timAudit.ketua.point}</span></small>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">${item.timAudit.ketua ? item.timAudit.ketua.name : 'Belum ditentukan'}</h6>
+                                    <small class="text-secondary d-block" style="font-size: 11px;">${item.timAudit.ketua ? item.timAudit.ketua.NIP : '-'} · Ketua</small>
+                                    <small class="text-dark fw-semibold" style="font-size: 11px;">Point: <span class="text-success">${item.timAudit.ketua ? item.timAudit.ketua.point : 0}</span></small>
                                 </div>
                             </div>
                         </div>
