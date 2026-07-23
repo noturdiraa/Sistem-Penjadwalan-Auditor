@@ -328,7 +328,7 @@ class AuditController extends Controller
             $jadwal->reviewKatimPjis()->delete();
             $jadwal->reviewTeknis()->delete();
             $jadwal->riwayatAuditors()->delete();
-            
+            \App\Models\RekomendasiAuditor::where('id_jadwal', $jadwal->id_jadwal)->delete();
             $lokasi = $jadwal->lokasi;
             $jadwal->delete();
             
