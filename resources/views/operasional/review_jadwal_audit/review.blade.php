@@ -387,12 +387,7 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Competency Badges -->
-                                        <div class="d-flex gap-1 flex-wrap">
-                                            @foreach($competencies as $comp)
-                                                <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">{{ $comp }}</span>
-                                            @endforeach
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
