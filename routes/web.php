@@ -106,7 +106,7 @@ Route::middleware(['auth'])->group(function () {
             $jadwal = \App\Models\JadwalAudit::findOrFail($id);
             if ($request->status === 'setuju') {
                 $jadwal->status_jadwal = 'Disetujui';
-                $jadwal->audit->status = 'Disetujui';
+                $jadwal->audit->status = 'Diproses';
                 
                 \App\Models\ReviewOperasional::create([
                     'id_jadwal' => $jadwal->id_jadwal,
@@ -115,8 +115,8 @@ Route::middleware(['auth'])->group(function () {
                     'catatan' => $request->catatan,
                 ]);
             } else {
-                $jadwal->status_jadwal = 'Dikembalikan';
-                $jadwal->audit->status = 'Dikembalikan';
+                $jadwal->status_jadwal = 'Revisi';
+                $jadwal->audit->status = 'Revisi';
                 
                 $review = \App\Models\ReviewOperasional::create([
                     'id_jadwal' => $jadwal->id_jadwal,
