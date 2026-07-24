@@ -1,3 +1,35 @@
+@php
+    $jadwals = \App\Models\JadwalAudit::with([
+        'audit.perusahaan',
+        'audit.ruangLingkup',
+        'timAudits.auditor'
+    ])->get();
+
+    $calendarAudits = [];
+    foreach ($jadwals as $j) {
+        $audit = $j->audit;
+        if (!$audit) continue;
+        
+        $perusahaan = $audit->perusahaan;
+        if (!$perusahaan) continue;
+
+        $startDate = \Carbon\Carbon::parse($j->tanggal_mulai);
+        $endDate = \Carbon\Carbon::parse($j->tanggal_selesai);
+
+        $auditorNames = $j->timAudits->map(fn($t) => $t->auditor->nama_auditor ?? '')->filter()->implode(', ');
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $formattedDate = $date->format('Y-m-d');
+            $calendarAudits[$formattedDate][] = [
+                'perusahaan' => $perusahaan->nama_perusahaan,
+                'ruang_lingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
+                'waktu' => '08:00 - 16:00 WIB',
+                'auditor' => !empty($auditorNames) ? $auditorNames : '-',
+                'status' => $j->status_jadwal
+            ];
+        }
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -28,86 +60,67 @@
             overflow-x: hidden;
         }
 
-        /* ================= SIDEBAR ================= */
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 270px;
-    height: 100vh;
-    background: #0F3D91;
-    color: white;
-    padding: 14px 18px;
-    overflow-y: auto;
-    z-index: 1000;
-}
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 270px;
+            height: 100vh;
+            background: #0F3D91;
+            color: white;
+            padding: 14px 18px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
 
-.sidebar::-webkit-scrollbar {
-    display: none;
-}
+        .logo {
+            text-align: center;
+            margin-bottom: 18px;
+        }
 
-.sidebar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+        .logo img {
+            width: 70px;
+            margin-bottom: 8px;
+        }
 
-.logo {
-    text-align: center;
-    margin-bottom: 18px;
-}
+        .logo h4 {
+            font-weight: 700;
+            margin: 0;
+        }
 
-.logo img {
-    width: 70px;
-    margin-bottom: 8px;
-}
+        .logo p {
+            font-size: 13px;
+            opacity: .8;
+        }
 
-.logo h4 {
-    font-weight: 700;
-    margin: 0;
-    font-size: 20px;
-}
+        .menu {
+            list-style: none;
+            padding: 0;
+        }
 
-.logo p {
-    font-size: 13px;
-    opacity: .8;
-    margin: 5px 0 0 0;
-}
+        .menu li {
+            margin-bottom: 10px;
+        }
 
-.menu {
-    list-style: none;
-    padding: 0;
-}
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            white-space: normal;
+            padding: 10px 12px;
+            font-size: 15px;
+            line-height: 1.1;
+            transition: none;
+        }
 
-.menu li {
-    margin-bottom: 10px;
-}
+        .menu li a:hover,
+        .menu li a.active {
+            background: #2563EB;
+        }
 
-.menu li a {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-radius: 12px;
-    color: white;
-    text-decoration: none;
-    white-space: normal;
-    padding: 10px 12px;
-    font-size: 15px;
-    line-height: 1.1;
-    transition: none;
-}
-
-.menu li a:hover,
-.menu li a.active {
-    background: #2563EB;
-}
-
-.menu li i {
-    width: 20px;
-    text-align: center;
-    font-size: 16px;
-}
-
-        /* ================= CONTENT ================= */
         .content {
             margin-left: 270px;
             min-height: 100vh;
@@ -123,26 +136,17 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
         }
 
-        .search {
-            width: 350px;
-        }
-
         .profile {
             display: flex;
             align-items: center;
             gap: 15px;
+            white-space: nowrap;
         }
 
         .profile img {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-        }
-
-        .profile span {
-            font-size: 15px;
-            font-weight: 500;
-            color: #1F2937;
         }
 
         .main {
@@ -274,7 +278,7 @@
     <!-- ================= SIDEBAR ================= -->
     <div class="sidebar">
         <div class="logo">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo BSPJI">
+            <img src="{{ asset('images/logo.png') }}">
             <h4>BSPJI</h4>
             <p>Operasional</p>
         </div>
@@ -316,7 +320,7 @@
                     Profil
                 </a>
             </li>
-                        <li>
+            <li>
                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1; cursor: pointer;">
@@ -329,14 +333,17 @@
     </div>
 
     <!-- ================= CONTENT ================= -->
-    <div class="content">
+        <div class="content">
         <div class="navbar-custom">
-            <input type="text" class="form-control search" placeholder="Cari...">
+            <div class="search-box-container" style="position: relative; width: 320px;">
+                <input type="text" class="form-control" placeholder="Cari..." style="height: 38px; border-radius: 20px; padding-left: 35px; font-size: 14px; border: 1px solid #E2E8F0; background-color: #F8FAFC;">
+                <i class="fas fa-search text-secondary" style="position: absolute; left: 12px; top: 12px; font-size: 14px;"></i>
+            </div>
 
             <div class="profile">
-                <i class="far fa-bell fs-5"></i>
-                <img src="{{ asset('images/logo.png') }}" alt="Profil">
-                <span>Operasional</span>
+                <i class="far fa-bell fs-5 me-3" style="cursor: pointer; color: #6B7280;"></i>
+                <img src="{{ asset('images/logo.png') }}">
+                <strong>Operasional</strong>
             </div>
         </div>
 
@@ -415,35 +422,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    @php
-        $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'timAudits.auditor'])->get();
-
-        $events = [];
-        foreach ($jadwals as $j) {
-            $dateKey = $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('Y-m-d') : null;
-            if ($dateKey) {
-                $auditorNames = [];
-                foreach ($j->timAudits as $t) {
-                    if ($t->auditor) {
-                        $auditorNames[] = $t->auditor->nama_auditor;
-                    }
-                }
-                $auditorString = count($auditorNames) > 0 ? implode(', ', $auditorNames) : 'Belum ditentukan';
-
-                $events[$dateKey][] = [
-                    'perusahaan' => $j->audit->perusahaan->nama_perusahaan ?? 'Belum diatur',
-                    'ruang_lingkup' => $j->audit->jenis_audit ?? 'Sertifikasi',
-                    'waktu' => '08:00 - 16:00 WIB',
-                    'auditor' => $auditorString
-                ];
-            }
-        }
-    @endphp
         // Data Jadwal Audit (Key format: YYYY-MM-DD)
-        const audits = {!! json_encode($events) !!};
+        const audits = @json($calendarAudits);
 
-        let currentYear = 2026;
-        let currentMonth = 6; // Juli (0-indexed)
+        const currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
 
         const monthNames = [
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -565,9 +549,19 @@
 
                 let html = '';
                 audits[dateKey].forEach(a => {
+                    let statusBadgeHtml = '';
+                    if (a.status === 'Aktif') {
+                        statusBadgeHtml = `<span class="badge bg-success text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #10B981 !important;">Aktif</span>`;
+                    } else if (a.status === 'Selesai') {
+                        statusBadgeHtml = `<span class="badge bg-info text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #06B6D4 !important;">Selesai</span>`;
+                    }
+
                     html += `
                         <div class="audit-detail-item">
-                            <h6 class="fw-bold text-dark mb-2" style="font-size: 15px;">${a.perusahaan}</h6>
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <h6 class="fw-bold text-dark mb-2" style="font-size: 15px;">${a.perusahaan}</h6>
+                                ${statusBadgeHtml}
+                            </div>
                             <div class="mb-2">
                                 <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">${a.ruang_lingkup}</span>
                             </div>
@@ -585,6 +579,17 @@
                 resetDetailPanel();
             }
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedAvatar = localStorage.getItem('operasional_avatar');
+            if (savedAvatar) {
+                const profileImg = document.querySelector('.profile img');
+                if (profileImg) {
+                    profileImg.src = savedAvatar;
+                }
+            }
+        });
     </script>
 </body>
 
