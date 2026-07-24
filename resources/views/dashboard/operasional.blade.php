@@ -513,11 +513,16 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
         <tbody>
             @php
-                $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])
-                    ->orderByRaw("FIELD(status_jadwal, 'Review', 'Revisi', 'Aktif', 'Selesai') ASC")
-                    ->orderBy('updated_at', 'desc')
-                    ->take(5)
-                    ->get();
+                $jadwals = \App\Models\JadwalAudit::with([
+                    'audit.perusahaan',
+                    'audit.ruangLingkup',
+                    'lokasi',
+                    'timAudits.auditor'
+                ])
+                ->orderByRaw("FIELD(status_jadwal, 'Review', 'Revisi', 'Aktif', 'Selesai') ASC")
+                ->orderBy('updated_at', 'desc')
+                ->take(5)
+                ->get();
             @endphp
             @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
@@ -537,6 +542,17 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
                             $statusLabel = 'Selesai';
                             $badgeClass = 'bg-info text-white';
                         }
+
+                        $leadAuditor = '-';
+                        $memberNames = [];
+                        foreach ($jadwal->timAudits as $mt) {
+                            if ($mt->peran === 'Lead Auditor' && $mt->auditor) {
+                                $leadAuditor = $mt->auditor->nama_auditor;
+                            } elseif ($mt->peran === 'Auditor' && $mt->auditor) {
+                                $memberNames[] = $mt->auditor->nama_auditor;
+                            }
+                        }
+                        $anggotaList = implode(', ', $memberNames) ?: '-';
                     @endphp
                     <tr>
                         <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
@@ -544,9 +560,23 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
                         <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
                         <td class="text-center"><span class="badge {{ $badgeClass }}" style="padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 6px;">{{ $statusLabel }}</span></td>
                         <td class="text-center">
-                            <a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center" style="border-radius: 8px; padding: 6px 10px;">
+                            <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center btn-detail" 
+                                    style="border-radius: 8px; padding: 6px 10px;"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailAuditModal"
+                                    data-id="{{ $jadwal->id_jadwal }}"
+                                    data-perusahaan="{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}"
+                                    data-jenis-audit="{{ $jadwal->audit->jenis_audit ?? '-' }}"
+                                    data-ruang-lingkup="{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}"
+                                    data-tanggal-mulai="{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d F Y') : '-' }}"
+                                    data-tanggal-selesai="{{ $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d F Y') : '-' }}"
+                                    data-lead-auditor="{{ $leadAuditor }}"
+                                    data-anggota="{{ $anggotaList }}"
+                                    data-status="{{ $jadwal->status_jadwal }}"
+                                    data-lokasi="{{ $jadwal->lokasi ? $jadwal->lokasi->nama_lokasi : '-' }}"
+                                    data-kategori-wilayah="{{ $jadwal->lokasi ? $jadwal->lokasi->kategori_wilayah : '-' }}">
                                 <i class="fas fa-eye"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -595,17 +625,117 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 const menu = document.querySelectorAll(".menu a");
 
 menu.forEach(item => {
-
     item.addEventListener("click", function () {
-
         menu.forEach(i => i.classList.remove("active"));
-
         this.classList.add("active");
-
     });
-
 });
+</script>
 
+<!-- Modal Detail Audit -->
+<div class="modal fade" id="detailAuditModal" tabindex="-1" aria-labelledby="detailAuditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 15px 50px rgba(0,0,0,.15);">
+            <div class="modal-header" style="border-bottom: none; padding: 24px 24px 10px;">
+                <h5 class="modal-title fw-bold text-dark" id="detailAuditModalLabel" style="font-size: 20px;">Detail Data Audit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 24px; font-size: 14px;">
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">ID Jadwal</span>
+                    <strong class="text-dark text-end" id="detailAuditId">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Perusahaan</span>
+                    <strong class="text-dark text-end" id="detailPerusahaan">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Jenis Audit</span>
+                    <strong class="text-dark text-end" id="detailJenisAudit">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Ruang Lingkup</span>
+                    <strong class="text-dark text-end" id="detailRuangLingkup">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Tanggal Mulai</span>
+                    <strong class="text-dark text-end" id="detailTglMulai">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Tanggal Selesai</span>
+                    <strong class="text-dark text-end" id="detailTglSelesai">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Lead Auditor</span>
+                    <strong class="text-dark text-end" id="detailLeadAuditor">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Anggota</span>
+                    <strong class="text-dark text-end" id="detailAnggota">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Lokasi</span>
+                    <strong class="text-dark text-end" id="detailLokasi">-</strong>
+                </div>
+                <div class="mb-3 d-flex justify-content-between align-items-start">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Kategori Wilayah</span>
+                    <strong class="text-dark text-end" id="detailKategoriWilayah">-</strong>
+                </div>
+                <div class="mb-0 d-flex justify-content-between align-items-center">
+                    <span class="text-secondary me-3" style="min-width: 120px;">Status</span>
+                    <span class="badge" id="detailStatus" style="background-color: #E2E8F0; color: #475569; font-weight: 600; padding: 6px 12px; border-radius: 8px;">-</span>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" style="height: 45px; border-radius: 8px; font-weight: 600; background-color: #F3F4F6; color: #4B5563; border: none; transition: none;">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ================= DETAIL MODAL POPULATOR =================
+document.querySelectorAll('.btn-detail').forEach(button => {
+    button.addEventListener('click', function() {
+        document.getElementById('detailAuditId').textContent = this.getAttribute('data-id');
+        document.getElementById('detailPerusahaan').textContent = this.getAttribute('data-perusahaan');
+        document.getElementById('detailJenisAudit').textContent = this.getAttribute('data-jenis-audit');
+        document.getElementById('detailRuangLingkup').textContent = this.getAttribute('data-ruang-lingkup');
+        document.getElementById('detailTglMulai').textContent = this.getAttribute('data-tanggal-mulai');
+        document.getElementById('detailTglSelesai').textContent = this.getAttribute('data-tanggal-selesai');
+        document.getElementById('detailLeadAuditor').textContent = this.getAttribute('data-lead-auditor');
+        document.getElementById('detailAnggota').textContent = this.getAttribute('data-anggota');
+        document.getElementById('detailLokasi').textContent = this.getAttribute('data-lokasi');
+        document.getElementById('detailKategoriWilayah').textContent = this.getAttribute('data-kategori-wilayah');
+        
+        const status = this.getAttribute('data-status');
+        const statusEl = document.getElementById('detailStatus');
+        
+        // Adjust status badge color & label
+        statusEl.className = 'badge';
+        if (status === 'Review') {
+            statusEl.textContent = 'Menunggu Review';
+            statusEl.style.backgroundColor = '#F59E0B';
+            statusEl.style.color = '#FFF';
+        } else if (status === 'Aktif') {
+            statusEl.textContent = 'Disetujui';
+            statusEl.style.backgroundColor = '#10B981';
+            statusEl.style.color = '#FFF';
+        } else if (status === 'Revisi') {
+            statusEl.textContent = 'Dikembalikan';
+            statusEl.style.backgroundColor = '#EF4444';
+            statusEl.style.color = '#FFF';
+        } else if (status === 'Selesai') {
+            statusEl.textContent = 'Selesai';
+            statusEl.style.backgroundColor = '#06B6D4';
+            statusEl.style.color = '#FFF';
+        } else {
+            statusEl.textContent = status;
+            statusEl.style.backgroundColor = '#6B7280';
+            statusEl.style.color = '#FFF';
+        }
+    });
+});
 </script>
 
 </body>
