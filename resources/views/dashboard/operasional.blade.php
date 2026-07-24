@@ -479,14 +479,12 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
 </div>
 
-<!-- ================= TABEL PERLU REVIEW ================= -->
-
 <div class="table-box">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
         <h4 class="fw-bold">
-            Jadwal Menunggu Tindakan
+            Jadwal & Riwayat Review
         </h4>
 
         <a href="/operasional/review-jadwal" class="text-primary fw-semibold">Lihat Semua</a>
@@ -513,21 +511,42 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
         <tbody>
             @php
-                $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Review')->take(5)->get();
+                $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])
+                    ->orderByRaw("FIELD(status_jadwal, 'Review', 'Revisi', 'Aktif', 'Selesai') ASC")
+                    ->orderBy('updated_at', 'desc')
+                    ->take(5)
+                    ->get();
             @endphp
             @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
+                    @php
+                        $statusLabel = $jadwal->status_jadwal;
+                        $badgeClass = 'bg-secondary text-white';
+                        if ($jadwal->status_jadwal === 'Review') {
+                            $statusLabel = 'Menunggu Review';
+                            $badgeClass = 'bg-warning text-dark';
+                        } elseif ($jadwal->status_jadwal === 'Aktif') {
+                            $statusLabel = 'Disetujui';
+                            $badgeClass = 'bg-success text-white';
+                        } elseif ($jadwal->status_jadwal === 'Revisi') {
+                            $statusLabel = 'Dikembalikan';
+                            $badgeClass = 'bg-danger text-white';
+                        } elseif ($jadwal->status_jadwal === 'Selesai') {
+                            $statusLabel = 'Selesai';
+                            $badgeClass = 'bg-info text-white';
+                        }
+                    @endphp
                     <tr>
                         <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
                         <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
                         <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
-                        <td class="text-center"><span class="badge bg-warning text-dark">{{ $jadwal->status_jadwal ?? '-' }}</span></td>
+                        <td class="text-center"><span class="badge {{ $badgeClass }}" style="padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 6px;">{{ $statusLabel }}</span></td>
                     </tr>
                 @endforeach
             @else
                 <tr>
                     <td colspan="4" class="text-center text-secondary py-4">
-                        Tidak ada jadwal audit yang menunggu review.
+                        Tidak ada riwayat atau jadwal audit.
                     </td>
                 </tr>
             @endif
