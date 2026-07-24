@@ -1,3 +1,62 @@
+@php
+    $id = request()->query('id');
+    $jadwal = null;
+    if ($id) {
+        $jadwal = \App\Models\JadwalAudit::with([
+            'audit.perusahaan',
+            'audit.ruangLingkup',
+            'lokasi',
+            'timAudits.auditor.detailAuditors.ruangLingkup.lembaga'
+        ])->find($id);
+    }
+    
+    if (!$jadwal) {
+        $jadwal = \App\Models\JadwalAudit::with([
+            'audit.perusahaan',
+            'audit.ruangLingkup',
+            'lokasi',
+            'timAudits.auditor.detailAuditors.ruangLingkup.lembaga'
+        ])->first();
+    }
+
+    $audit = $jadwal ? $jadwal->audit : null;
+    $perusahaan = $audit ? $audit->perusahaan : null;
+    $ruangLingkup = $audit ? $audit->ruangLingkup : null;
+    $lokasi = $jadwal ? $jadwal->lokasi : null;
+
+    $ketua = null;
+    $anggotaList = [];
+    if ($jadwal && $jadwal->timAudits) {
+        foreach ($jadwal->timAudits as $tim) {
+            $auditor = $tim->auditor;
+            if (!$auditor) continue;
+
+            $competencies = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique()->values()->all();
+
+            $nameParts = explode(' ', trim($auditor->nama_auditor));
+            $initials = count($nameParts) > 1 
+                ? strtoupper(substr($nameParts[0], 0, 1) . substr($nameParts[1], 0, 1))
+                : strtoupper(substr($nameParts[0], 0, 2));
+
+            $compLembagas = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->lembaga->nama_lembaga ?? '')->filter()->unique()->values()->all();
+
+            $item = [
+                'name' => $auditor->nama_auditor,
+                'role' => $tim->peran ?? 'Auditor',
+                'NIP' => $auditor->nip ?? '-',
+                'initials' => $initials,
+                'competencies' => $competencies,
+                'lembaga' => count($compLembagas) > 0 ? implode(', ', $compLembagas) : '-',
+            ];
+
+            if ($tim->peran === 'Lead Auditor') {
+                $ketua = $item;
+            } else {
+                $anggotaList[] = $item;
+            }
+        }
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -332,7 +391,18 @@
             <div class="detail-card">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="fw-bold text-dark mb-0" style="font-size: 18px;">Informasi Audit</h4>
-                    <span class="badge" style="background-color: #FEF3C7; color: #D97706; font-weight: 600; padding: 6px 16px; border-radius: 20px; font-size: 13px;">Berlangsung</span>
+                    @php
+                        $badgeColor = '#F59E0B';
+                        $badgeText = 'Berlangsung';
+                        if ($jadwal->status_jadwal === 'Selesai') {
+                            $badgeColor = '#10B981';
+                            $badgeText = 'Selesai';
+                        } elseif ($jadwal->status_jadwal === 'Review') {
+                            $badgeColor = '#6B7280';
+                            $badgeText = 'Review';
+                        }
+                    @endphp
+                    <span class="badge" style="background-color: {{ $badgeColor }}; color: #fff; font-weight: 600; padding: 6px 16px; border-radius: 20px; font-size: 13px;">{{ $badgeText }}</span>
                 </div>
 
                 <div class="row gy-4">
@@ -342,7 +412,7 @@
                             <i class="far fa-building"></i>
                             <div>
                                 <div class="info-item-label">Perusahaan</div>
-                                <div class="info-item-value">PT ABC Indonesia</div>
+                                <div class="info-item-value">{{ $perusahaan->nama_perusahaan ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -353,7 +423,7 @@
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
                                 <div class="info-item-label">Lokasi</div>
-                                <div class="info-item-value">Palembang</div>
+                                <div class="info-item-value">{{ $lokasi->nama_lokasi ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -364,7 +434,7 @@
                             <i class="fas fa-clipboard-list"></i>
                             <div>
                                 <div class="info-item-label">Jenis Audit</div>
-                                <div class="info-item-value">LSSM</div>
+                                <div class="info-item-value">{{ $audit->jenis_audit ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -375,7 +445,7 @@
                             <i class="fas fa-map-pin"></i>
                             <div>
                                 <div class="info-item-label">Kategori Wilayah</div>
-                                <div class="info-item-value">Dalam Kota</div>
+                                <div class="info-item-value">{{ $lokasi->kategori_wilayah ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -386,7 +456,7 @@
                             <i class="far fa-calendar-check"></i>
                             <div>
                                 <div class="info-item-label">Tanggal Mulai</div>
-                                <div class="info-item-value">25 Juni 2026</div>
+                                <div class="info-item-value">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d F Y') : '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -397,7 +467,7 @@
                             <i class="far fa-calendar-times"></i>
                             <div>
                                 <div class="info-item-label">Tanggal Selesai</div>
-                                <div class="info-item-value">30 Juni 2026</div>
+                                <div class="info-item-value">{{ $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d F Y') : '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -408,7 +478,7 @@
                             <i class="fas fa-tags"></i>
                             <div>
                                 <div class="info-item-label">Ruang Lingkup</div>
-                                <div class="info-item-value">Karet dan produk plastik (14)</div>
+                                <div class="info-item-value">{{ $ruangLingkup->nama_ruang_lingkup ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
@@ -422,99 +492,83 @@
                 <!-- Ketua Tim Section -->
                 <div class="mb-4">
                     <h5 class="text-secondary fw-semibold mb-3" style="font-size: 14px;">Ketua Tim</h5>
+                    @if($ketua)
                     <div class="member-item">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="member-avatar bg-avatar-blue">PM</div>
+                            <div class="member-avatar bg-avatar-blue">{{ $ketua['initials'] }}</div>
                             <div>
-                                <h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">Popy Marlina</h6>
+                                <h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">{{ $ketua['name'] }}</h6>
                                 <span class="badge bg-purple-subtle text-purple" style="font-size: 10px; padding: 3px 8px; border-radius: 6px;">Lead Auditor</span>
                             </div>
                         </div>
                         <div class="text-end text-secondary" style="font-size: 13px;">
-                            <div><i class="fas fa-certificate me-1"></i> Kompetensi: LSPRO, LSSM, LSSML</div>
+                            <div><i class="fas fa-certificate me-1"></i> Ruang Lingkup: {{ $ketua['lembaga'] }}</div>
                         </div>
                     </div>
+                    @else
+                    <div class="text-secondary" style="font-size: 13px;">Belum ditentukan</div>
+                    @endif
                 </div>
 
                 <!-- Anggota Tim Section -->
                 <div>
                     <h5 class="text-secondary fw-semibold mb-3" style="font-size: 14px;">Anggota Tim</h5>
-                    
-                    <div class="member-item">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="member-avatar bg-avatar-purple">AS</div>
-                            <div>
-                                <h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">Andi Saputra</h6>
-                                <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px; padding: 3px 8px; border-radius: 6px;">Auditor 1</span>
+                    @if(count($anggotaList) > 0)
+                        @foreach($anggotaList as $idx => $ang)
+                        <div class="member-item {{ $idx > 0 ? 'mt-3' : '' }}">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="member-avatar bg-avatar-green">{{ $ang['initials'] }}</div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">{{ $ang['name'] }}</h6>
+                                    <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px; padding: 3px 8px; border-radius: 6px;">Auditor {{ $idx + 1 }}</span>
+                                </div>
+                            </div>
+                            <div class="text-end text-secondary" style="font-size: 13px;">
+                                <div><i class="fas fa-certificate me-1"></i> Ruang Lingkup: {{ $ang['lembaga'] }}</div>
                             </div>
                         </div>
-                        <div class="text-end text-secondary" style="font-size: 13px;">
-                            <div><i class="fas fa-certificate me-1"></i> Kompetensi: LSPRO, LSSM</div>
-                        </div>
-                    </div>
-
-                    <div class="member-item mt-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="member-avatar bg-avatar-green">MR</div>
-                            <div>
-                                <h6 class="fw-bold text-dark mb-1" style="font-size: 15px;">Muhammad Rizki</h6>
-                                <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px; padding: 3px 8px; border-radius: 6px;">Auditor 2</span>
-                            </div>
-                        </div>
-                        <div class="text-end text-secondary" style="font-size: 13px;">
-                            <div><i class="fas fa-certificate me-1"></i> Kompetensi: LSSM, LSMK3</div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @else
+                        <div class="text-secondary" style="font-size: 13px;">Belum ditentukan</div>
+                    @endif
                 </div>
             </div>
 
             <!-- ================= RIWAYAT PERUBAHAN CARD ================= -->
             <div class="detail-card mt-4">
-                <h4 class="fw-bold text-dark mb-4" style="font-size: 18px;"><i class="fas fa-history me-2 text-primary"></i>Riwayat Perubahan Tim</h4>
+                <h4 class="fw-bold text-dark mb-4" style="font-size: 18px;"><i class="fas fa-history me-2 text-primary"></i>Riwayat Review Operasional</h4>
                 
+                @php
+                    $reviews = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal ?? 0)->orderBy('tanggal_review', 'desc')->get();
+                @endphp
                 <div class="timeline-container">
-                    <!-- History Item 1 -->
-                    <div class="d-flex gap-3 mb-4">
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="rounded-circle bg-primary d-flex justify-content-center align-items-center text-white" style="width: 32px; height: 32px; font-size: 14px;">
-                                <i class="fas fa-user-sync"></i>
+                    @if($reviews->count() > 0)
+                        @foreach($reviews as $rev)
+                        <div class="d-flex gap-3 mb-4">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="rounded-circle bg-primary d-flex justify-content-center align-items-center text-white" style="width: 32px; height: 32px; font-size: 14px;">
+                                    <i class="fas fa-user-sync"></i>
+                                </div>
                             </div>
-                            <div class="bg-secondary opacity-25" style="width: 2px; flex-grow: 1; min-height: 40px;"></div>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                                <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Perubahan Auditor 2</h6>
-                                <span class="badge bg-light text-secondary border" style="font-size: 11px;">24 Juni 2026</span>
-                            </div>
-                            <div class="text-secondary" style="font-size: 13px;">
-                                Mengganti <strong class="text-dark">Rina Wijaya</strong> dengan <strong class="text-dark">Muhammad Rizki</strong>
-                            </div>
-                            <small class="text-muted d-block mt-1" style="font-size: 12px; font-style: italic;">
-                                Alasan: Penyesuaian jadwal karena auditor lama bentrok dengan kegiatan sertifikasi lain.
-                            </small>
-                        </div>
-                    </div>
-
-                    <!-- History Item 2 -->
-                    <div class="d-flex gap-3">
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="rounded-circle bg-primary d-flex justify-content-center align-items-center text-white" style="width: 32px; height: 32px; font-size: 14px;">
-                                <i class="fas fa-user-tie"></i>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Review Operasional: {{ $rev->status_review }}</h6>
+                                    <span class="badge bg-light text-secondary border" style="font-size: 11px;">{{ \Carbon\Carbon::parse($rev->tanggal_review)->format('d F Y') }}</span>
+                                </div>
+                                <div class="text-secondary" style="font-size: 13px;">
+                                    Catatan: <strong class="text-dark">{{ $rev->catatan ?? '-' }}</strong>
+                                </div>
+                                @if($rev->rekomendasi)
+                                <small class="text-muted d-block mt-1" style="font-size: 12px; font-style: italic;">
+                                    Rekomendasi: {{ $rev->rekomendasi }}
+                                </small>
+                                @endif
                             </div>
                         </div>
-                        <div>
-                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                                <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Perubahan Ketua Tim (Lead Auditor)</h6>
-                                <span class="badge bg-light text-secondary border" style="font-size: 11px;">22 Juni 2026</span>
-                            </div>
-                            <div class="text-secondary" style="font-size: 13px;">
-                                Mengganti <strong class="text-dark">Ahmad Syarif</strong> dengan <strong class="text-dark">Popy Marlina</strong>
-                            </div>
-                            <small class="text-muted d-block mt-1" style="font-size: 12px; font-style: italic;">
-                                Alasan: Ketua Tim lama mendapat penugasan khusus mendadak dari kepala balai.
-                            </small>
-                        </div>
-                    </div>
+                        @endforeach
+                    @else
+                        <p class="text-secondary mb-0" style="font-size: 13px;">Belum ada riwayat review/perubahan pada jadwal ini.</p>
+                    @endif
                 </div>
             </div>
 

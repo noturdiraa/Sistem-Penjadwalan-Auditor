@@ -1,3 +1,44 @@
+@php
+    $jadwals = \App\Models\JadwalAudit::with([
+        'audit.perusahaan',
+        'audit.ruangLingkup',
+        'timAudits.auditor'
+    ])->get();
+
+    $monitoringData = [];
+    foreach ($jadwals as $j) {
+        $audit = $j->audit;
+        if (!$audit) continue;
+        
+        $perusahaan = $audit->perusahaan;
+        if (!$perusahaan) continue;
+
+        $status = 'berjalan';
+        if ($j->status_jadwal === 'Selesai') {
+            $status = 'selesai';
+        }
+
+        $leadAuditor = '-';
+        $leadTim = $j->timAudits->where('peran', 'Lead Auditor')->first();
+        if ($leadTim && $leadTim->auditor) {
+            $leadAuditor = $leadTim->auditor->nama_auditor;
+        }
+
+        $periode = ($j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d M Y') : '-') . ' – ' . ($j->tanggal_selesai ? \Carbon\Carbon::parse($j->tanggal_selesai)->format('d M Y') : '-');
+
+        $monitoringData[] = [
+            'id' => $j->id_jadwal,
+            'perusahaan' => $perusahaan->nama_perusahaan,
+            'ruang_lingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
+            'periode' => $periode,
+            'ketua_tim' => $leadAuditor,
+            'status' => $status
+        ];
+    }
+
+    $berjalanCount = collect($monitoringData)->where('status', 'berjalan')->count();
+    $selesaiCount = collect($monitoringData)->where('status', 'selesai')->count();
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -327,7 +368,7 @@
                     <div class="card-stat p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h2 class="fw-bold mb-1" style="font-size: 32px;">2</h2>
+                                <h2 class="fw-bold mb-1" style="font-size: 32px;">{{ $berjalanCount }}</h2>
                                 <span class="text-secondary" style="font-size: 14px;">Audit Berjalan</span>
                             </div>
                             <div class="icon-box bg-orange">
@@ -342,7 +383,7 @@
                     <div class="card-stat p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h2 class="fw-bold mb-1" style="font-size: 32px;">1</h2>
+                                <h2 class="fw-bold mb-1" style="font-size: 32px;">{{ $selesaiCount }}</h2>
                                 <span class="text-secondary" style="font-size: 14px;">Audit Selesai</span>
                             </div>
                             <div class="icon-box bg-green">
@@ -358,10 +399,10 @@
                 <!-- Tabs Filter -->
                 <div class="d-flex gap-2 mb-4 border-bottom pb-3">
                     <button class="btn btn-primary px-4 py-2 filter-tab active" onclick="filterCategory('berjalan')" id="tabBerjalan" style="border-radius: 8px; font-size: 14px;">
-                        <i class="fas fa-spinner me-2"></i>Audit Berjalan (2)
+                        <i class="fas fa-spinner me-2"></i>Audit Berjalan ({{ $berjalanCount }})
                     </button>
                     <button class="btn btn-outline-secondary px-4 py-2 filter-tab" onclick="filterCategory('selesai')" id="tabSelesai" style="border-radius: 8px; font-size: 14px; border-color: #E2E8F0; color: #4B5563;">
-                        <i class="fas fa-circle-check me-2"></i>Audit Selesai (1)
+                        <i class="fas fa-circle-check me-2"></i>Audit Selesai ({{ $selesaiCount }})
                     </button>
                 </div>
 
@@ -403,29 +444,7 @@
 
     <script>
         // Data Monitoring Audit
-        const monitoringData = [
-            {
-                perusahaan: "PT ABC Indonesia",
-                ruang_lingkup: "LSSM",
-                periode: "25 Jun 2026 – 30 Jun 2026",
-                ketua_tim: "Popy Marlina",
-                status: "berjalan"
-            },
-            {
-                perusahaan: "CV XYZ Palembang",
-                ruang_lingkup: "LSSM",
-                periode: "28 Jun 2026 – 02 Jul 2026",
-                ketua_tim: "Muhammad Rizki",
-                status: "berjalan"
-            },
-            {
-                perusahaan: "PT Maju Jaya",
-                ruang_lingkup: "LSPRO",
-                periode: "15 Jun 2026 – 20 Jun 2026",
-                ketua_tim: "Popy Marlina",
-                status: "selesai"
-            }
-        ];
+        const monitoringData = @json($monitoringData);
 
         let currentCategory = "berjalan";
 
@@ -513,7 +532,7 @@
                         </td>
                         <td>${statusBadge}</td>
                         <td class="text-center">
-                            <a href="/kepala-balai/monitoring/detail" class="btn btn-outline-primary p-0 d-flex align-items-center justify-content-center mx-auto" style="width: 32px; height: 32px; border-radius: 8px;" title="Lihat Detail">
+                            <a href="/kepala-balai/monitoring/detail?id=${item.id}" class="btn btn-outline-primary p-0 d-flex align-items-center justify-content-center mx-auto" style="width: 32px; height: 32px; border-radius: 8px;" title="Lihat Detail">
                                 <i class="far fa-eye" style="font-size: 14px;"></i>
                             </a>
                         </td>

@@ -1,3 +1,47 @@
+@php
+    $auditors = \App\Models\Auditor::withCount(['timAudits', 'riwayatAuditors'])->get()
+        ->map(function($aud) {
+            $aud->total = $aud->tim_audits_count + $aud->riwayat_auditors_count;
+            return $aud;
+        })
+        ->sortByDesc('total')
+        ->values();
+
+    $auditorLabels = $auditors->map(fn($a) => $a->nama_auditor)->all();
+    $auditorData = $auditors->map(fn($a) => $a->total)->all();
+
+    $locationCounts = \App\Models\JadwalAudit::join('lokasis', 'jadwal_audits.id_lokasi', '=', 'lokasis.id_lokasi')
+        ->select('lokasis.kategori_wilayah', \DB::raw('count(*) as total'))
+        ->groupBy('lokasis.kategori_wilayah')
+        ->get()
+        ->pluck('total', 'kategori_wilayah')
+        ->all();
+
+    $dalamKota = $locationCounts['Dalam Kota'] ?? 0;
+    $luarKota = $locationCounts['Luar Kota'] ?? 0;
+    $luarProvinsi = $locationCounts['Luar Provinsi'] ?? 0;
+    $totalLocation = $dalamKota + $luarKota + $luarProvinsi;
+
+    $dalamKotaPercent = $totalLocation > 0 ? round(($dalamKota / $totalLocation) * 100) : 0;
+    $luarKotaPercent = $totalLocation > 0 ? round(($luarKota / $totalLocation) * 100) : 0;
+    $luarProvinsiPercent = $totalLocation > 0 ? round(($luarProvinsi / $totalLocation) * 100) : 0;
+
+    $monthlyDays = array_fill(1, 12, 0);
+    $currentYear = now()->year;
+    $allJadwals = \App\Models\JadwalAudit::whereYear('tanggal_mulai', $currentYear)->get();
+
+    foreach ($allJadwals as $j) {
+        if ($j->tanggal_mulai && $j->tanggal_selesai) {
+            $start = \Carbon\Carbon::parse($j->tanggal_mulai);
+            $end = \Carbon\Carbon::parse($j->tanggal_selesai);
+            $days = $start->diffInDays($end) + 1;
+            $monthNum = (int)$start->format('n');
+            $monthlyDays[$monthNum] += $days;
+        }
+    }
+
+    $monthlyDaysData = array_values($monthlyDays);
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -289,18 +333,18 @@
                                         <tbody>
                                             <tr>
                                                 <td><i class="fas fa-circle text-primary me-2" style="font-size: 10px;"></i> Dalam Kota (Palembang)</td>
-                                                <td class="text-center fw-semibold">18</td>
-                                                <td class="text-center text-primary fw-bold">60%</td>
+                                                <td class="text-center fw-semibold">{{ $dalamKota }}</td>
+                                                <td class="text-center text-primary fw-bold">{{ $dalamKotaPercent }}%</td>
                                             </tr>
                                             <tr>
                                                 <td><i class="fas fa-circle text-success me-2" style="font-size: 10px;"></i> Luar Kota (Sumsel)</td>
-                                                <td class="text-center fw-semibold">9</td>
-                                                <td class="text-center text-success fw-bold">30%</td>
+                                                <td class="text-center fw-semibold">{{ $luarKota }}</td>
+                                                <td class="text-center text-success fw-bold">{{ $luarKotaPercent }}%</td>
                                             </tr>
                                             <tr>
                                                 <td><i class="fas fa-circle text-warning me-2" style="font-size: 10px;"></i> Luar Provinsi</td>
-                                                <td class="text-center fw-semibold">3</td>
-                                                <td class="text-center text-warning fw-bold">10%</td>
+                                                <td class="text-center fw-semibold">{{ $luarProvinsi }}</td>
+                                                <td class="text-center text-warning fw-bold">{{ $luarProvinsiPercent }}%</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -330,10 +374,10 @@
             new Chart(ctxKeberangkatan, {
                 type: 'bar',
                 data: {
-                    labels: ['Andi S.', 'Popy M.', 'M. Rizki', 'Rina A.', 'Budi S.', 'Yunita A.', 'Sari D.', 'Wahyu H.'],
+                    labels: @json($auditorLabels),
                     datasets: [{
                         label: 'Jumlah Keberangkatan',
-                        data: [22, 21, 21, 19, 19, 18, 17, 15],
+                        data: @json($auditorData),
                         backgroundColor: '#3B82F6',
                         borderRadius: 8,
                         barThickness: 16
@@ -390,11 +434,11 @@
             new Chart(ctxJumlahHari, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                     datasets: [
                         {
                             label: 'Jumlah Hari Kerja',
-                            data: [42, 38, 48, 45, 52, 49],
+                            data: @json($monthlyDaysData),
                             borderColor: '#3B82F6',
                             backgroundColor: gradientBg,
                             fill: true,
@@ -454,7 +498,7 @@
                 data: {
                     labels: ['Dalam Kota', 'Luar Kota', 'Luar Provinsi'],
                     datasets: [{
-                        data: [60, 30, 10],
+                        data: [{{ $dalamKota }}, {{ $luarKota }}, {{ $luarProvinsi }}],
                         backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
                         borderWidth: 2,
                         borderColor: '#FFFFFF'

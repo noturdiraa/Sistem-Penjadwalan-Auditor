@@ -516,13 +516,41 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
             </div>
 
-            <div class="audit-card mb-3 text-center">
-
-                <h5 class="mb-3">Belum ada audit berlangsung</h5>
-
-                <p class="text-secondary mb-0">Data audit masih kosong di database.</p>
-
-            </div>
+            @php
+                $activeJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'timAudits.auditor'])
+                    ->where('status_jadwal', 'Aktif')
+                    ->take(5)
+                    ->get();
+            @endphp
+            @if($activeJadwals->count() > 0)
+                @foreach($activeJadwals as $aj)
+                    @php
+                        $leadAuditor = '-';
+                        $leadTim = $aj->timAudits->where('peran', 'Lead Auditor')->first();
+                        if ($leadTim && $leadTim->auditor) {
+                            $leadAuditor = $leadTim->auditor->nama_auditor;
+                        }
+                    @endphp
+                    <div class="card p-3 border rounded-3 bg-white mb-3" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.03); border-color: #E2E8F0 !important; text-align: left;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <h6 class="fw-bold mb-1 text-dark">{{ $aj->audit->perusahaan->nama_perusahaan ?? '-' }}</h6>
+                                <small class="text-secondary d-block mb-2">Ruang Lingkup: {{ $aj->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</small>
+                                <div class="d-flex gap-3 text-secondary" style="font-size: 12px;">
+                                    <div>Ketua: <strong class="text-dark">{{ $leadAuditor }}</strong></div>
+                                    <div>Periode: <strong class="text-dark">{{ \Carbon\Carbon::parse($aj->tanggal_mulai)->format('d M Y') }}</strong></div>
+                                </div>
+                            </div>
+                            <span class="badge bg-success-subtle text-success" style="font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600;">Aktif</span>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="audit-card mb-3 text-center">
+                    <h5 class="mb-3">Belum ada audit berlangsung</h5>
+                    <p class="text-secondary mb-0">Data audit masih kosong di database.</p>
+                </div>
+            @endif
 
         </div>
 
@@ -538,20 +566,48 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
             </div>
 
-            <div class="stat-section mb-4 text-center">
-
-                <h6 class="fw-semibold mb-3">Audit per Ruang Lingkup</h6>
-
-                <p class="text-secondary mb-0">Belum ada data ruang lingkup audit.</p>
-
+            @php
+                $scopesStats = \App\Models\Audit::select('id_ruang_lingkup', \DB::raw('count(*) as total'))
+                    ->groupBy('id_ruang_lingkup')
+                    ->with('ruangLingkup')
+                    ->take(3)
+                    ->get();
+            @endphp
+            <div class="stat-section mb-4" style="text-align: left;">
+                <h6 class="fw-semibold mb-3 text-center">Audit per Ruang Lingkup</h6>
+                @if($scopesStats->count() > 0)
+                    @foreach($scopesStats as $ss)
+                        <div class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-secondary" style="font-size: 13px;">{{ $ss->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
+                            <span class="badge bg-primary text-white" style="font-size: 11px; border-radius: 6px; padding: 4px 8px;">{{ $ss->total }} Audit</span>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data ruang lingkup audit.</p>
+                @endif
             </div>
 
-            <div class="stat-section text-center">
-
-                <h6 class="fw-semibold mb-3">Performa Auditor Terbaik</h6>
-
-                <p class="text-secondary mb-0">Belum ada data auditor terbaik.</p>
-
+            @php
+                $topAuditors = \App\Models\Auditor::withCount(['timAudits', 'riwayatAuditors'])->get()
+                    ->map(function($aud) {
+                        $aud->total_assignments = $aud->tim_audits_count + $aud->riwayat_auditors_count;
+                        return $aud;
+                    })
+                    ->sortByDesc('total_assignments')
+                    ->take(3);
+            @endphp
+            <div class="stat-section" style="text-align: left;">
+                <h6 class="fw-semibold mb-3 text-center">Performa Auditor Terbaik</h6>
+                @if($topAuditors->count() > 0)
+                    @foreach($topAuditors as $ta)
+                        <div class="mb-2 d-flex justify-content-between align-items-center">
+                            <span class="text-secondary" style="font-size: 13px;">{{ $ta->nama_auditor }}</span>
+                            <span class="badge bg-success text-white" style="font-size: 11px; border-radius: 6px; padding: 4px 8px;">{{ $ta->total_assignments }} Penugasan</span>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data auditor terbaik.</p>
+                @endif
             </div>
 
         </div>
