@@ -32,6 +32,14 @@
             $competencies = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique()->values()->all();
             $compLembagas = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->lembaga->nama_lembaga ?? '')->filter()->unique()->values()->all();
 
+            $auditRuangLingkup = $audit->ruangLingkup->nama_ruang_lingkup ?? '';
+            $filteredCompetencies = array_values(array_filter($competencies, function($c) use ($auditRuangLingkup) {
+                return $c === $auditRuangLingkup || stripos($c, $auditRuangLingkup) !== false || stripos($auditRuangLingkup, $c) !== false;
+            }));
+            if (empty($filteredCompetencies)) {
+                $filteredCompetencies = [$auditRuangLingkup];
+            }
+
             // Calculate initials
             $nameParts = explode(' ', trim($auditor->nama_auditor));
             $initials = count($nameParts) > 1 
@@ -52,8 +60,8 @@
                 'status' => $auditor->status ?? 'Aktif',
                 'initials' => $initials,
                 'avatarBg' => $avatarBg,
-                'competencies' => $competencies,
-                'scopes' => $competencies,
+                'competencies' => $filteredCompetencies,
+                'scopes' => $filteredCompetencies,
                 'lembaga' => count($compLembagas) > 0 ? implode(', ', $compLembagas) : '-',
                 'point' => $point
             ];
