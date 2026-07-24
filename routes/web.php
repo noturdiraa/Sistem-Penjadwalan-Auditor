@@ -83,6 +83,18 @@ Route::middleware(['auth'])->group(function () {
         Route::view('/pji/audit/edit', 'pji.kelola_audit.edit')->name('pji.audit.edit');
         Route::post('/pji/audit/generate', [App\Http\Controllers\AuditController::class, 'generate'])->name('pji.audit.generate');
         Route::delete('/pji/audit/{id}', [App\Http\Controllers\AuditController::class, 'destroy'])->name('pji.audit.destroy');
+        Route::post('/pji/audit/{id}/selesai', function($id) {
+            $audit = \App\Models\Audit::findOrFail($id);
+            $audit->status = 'Selesai';
+            $audit->save();
+
+            foreach ($audit->jadwalAudits as $jadwal) {
+                $jadwal->status_jadwal = 'Selesai';
+                $jadwal->save();
+            }
+
+            return back()->with('success', 'Status audit berhasil diubah menjadi Selesai.');
+        })->name('pji.audit.selesai');
 
         Route::view('/pji/tim-audit', 'pji.tim_audit.index')->name('pji.timaudit.index');
         Route::view('/pji/review-katim', 'pji.review_katim_pji.index')->name('pji.reviewkatim.index');

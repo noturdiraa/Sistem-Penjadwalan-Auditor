@@ -513,8 +513,12 @@ Buat Audit
                         <span class="badge" id="detailStatus" style="background-color: #E2E8F0; color: #475569; font-weight: 600; padding: 6px 12px; border-radius: 8px;">-</span>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
-                    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" style="height: 45px; border-radius: 8px; font-weight: 600; background-color: #F3F4F6; color: #4B5563; border: none; transition: none;">Tutup</button>
+                <div class="modal-footer d-flex gap-2" style="border-top: none; padding: 0 24px 24px;">
+                    <form action="" method="POST" id="formSelesai" style="flex: 1; display: none;" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan pelaksanaan audit ini?');">
+                        @csrf
+                        <button type="submit" class="btn btn-success w-100" style="height: 45px; border-radius: 8px; font-weight: 600; border: none; transition: none; background-color: #10B981;">Tandai Selesai</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" id="btnTutupDetail" data-bs-dismiss="modal" style="flex: 1; height: 45px; border-radius: 8px; font-weight: 600; background-color: #F3F4F6; color: #4B5563; border: none; transition: none;">Tutup</button>
                 </div>
             </div>
         </div>
@@ -602,19 +606,27 @@ document.querySelectorAll('.btn-detail').forEach(button => {
         statusEl.className = 'badge';
         statusEl.textContent = status;
         
+        const id = this.getAttribute('data-id');
+        const formSelesai = document.getElementById('formSelesai');
+        
         if (status === 'Aktif') {
             statusEl.style.backgroundColor = '#10B981';
             statusEl.style.color = '#FFF';
+            formSelesai.style.display = 'block';
+            formSelesai.action = `/pji/audit/${id}/selesai`;
         } else if (status === 'Selesai') {
             statusEl.style.backgroundColor = '#06B6D4';
             statusEl.style.color = '#FFF';
+            formSelesai.style.display = 'none';
         } else if (status === 'Revisi') {
             statusEl.style.backgroundColor = '#F59E0B';
             statusEl.style.color = '#FFF';
+            formSelesai.style.display = 'none';
         } else {
             // Review or fallback
             statusEl.style.backgroundColor = '#6B7280';
             statusEl.style.color = '#FFF';
+            formSelesai.style.display = 'none';
         }
     });
 });
