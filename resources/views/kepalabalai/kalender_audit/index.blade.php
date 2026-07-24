@@ -24,7 +24,8 @@
                 'perusahaan' => $perusahaan->nama_perusahaan,
                 'ruang_lingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
                 'waktu' => '08:00 - 16:00 WIB',
-                'auditor' => !empty($auditorNames) ? $auditorNames : '-'
+                'auditor' => !empty($auditorNames) ? $auditorNames : '-',
+                'status' => $j->status_jadwal
             ];
         }
     }
@@ -542,9 +543,19 @@
 
                 let html = '';
                 audits[dateKey].forEach(a => {
+                    let statusBadgeHtml = '';
+                    if (a.status === 'Aktif') {
+                        statusBadgeHtml = `<span class="badge bg-success text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #10B981 !important;">Aktif</span>`;
+                    } else if (a.status === 'Selesai') {
+                        statusBadgeHtml = `<span class="badge bg-info text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #06B6D4 !important;">Selesai</span>`;
+                    }
+
                     html += `
                         <div class="audit-detail-item">
-                            <h6 class="fw-bold text-dark mb-2" style="font-size: 15px;">${a.perusahaan}</h6>
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <h6 class="fw-bold text-dark mb-2" style="font-size: 15px;">${a.perusahaan}</h6>
+                                ${statusBadgeHtml}
+                            </div>
                             <div class="mb-2">
                                 <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">${a.ruang_lingkup}</span>
                             </div>
