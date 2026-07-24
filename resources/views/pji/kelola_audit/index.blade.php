@@ -377,9 +377,9 @@ Buat Audit
                                 }
                                 $statusBadgeMap = [
                                     'Menunggu' => 'bg-secondary',
-                                    'Disetujui' => 'bg-success',
-                                    'Selesai' => 'bg-info',
-                                    'Ditolak' => 'bg-danger'
+                                    'Diproses' => 'bg-success',
+                                    'Revisi' => 'bg-warning text-dark',
+                                    'Selesai' => 'bg-info'
                                 ];
                                 $statusBadge = $statusBadgeMap[$audit->status] ?? 'bg-secondary';
 
@@ -411,7 +411,7 @@ Buat Audit
                                 </td>
                                 <td class="text-center">
                                     <span class="badge {{ $statusBadge }}" style="padding: 8px 12px; font-size: 13px; color: white;">
-                                        {{ $audit->status }}
+                                        {{ $audit->status === 'Diproses' ? 'Disetujui' : $audit->status }}
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -584,20 +584,23 @@ document.querySelectorAll('.btn-detail').forEach(button => {
         
         const status = this.getAttribute('data-status');
         const statusEl = document.getElementById('detailStatus');
-        statusEl.textContent = status;
         
-        // Adjust status badge color
+        // Adjust status badge color & label
         statusEl.className = 'badge';
-        if (status === 'Disetujui') {
+        if (status === 'Disetujui' || status === 'Diproses') {
+            statusEl.textContent = 'Disetujui';
             statusEl.style.backgroundColor = '#10B981';
             statusEl.style.color = '#FFF';
         } else if (status === 'Selesai') {
+            statusEl.textContent = 'Selesai';
             statusEl.style.backgroundColor = '#06B6D4';
             statusEl.style.color = '#FFF';
-        } else if (status === 'Ditolak') {
+        } else if (status === 'Ditolak' || status === 'Revisi') {
+            statusEl.textContent = 'Revisi';
             statusEl.style.backgroundColor = '#EF4444';
             statusEl.style.color = '#FFF';
         } else {
+            statusEl.textContent = status;
             statusEl.style.backgroundColor = '#6B7280';
             statusEl.style.color = '#FFF';
         }

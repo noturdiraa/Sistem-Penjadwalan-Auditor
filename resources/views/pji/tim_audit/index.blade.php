@@ -1,3 +1,61 @@
+@php
+    $jadwals = \App\Models\JadwalAudit::with([
+        'audit.perusahaan',
+        'audit.ruangLingkup',
+        'lokasi',
+        'timAudits.auditor.detailAuditors.ruangLingkup'
+    ])->get();
+
+    $dbAuditTeams = [];
+    foreach ($jadwals as $j) {
+        $audit = $j->audit;
+        if (!$audit) continue;
+        
+        $perusahaan = $audit->perusahaan;
+        if (!$perusahaan) continue;
+
+        $uiStatus = 'Review';
+        if ($j->status_jadwal === 'Disetujui') {
+            $uiStatus = 'Aktif';
+        } elseif ($j->status_jadwal === 'Selesai') {
+            $uiStatus = 'Selesai';
+        } elseif ($j->status_jadwal === 'Revisi') {
+            $uiStatus = 'Review';
+        }
+
+        $members = [];
+        $leadAuditor = '-';
+        foreach ($j->timAudits as $tim) {
+            $auditor = $tim->auditor;
+            if (!$auditor) continue;
+
+            $competencies = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique()->values()->all();
+
+            $members[] = [
+                'name' => $auditor->nama_auditor,
+                'role' => $tim->peran ?? 'Auditor',
+                'NIP' => $auditor->nip ?? '-',
+                'status' => $auditor->status ?? 'Aktif',
+                'competencies' => $competencies
+            ];
+
+            if ($tim->peran === 'Lead Auditor') {
+                $leadAuditor = $auditor->nama_auditor;
+            }
+        }
+
+        $dbAuditTeams[] = [
+            'id' => 'AUD-' . $j->id_jadwal,
+            'perusahaan' => $perusahaan->nama_perusahaan,
+            'ruangLingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
+            'lembaga' => $audit->jenis_audit ?? '-',
+            'tanggal' => ($j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d M Y') : '-') . ' - ' . ($j->tanggal_selesai ? \Carbon\Carbon::parse($j->tanggal_selesai)->format('d M Y') : '-'),
+            'lead' => $leadAuditor,
+            'status' => $uiStatus,
+            'members' => $members
+        ];
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -561,7 +619,7 @@
 
     <script>
         // Data Tim Audit (Dapat dihubungkan ke Database)
-        const dbAuditTeams = [];
+        const dbAuditTeams = @json($dbAuditTeams);
 
         document.addEventListener('DOMContentLoaded', function() {
             renderTeams();
