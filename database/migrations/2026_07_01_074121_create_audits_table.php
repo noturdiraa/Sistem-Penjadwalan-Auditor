@@ -29,11 +29,11 @@ return new class extends Migration
             $table->string('jenis_audit');
 
             $table->enum('status', [
-                'Menunggu',
-                'Diproses',
+                'Review',
+                'Aktif',
                 'Revisi',
                 'Selesai'
-            ])->default('Menunggu');
+            ])->default('Review');
 
             $table->timestamps();
         });

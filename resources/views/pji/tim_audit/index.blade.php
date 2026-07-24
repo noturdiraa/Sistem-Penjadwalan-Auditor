@@ -15,7 +15,7 @@
         if (!$perusahaan) continue;
 
         $uiStatus = 'Review';
-        if ($j->status_jadwal === 'Disetujui') {
+        if ($j->status_jadwal === 'Aktif') {
             $uiStatus = 'Aktif';
         } elseif ($j->status_jadwal === 'Selesai') {
             $uiStatus = 'Selesai';

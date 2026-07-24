@@ -410,8 +410,8 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
 @php
     $totalAudit = \App\Models\JadwalAudit::count();
-    $auditSelesai = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
-    $auditBerlangsung = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu')->count();
+    $auditSelesai = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
+    $auditBerlangsung = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
 @endphp
 
 <div class="row">

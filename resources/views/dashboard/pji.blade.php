@@ -476,8 +476,8 @@ padding:.45em .7em;
 @php
     $totalPerusahaan = \App\Models\Perusahaan::count();
     $jadwalAudit = \App\Models\JadwalAudit::count();
-    $menungguReview = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu')->count();
-    $auditAktif = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
+    $menungguReview = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
+    $auditAktif = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
 @endphp
 
 <div class="row">

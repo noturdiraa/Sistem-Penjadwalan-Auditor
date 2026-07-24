@@ -30,11 +30,11 @@ return new class extends Migration
             $table->date('tanggal_selesai');
 
             $table->enum('status_jadwal', [
-                'Menunggu',
+                'Review',
+                'Aktif',
                 'Revisi',
-                'Disetujui',
                 'Selesai'
-            ])->default('Menunggu');
+            ])->default('Review');
 
             $table->text('keterangan')->nullable();
 

@@ -415,8 +415,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         <!-- ================= CARD STATISTIK ================= -->
 
         @php
-            $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Menunggu')->count();
-            $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Disetujui')->count();
+            $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
+            $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
             $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Revisi')->count();
             $countTotal = \App\Models\JadwalAudit::count();
         @endphp
@@ -504,7 +504,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         </h4>
 
         @php
-            $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Menunggu')->get();
+            $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Review')->get();
         @endphp
         @if($jadwals->count() > 0)
             @foreach($jadwals as $jadwal)

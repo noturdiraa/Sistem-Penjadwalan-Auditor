@@ -345,8 +345,8 @@ Buat Audit
                 <div class="col-md-4">
                     <select class="form-select status-filter-select">
                         <option selected>Semua Status</option>
-                        <option>Menunggu</option>
-                        <option>Disetujui</option>
+                        <option>Review</option>
+                        <option>Aktif</option>
                         <option>Selesai</option>
                     </select>
                 </div>
@@ -376,8 +376,8 @@ Buat Audit
                                     }
                                 }
                                 $statusBadgeMap = [
-                                    'Menunggu' => 'bg-secondary',
-                                    'Diproses' => 'bg-success',
+                                    'Review' => 'bg-secondary',
+                                    'Aktif' => 'bg-success',
                                     'Revisi' => 'bg-warning text-dark',
                                     'Selesai' => 'bg-info'
                                 ];
@@ -411,7 +411,7 @@ Buat Audit
                                 </td>
                                 <td class="text-center">
                                     <span class="badge {{ $statusBadge }}" style="padding: 8px 12px; font-size: 13px; color: white;">
-                                        {{ $audit->status === 'Diproses' ? 'Disetujui' : $audit->status }}
+                                        {{ $audit->status }}
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -552,20 +552,33 @@ menu.forEach(item => {
 
 });
 
-// ================= SEARCH =================
+// ================= SEARCH & STATUS FILTER =================
 const search = document.querySelector(".table-search-input");
-if (search) {
-    search.addEventListener("keyup", function(){
-        let keyword = this.value.toLowerCase();
-        const rows = document.querySelectorAll("tbody tr");
-        rows.forEach(function(row){
-            // Ignore empty state row
-            if (row.cells.length === 1) return;
-            row.style.display = row.innerText.toLowerCase().includes(keyword)
-                ? ""
-                : "none";
-        });
+const statusFilter = document.querySelector(".status-filter-select");
+
+function applyFilters() {
+    let keyword = search ? search.value.toLowerCase().trim() : "";
+    let selectedStatus = statusFilter ? statusFilter.value.toLowerCase().trim() : "semua status";
+    const rows = document.querySelectorAll("tbody tr");
+    
+    rows.forEach(function(row){
+        if (row.cells.length === 1) return; // Ignore empty state row
+        
+        const badgeEl = row.querySelector(".badge");
+        const rowStatus = badgeEl ? badgeEl.textContent.toLowerCase().trim() : "";
+        
+        let matchStatus = selectedStatus === "semua status" || rowStatus === selectedStatus;
+        let matchSearch = row.innerText.toLowerCase().includes(keyword);
+        
+        row.style.display = (matchStatus && matchSearch) ? "" : "none";
     });
+}
+
+if (search) {
+    search.addEventListener("keyup", applyFilters);
+}
+if (statusFilter) {
+    statusFilter.addEventListener("change", applyFilters);
 }
 
 // ================= DETAIL MODAL POPULATOR =================
@@ -587,20 +600,19 @@ document.querySelectorAll('.btn-detail').forEach(button => {
         
         // Adjust status badge color & label
         statusEl.className = 'badge';
-        if (status === 'Disetujui' || status === 'Diproses') {
-            statusEl.textContent = 'Disetujui';
+        statusEl.textContent = status;
+        
+        if (status === 'Aktif') {
             statusEl.style.backgroundColor = '#10B981';
             statusEl.style.color = '#FFF';
         } else if (status === 'Selesai') {
-            statusEl.textContent = 'Selesai';
             statusEl.style.backgroundColor = '#06B6D4';
             statusEl.style.color = '#FFF';
-        } else if (status === 'Ditolak' || status === 'Revisi') {
-            statusEl.textContent = 'Revisi';
-            statusEl.style.backgroundColor = '#EF4444';
+        } else if (status === 'Revisi') {
+            statusEl.style.backgroundColor = '#F59E0B';
             statusEl.style.color = '#FFF';
         } else {
-            statusEl.textContent = status;
+            // Review or fallback
             statusEl.style.backgroundColor = '#6B7280';
             statusEl.style.color = '#FFF';
         }
