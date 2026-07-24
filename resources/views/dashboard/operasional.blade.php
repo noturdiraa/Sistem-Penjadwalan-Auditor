@@ -505,6 +505,8 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
                 <th class="text-center">STATUS</th>
 
+                <th class="text-center">AKSI</th>
+
             </tr>
 
         </thead>
@@ -541,11 +543,16 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
                         <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
                         <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
                         <td class="text-center"><span class="badge {{ $badgeClass }}" style="padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 6px;">{{ $statusLabel }}</span></td>
+                        <td class="text-center">
+                            <a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center" style="border-radius: 8px; padding: 6px 10px;">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             @else
                 <tr>
-                    <td colspan="4" class="text-center text-secondary py-4">
+                    <td colspan="5" class="text-center text-secondary py-4">
                         Tidak ada riwayat atau jadwal audit.
                     </td>
                 </tr>
