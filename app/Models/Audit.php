@@ -8,6 +8,22 @@ class Audit extends Model
 {
     protected $table = 'audits';
 
+    protected static function booted()
+    {
+        static::retrieved(function ($audit) {
+            if ($audit->status === 'Aktif') {
+                $firstJadwal = $audit->jadwalAudits()->first();
+                if ($firstJadwal && $firstJadwal->tanggal_selesai && \Carbon\Carbon::now()->startOfDay()->gt(\Carbon\Carbon::parse($firstJadwal->tanggal_selesai))) {
+                    $audit->status = 'Selesai';
+                    $audit->saveQuietly();
+
+                    $firstJadwal->status_jadwal = 'Selesai';
+                    $firstJadwal->saveQuietly();
+                }
+            }
+        });
+    }
+
     protected $primaryKey = 'id_audit';
 
     protected $fillable = [

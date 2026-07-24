@@ -8,6 +8,21 @@ class JadwalAudit extends Model
 {
     protected $table = 'jadwal_audits';
 
+    protected static function booted()
+    {
+        static::retrieved(function ($jadwal) {
+            if ($jadwal->status_jadwal === 'Aktif' && $jadwal->tanggal_selesai && \Carbon\Carbon::now()->startOfDay()->gt(\Carbon\Carbon::parse($jadwal->tanggal_selesai))) {
+                $jadwal->status_jadwal = 'Selesai';
+                $jadwal->saveQuietly();
+
+                if ($jadwal->audit && $jadwal->audit->status === 'Aktif') {
+                    $jadwal->audit->status = 'Selesai';
+                    $jadwal->audit->saveQuietly();
+                }
+            }
+        });
+    }
+
     protected $primaryKey = 'id_jadwal';
 
     protected $fillable = [
