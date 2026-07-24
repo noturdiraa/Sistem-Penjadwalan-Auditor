@@ -3,7 +3,7 @@
         'audit.perusahaan',
         'audit.ruangLingkup',
         'timAudits.auditor'
-    ])->get();
+    ])->whereIn('status_jadwal', ['Aktif', 'Selesai'])->get();
 
     $calendarAudits = [];
     foreach ($jadwals as $j) {
