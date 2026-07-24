@@ -539,7 +539,7 @@
                 <h4 class="fw-bold text-dark mb-4" style="font-size: 18px;"><i class="fas fa-history me-2 text-primary"></i>Riwayat Review Operasional</h4>
                 
                 @php
-                    $reviews = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal ?? 0)->orderBy('tanggal_review', 'desc')->get();
+                    $reviews = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal ?? 0)->orderBy('created_at', 'desc')->get();
                 @endphp
                 <div class="timeline-container">
                     @if($reviews->count() > 0)
@@ -553,7 +553,7 @@
                             <div>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
                                     <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Review Operasional: {{ $rev->status_review }}</h6>
-                                    <span class="badge bg-light text-secondary border" style="font-size: 11px;">{{ \Carbon\Carbon::parse($rev->tanggal_review)->format('d F Y') }}</span>
+                                    <span class="badge bg-light text-secondary border" style="font-size: 11px;">{{ \Carbon\Carbon::parse($rev->created_at)->format('d F Y') }}</span>
                                 </div>
                                 <div class="text-secondary" style="font-size: 13px;">
                                     Catatan: <strong class="text-dark">{{ $rev->catatan ?? '-' }}</strong>
