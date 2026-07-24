@@ -30,13 +30,32 @@
             if (!$auditor) continue;
 
             $competencies = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique()->values()->all();
+            $compLembagas = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->lembaga->nama_lembaga ?? '')->filter()->unique()->values()->all();
+
+            // Calculate initials
+            $nameParts = explode(' ', trim($auditor->nama_auditor));
+            $initials = count($nameParts) > 1 
+                ? strtoupper(substr($nameParts[0], 0, 1) . substr($nameParts[1], 0, 1))
+                : strtoupper(substr($nameParts[0], 0, 2));
+
+            // Assign avatar background class
+            $avatarBg = ($tim->peran === 'Lead Auditor') ? 'bg-avatar-blue' : 'bg-avatar-green';
+
+            // Calculate point
+            $rekomendasi = \App\Models\RekomendasiAuditor::where('id_jadwal', $j->id_jadwal)->where('id_auditor', $auditor->id_auditor)->first();
+            $point = $rekomendasi ? (float)$rekomendasi->nilai_rekomendasi : 0;
 
             $members[] = [
                 'name' => $auditor->nama_auditor,
                 'role' => $tim->peran ?? 'Auditor',
                 'NIP' => $auditor->nip ?? '-',
                 'status' => $auditor->status ?? 'Aktif',
-                'competencies' => $competencies
+                'initials' => $initials,
+                'avatarBg' => $avatarBg,
+                'competencies' => $competencies,
+                'scopes' => $competencies,
+                'lembaga' => count($compLembagas) > 0 ? implode(', ', $compLembagas) : '-',
+                'point' => $point
             ];
 
             if ($tim->peran === 'Lead Auditor') {
@@ -46,6 +65,7 @@
 
         $dbAuditTeams[] = [
             'id' => 'AUD-' . $j->id_jadwal,
+            'auditCode' => 'AUD-' . $j->id_jadwal,
             'perusahaan' => $perusahaan->nama_perusahaan,
             'ruangLingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
             'lembaga' => $audit->jenis_audit ?? '-',
