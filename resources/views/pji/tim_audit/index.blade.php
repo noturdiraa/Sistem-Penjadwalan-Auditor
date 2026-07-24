@@ -750,12 +750,6 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <small class="text-muted d-block" style="font-size: 11px;">Kompetensi:</small>
-                                <div class="d-flex flex-wrap gap-1 mt-1">
-                                    ${m.competencies.map(c => `<span class="modal-badge-competence">${c}</span>`).join('')}
-                                </div>
-                            </div>
-                            <div class="mb-2">
                                 <small class="text-muted d-block" style="font-size: 11px;">Jenis Audit:</small>
                                 <div class="mt-1">
                                     <span class="modal-badge-lembaga">${m.lembaga}</span>
