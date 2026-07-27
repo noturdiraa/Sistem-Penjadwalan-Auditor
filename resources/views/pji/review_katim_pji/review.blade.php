@@ -1,3 +1,7 @@
+@php
+    $id = request()->query('id');
+    $jadwal = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'lokasi', 'timAudits.auditor'])->findOrFail($id);
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -350,79 +354,49 @@ Periksa informasi audit sebelum dikembalikan.
     <div class="row">
 
         <div class="col-md-6">
-
             <div class="info-item">
-
                 <label>ID Audit</label>
-
-                <p>AUD-2026-001</p>
-
+                <p>AUD-{{ $jadwal->id_jadwal }}</p>
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="info-item">
-
                 <label>Status</label>
-
-                <span class="badge bg-warning text-dark">
-
-                    Menunggu Review Katim
-
-                </span>
-
+                @if($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai')
+                    <span class="badge bg-success text-white">Disetujui</span>
+                @else
+                    <span class="badge bg-warning text-dark">Menunggu Review Katim</span>
+                @endif
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="info-item">
-
                 <label>Perusahaan</label>
-
-                <p>PT ABC Indonesia</p>
-
+                <p>{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</p>
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="info-item">
-
                 <label>Ruang Lingkup</label>
-
-                <p>LSSM</p>
-
+                <p>{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</p>
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="info-item">
-
                 <label>Tanggal Audit</label>
-
-                <p>25 Juni 2026 - 27 Juni 2026</p>
-
+                <p>{{ \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d F Y') }} - {{ \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d F Y') }}</p>
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="info-item">
-
                 <label>Lokasi Audit</label>
-
-                <p>Palembang</p>
-
+                <p>{{ $jadwal->lokasi->nama_lokasi ?? '-' }} ({{ $jadwal->lokasi->kategori_wilayah ?? '-' }})</p>
             </div>
-
         </div>
 
     </div>
@@ -442,216 +416,96 @@ Periksa informasi audit sebelum dikembalikan.
     </h3>
 
     <div class="row">
-
-        <!-- Lead Auditor -->
-
-        <div class="col-lg-4 mb-4">
-
-            <div class="card border-0 shadow-sm rounded-4">
-
-                <div class="card-body text-center">
-
-                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
-                        style="width:80px;height:80px;font-size:30px;font-weight:bold;">
-
-                        PM
-
+        @forelse($jadwal->timAudits as $t)
+            @php
+                $initial = strtoupper(substr($t->auditor->nama_auditor ?? 'AU', 0, 2));
+                $bgClass = $t->peran === 'Lead Auditor' ? 'bg-primary' : 'bg-secondary';
+                $badgeClass = $t->peran === 'Lead Auditor' ? 'bg-primary' : 'bg-secondary';
+                
+                // Ruang lingkup / Lembaga list
+                $compLembagas = $t->auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->lembaga->nama_lembaga ?? '')->filter()->unique()->implode(', ') ?: '-';
+            @endphp
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body text-center">
+                        <div class="text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3 {{ $bgClass }}"
+                            style="width:80px;height:80px;font-size:30px;font-weight:bold;">
+                            {{ $initial }}
+                        </div>
+                        <h4>{{ $t->auditor->nama_auditor ?? '-' }}</h4>
+                        <span class="badge {{ $badgeClass }}">
+                            {{ $t->peran }}
+                        </span>
+                        <hr>
+                        <p class="mb-1">
+                            <strong>Jenis Audit</strong>
+                        </p>
+                        <p>{{ $compLembagas }}</p>
+                        <p class="mb-1">
+                            <strong>Status Sertifikat</strong>
+                        </p>
+                        <span class="badge bg-success">
+                            {{ $t->auditor->status ?? 'Aktif' }}
+                        </span>
                     </div>
-
-                    <h4>Popy Marlina</h4>
-
-                    <span class="badge bg-primary">
-
-                        Lead Auditor
-
-                    </span>
-
-                    <hr>
-
-                    <p class="mb-1">
-
-                        <strong>Lembaga</strong>
-
-                    </p>
-
-                    <p>LSSM</p>
-
-                    <p class="mb-1">
-
-                        <strong>Status Sertifikat</strong>
-
-                    </p>
-
-                    <span class="badge bg-success">
-
-                        Aktif
-
-                    </span>
-
                 </div>
-
             </div>
-
-        </div>
-
-        <!-- Auditor 1 -->
-
-        <div class="col-lg-4 mb-4">
-
-            <div class="card border-0 shadow-sm rounded-4">
-
-                <div class="card-body text-center">
-
-                    <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
-                        style="width:80px;height:80px;font-size:30px;font-weight:bold;">
-
-                        AS
-
-                    </div>
-
-                    <h4>Andi Saputra</h4>
-
-                    <span class="badge bg-secondary">
-
-                        Auditor
-
-                    </span>
-
-                    <hr>
-
-                    <p class="mb-1">
-
-                        <strong>Lembaga</strong>
-
-                    </p>
-
-                    <p>LSPro</p>
-
-                    <p class="mb-1">
-
-                        <strong>Status Sertifikat</strong>
-
-                    </p>
-
-                    <span class="badge bg-success">
-
-                        Aktif
-
-                    </span>
-
-                </div>
-
+        @empty
+            <div class="col-12 text-center text-secondary">
+                <p>Belum ada tim audit yang ditugaskan.</p>
             </div>
-
-        </div>
-
-        <!-- Auditor 2 -->
-
-        <div class="col-lg-4 mb-4">
-
-            <div class="card border-0 shadow-sm rounded-4">
-
-                <div class="card-body text-center">
-
-                    <div class="bg-warning text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
-                        style="width:80px;height:80px;font-size:30px;font-weight:bold;">
-
-                        RA
-
-                    </div>
-
-                    <h4>Rina Agustina</h4>
-
-                    <span class="badge bg-secondary">
-
-                        Auditor
-
-                    </span>
-
-                    <hr>
-
-                    <p class="mb-1">
-
-                        <strong>Lembaga</strong>
-
-                    </p>
-
-                    <p>LSSM</p>
-
-                    <p class="mb-1">
-
-                        <strong>Status Sertifikat</strong>
-
-                    </p>
-
-                    <span class="badge bg-success">
-
-                        Aktif
-
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-<!-- ================= CATATAN PENGEMBALIAN ================= -->
-
-<div class="card-box">
-
-    <h3 class="info-title">
-
-        <i class="fa-solid fa-clipboard text-danger me-2"></i>
-
-        Catatan Pengembalian
-
-    </h3>
-
-    <div class="mb-3">
-
-        <label class="form-label fw-semibold">
-
-            Alasan Jadwal Audit Dikembalikan
-
-        </label>
-
-        <textarea
-            class="form-control"
-            rows="6"
-            placeholder="Tuliskan alasan mengapa jadwal audit dikembalikan..."></textarea>
-
+        @endforelse
     </div>
 
 </div>
 
-<!-- ================= TOMBOL ================= -->
+<form action="{{ route('pji.reviewkatim.submit', $jadwal->id_jadwal) }}" method="POST" id="formReviewKatim">
+    @csrf
+    <input type="hidden" name="status" id="reviewStatus" value="setuju">
 
-<div class="d-flex justify-content-between mt-4 mb-5">
+    <!-- ================= CATATAN PENGEMBALIAN ================= -->
+    <div class="card-box">
+        <h3 class="info-title">
+            <i class="fa-solid fa-clipboard text-danger me-2"></i>
+            Catatan Review
+        </h3>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">
+                Catatan Review / Alasan Jadwal Audit Dikembalikan
+            </label>
+            <textarea
+                class="form-control"
+                name="catatan"
+                rows="6"
+                placeholder="Tuliskan catatan review di sini..."></textarea>
+        </div>
+    </div>
 
-    <a href="/pji/review-katim"
-       class="btn btn-outline-secondary btn-lg px-5">
+    <!-- ================= TOMBOL ================= -->
+    <div class="d-flex justify-content-between mt-4 mb-5">
+        <a href="/pji/review-katim" class="btn btn-outline-secondary btn-lg px-5" style="border-radius: 12px;">
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Kembali
+        </a>
+        <div class="d-flex gap-2">
+            <button type="button" onclick="submitReview('tolak')" class="btn btn-danger btn-lg px-5" style="border-radius: 12px;">
+                <i class="fa-solid fa-rotate-left me-2"></i>
+                Kembalikan
+            </button>
+            <button type="button" onclick="submitReview('setuju')" class="btn btn-primary btn-lg px-5" style="border-radius: 12px;">
+                <i class="fa-solid fa-circle-check me-2"></i>
+                Setujui
+            </button>
+        </div>
+    </div>
+</form>
 
-        <i class="fa-solid fa-arrow-left me-2"></i>
-
-        Kembali
-
-    </a>
-
-    <button
-        type="button"
-        class="btn btn-danger btn-lg px-5">
-
-        <i class="fa-solid fa-rotate-left me-2"></i>
-
-        Kembalikan
-
-    </button>
-
-</div>
+<script>
+    function submitReview(status) {
+        document.getElementById('reviewStatus').value = status;
+        document.getElementById('formReviewKatim').submit();
+    }
+</script>
 
 </div>
 <!-- End Main -->

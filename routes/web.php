@@ -99,6 +99,46 @@ Route::middleware(['auth'])->group(function () {
         Route::view('/pji/tim-audit', 'pji.tim_audit.index')->name('pji.timaudit.index');
         Route::view('/pji/review-katim', 'pji.review_katim_pji.index')->name('pji.reviewkatim.index');
         Route::view('/pji/review-katim/review', 'pji.review_katim_pji.review')->name('pji.reviewkatim.review');
+        Route::post('/pji/review-katim/submit/{id}', function(\Illuminate\Http\Request $request, $id) {
+            $request->validate([
+                'status' => 'required|in:setuju,tolak',
+                'catatan' => 'nullable|string',
+            ]);
+
+            $jadwal = \App\Models\JadwalAudit::findOrFail($id);
+
+            if ($request->status === 'setuju') {
+                $jadwal->status_jadwal = 'Aktif';
+                if ($jadwal->audit) {
+                    $jadwal->audit->status = 'Aktif';
+                    $jadwal->audit->save();
+                }
+                $jadwal->save();
+
+                \App\Models\ReviewKatimPji::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_user' => auth()->id(),
+                    'status_review' => 'Disetujui',
+                    'catatan' => $request->catatan,
+                ]);
+            } else {
+                $jadwal->status_jadwal = 'Revisi';
+                if ($jadwal->audit) {
+                    $jadwal->audit->status = 'Revisi';
+                    $jadwal->audit->save();
+                }
+                $jadwal->save();
+
+                \App\Models\ReviewKatimPji::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_user' => auth()->id(),
+                    'status_review' => 'Dikembalikan',
+                    'catatan' => $request->catatan,
+                ]);
+            }
+
+            return redirect()->route('pji.reviewkatim.index')->with('success', 'Keputusan review Katim PJI berhasil disimpan.');
+        })->name('pji.reviewkatim.submit');
 
         Route::view('/pji/profil', 'pji.profil.index')->name('pji.profil.index');
     });

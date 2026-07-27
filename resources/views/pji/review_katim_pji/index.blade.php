@@ -355,7 +355,7 @@
                 <div class="header-card">
                     <div>
                         <h2 class="title">Review Katim PJI</h2>
-                        <p class="subtitle">Setujui atau kembalikan jadwal audit yang telah diverifikasi Teknis</p>
+                        <p class="subtitle">Setujui atau kembalikan jadwal audit yang telah diverifikasi Operasional</p>
                     </div>
                 </div>
 
@@ -374,9 +374,82 @@
                     </div>
                 </div>
 
-                <!-- ================= EMPTY STATE ================= -->
-                <div class="audit-card text-center py-4 text-secondary" style="font-size: 14px;">
-                    <i class="fas fa-info-circle me-1"></i> Belum ada data review.
+                <!-- ================= JADWAL LIST ================= -->
+                @php
+                    $jadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'lokasi', 'timAudits.auditor', 'reviewKatimPjis'])
+                        ->whereHas('reviewTeknis', function($q) {
+                            $q->where('status_review', 'Dikembalikan');
+                        })
+                        ->orderBy('updated_at', 'desc')
+                        ->get();
+                @endphp
+
+                <div class="row g-4 mt-2" id="auditCardsContainer">
+                    @forelse($jadwals as $j)
+                        @php
+                            $perusahaan = $j->audit->perusahaan->nama_perusahaan ?? '-';
+                            $jenisAudit = $j->audit->jenis_audit ?? '-';
+                            $tanggalText = $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d F Y') : '-';
+                            $ruangLingkup = $j->audit->ruangLingkup->nama_ruang_lingkup ?? '-';
+                            
+                            // Determine status review by Katim PJI
+                            $statusKatim = 'Menunggu Persetujuan';
+                            $badgeClass = 'bg-warning text-dark';
+                            
+                            $lastReview = $j->reviewKatimPjis->sortByDesc('created_at')->first();
+                            if ($j->status_jadwal === 'Aktif' || $j->status_jadwal === 'Selesai') {
+                                $statusKatim = 'Disetujui';
+                                $badgeClass = 'bg-success text-white';
+                            } elseif ($lastReview && $lastReview->status_review === 'Dikembalikan' && $j->status_jadwal === 'Revisi') {
+                                $statusKatim = 'Dikembalikan';
+                                $badgeClass = 'bg-danger text-white';
+                            }
+                        @endphp
+                        <div class="col-12 audit-card" data-status="{{ $statusKatim }}">
+                            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white" style="box-shadow: 0 4px 15px rgba(15, 61, 145, 0.04) !important;">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-1" style="font-size: 18px;">{{ $perusahaan }}</h5>
+                                        <small class="text-secondary d-block">Ruang Lingkup: {{ $ruangLingkup }}</small>
+                                    </div>
+                                    <span class="badge {{ $badgeClass }} px-3 py-2 fs-8 rounded-3" style="font-weight: 600;">
+                                        {{ $statusKatim }}
+                                    </span>
+                                </div>
+                                <div class="row g-2 mb-3 text-secondary" style="font-size: 13px;">
+                                    <div class="col-sm-4">
+                                        <i class="fas fa-list-check me-1"></i> Jenis Audit: <strong class="text-dark">{{ $jenisAudit }}</strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <i class="far fa-calendar me-1"></i> Tanggal Audit: <strong class="text-dark">{{ $tanggalText }}</strong>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <i class="fas fa-location-dot me-1"></i> Lokasi: <strong class="text-dark">{{ $j->lokasi->nama_lokasi ?? '-' }}</strong>
+                                    </div>
+                                </div>
+                                @if($statusKatim === 'Menunggu Persetujuan')
+                                    <div class="d-flex justify-content-end">
+                                        <a href="/pji/review-katim/review?id={{ $j->id_jadwal }}" class="btn btn-primary btn-sm px-4 py-2" style="border-radius: 8px; font-weight: 600;">
+                                            <i class="fas fa-clipboard-check me-1"></i> Review Jadwal
+                                        </a>
+                                    </div>
+                                @else
+                                    @if($lastReview && $lastReview->catatan)
+                                        <div class="bg-light p-3 rounded-3 text-secondary mb-0 mt-2" style="font-size: 12px; font-style: italic;">
+                                            <i class="fas fa-comment-dots text-primary me-1"></i> Catatan Katim: "{{ $lastReview->catatan }}"
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="card p-5 border-0 shadow-sm rounded-4 bg-white text-center text-secondary">
+                                <i class="fas fa-info-circle fa-2x mb-3 text-secondary" style="opacity: 0.5;"></i>
+                                <p class="mb-0" style="font-size: 14px;">Belum ada data review.</p>
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
 
             </div>
@@ -390,85 +463,36 @@
         </div>
     </div>
 
-    <!-- ================= REVIEW MODAL ================= -->
-    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                <div class="modal-header" style="border-bottom: 1px solid #F3F4F6; padding: 20px 24px;">
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-1" id="reviewModalLabel" style="font-size: 20px;">Review Jadwal Audit</h5>
-                        <small class="text-secondary" id="reviewPerusahaanName" style="font-size: 14px;">-</small>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="transition: none;"></button>
-                </div>
-                <div class="modal-body" style="padding: 24px;">
-                    <!-- Blue Summary Header -->
-                    <div class="p-3 mb-4 rounded-3" style="background-color: #EFF6FF; border: 1px solid #BFDBFE; font-size: 14px;">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-primary" style="font-weight: 500;">ID Audit:</span>
-                            <strong class="text-primary" id="reviewAuditId">-</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-primary" style="font-weight: 500;">Perusahaan:</span>
-                            <strong class="text-primary" id="reviewPerusahaan">-</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-primary" style="font-weight: 500;">Ruang Lingkup:</span>
-                            <strong class="text-primary" id="reviewRuangLingkup">-</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-primary" style="font-weight: 500;">Lokasi:</span>
-                            <strong class="text-primary" id="reviewLokasi">-</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-primary" style="font-weight: 500;">Lead Auditor:</span>
-                            <strong class="text-primary" id="reviewLeadAuditor">-</strong>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-primary" style="font-weight: 500;">Tanggal:</span>
-                            <strong class="text-primary" id="reviewTanggal">-</strong>
-                        </div>
-                    </div>
-
-                    <!-- Review Textarea -->
-                    <div class="mb-0">
-                        <label class="form-label fw-semibold text-dark mb-2" style="font-size: 14px;">Catatan Review / Alasan Pengembalian</label>
-                        <textarea class="form-control" placeholder="Masukkan catatan atau alasan jika jadwal dikembalikan..." style="height: 100px; border-radius: 8px; font-size: 14px; resize: none;"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-between" style="border-top: none; padding: 0 24px 24px;">
-                    <button type="button" class="btn btn-outline-danger px-4" style="height: 45px; border-radius: 8px; font-weight: 600;">
-                        <i class="fas fa-undo"></i> Kembalikan
-                    </button>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="height: 45px; border-radius: 8px; font-weight: 600; background-color: #F3F4F6; color: #4B5563; border: none; transition: none;">
-                            Batal
-                        </button>
-                        <button type="button" class="btn btn-primary px-4" style="height: 45px; border-radius: 8px; font-weight: 600;">
-                            Setujui
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ================= SEARCH =================
-        const search = document.querySelector(".table-search-input");
-        const cards = document.querySelectorAll(".audit-card");
+        const searchInput = document.querySelector(".table-search-input");
+        const statusFilter = document.querySelector(".status-filter-select");
 
-        search.addEventListener("keyup", function(){
-            let keyword = this.value.toLowerCase();
-            cards.forEach(function(card){
-                card.style.display = card.innerText.toLowerCase().includes(keyword)
-                    ? ""
-                    : "none";
+        function filterCards() {
+            const keyword = searchInput.value.toLowerCase().trim();
+            const selectedStatus = statusFilter.value; // "Semua Status", "Menunggu Persetujuan", "Disetujui", "Dikembalikan"
+            const cards = document.querySelectorAll(".audit-card");
+
+            cards.forEach(function(card) {
+                const textMatch = card.innerText.toLowerCase().includes(keyword);
+                const cardStatus = card.getAttribute("data-status");
+                const statusMatch = selectedStatus === "Semua Status" || cardStatus === selectedStatus;
+
+                if (textMatch && statusMatch) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
             });
-        });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener("keyup", filterCards);
+        }
+        if (statusFilter) {
+            statusFilter.addEventListener("change", filterCards);
+        }
     </script>
 </body>
-
 </html>

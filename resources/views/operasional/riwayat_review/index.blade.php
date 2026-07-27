@@ -448,7 +448,9 @@
             'jadwalAudit.lokasi',
             'jadwalAudit.timAudits.auditor',
             'user'
-        ])->get();
+        ])
+        ->where('status_review', 'Dikembalikan')
+        ->get();
 
         $formattedReviews = [];
         foreach ($reviews as $rev) {
@@ -487,14 +489,20 @@
                 }
             }
 
+            // Keputusan is based on current schedule status:
+            // If Aktif or Selesai -> approved. Else -> still returned / revising.
+            $isApproved = ($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai');
+            $keputusan = $isApproved ? 'Disetujui' : 'Dikembalikan';
+            $statusText = $isApproved ? 'Selesai' : 'Review Katim PJI';
+
             $formattedReviews[] = [
                 'id' => 'AUD-' . ($jadwal->id_jadwal ?? $rev->id_review_operasional),
                 'perusahaan' => $perusahaan->nama_perusahaan ?? 'Belum diatur',
                 'tanggal' => $rev->created_at ? $rev->created_at->format('d M Y') : '-',
                 'reviewer' => $user->nama_user ?? 'Reviewer',
-                'keputusan' => $rev->status_review ?? 'Selesai',
+                'keputusan' => $keputusan,
                 'catatan' => $rev->catatan ?? '-',
-                'status' => 'Selesai',
+                'status' => $statusText,
                 'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
                 'lembaga' => $audit->jenis_audit ?? 'LSSM',
                 'ruangLingkup' => $ruangLingkup->nama_ruang_lingkup ?? '-',
