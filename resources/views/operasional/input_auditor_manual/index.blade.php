@@ -25,6 +25,21 @@
             $point = $rekomendasi ? (float)$rekomendasi->nilai_rekomendasi : 0;
         }
 
+        $status = 'Tersedia';
+        if ($jadwal) {
+            $isBusy = \App\Models\TimAudit::where('id_auditor', $aud->id_auditor)
+                ->where('id_jadwal', '!=', $jadwal->id_jadwal)
+                ->whereHas('jadwalAudit', function($q) use ($jadwal) {
+                    $q->whereIn('status_jadwal', ['Review', 'Aktif'])
+                      ->where('tanggal_mulai', '<=', $jadwal->tanggal_selesai)
+                      ->where('tanggal_selesai', '>=', $jadwal->tanggal_mulai);
+                })
+                ->exists();
+            if ($isBusy) {
+                $status = 'Sedang Audit';
+            }
+        }
+
         $dbAuditors[] = [
             'id' => $aud->id_auditor,
             'name' => $aud->nama_auditor,
@@ -37,7 +52,7 @@
             'point' => $point,
             'totalAudit' => $totalAudit,
             'lokasi' => $jadwal ? ($jadwal->lokasi->kategori_wilayah ?? 'Dalam Kota') : 'Dalam Kota',
-            'status' => 'Tersedia',
+            'status' => $status,
             'badges' => $compLembagas
         ];
     }
@@ -592,7 +607,7 @@
                 let statusBadgeHtml = '';
 
                 if (isBusy) {
-                    statusBadgeHtml = `<span class="badge bg-danger-subtle text-danger fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">Sedang Audit</span>`;
+                    statusBadgeHtml = `<span class="badge bg-danger-subtle text-danger fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">Sedang Bertugas</span>`;
                     btnHtml = `<button class="btn btn-secondary btn-sm px-3 disabled" style="border-radius: 8px; font-weight: 600; opacity: 0.6;"><i class="fas fa-ban"></i> Sibuk</button>`;
                 } else if (isSelected) {
                     statusBadgeHtml = `<span class="badge bg-success-subtle text-success fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">Tersedia</span>`;
