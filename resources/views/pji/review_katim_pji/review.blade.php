@@ -27,130 +27,142 @@
     font-family:'Poppins',sans-serif;
 }
 
-body{
-    background:#f5f7fb;
+body {
+    background: #f4f7fc;
+    overflow-x: hidden;
 }
 
 /* ================= SIDEBAR ================= */
-
-.sidebar{
-
-    position:fixed;
-    left:0;
-    top:0;
-
-    width:280px;
-    height:100vh;
-
-    background:#173C97;
-    color:white;
-
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 270px;
+    height: 100vh;
+    background: #0F3D91;
+    color: white;
+    padding: 14px 18px;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
-.logo{
-
-    padding:28px;
-
-    border-bottom:1px solid rgba(255,255,255,.15);
-
+.sidebar::-webkit-scrollbar {
+    width: 6px;
 }
 
-.logo h3{
-
-    margin:0;
-    font-weight:700;
-
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.logo small{
-
-    opacity:.8;
-
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
 }
 
-.menu{
-
-    margin-top:20px;
-
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
-.menu a{
-
-    display:flex;
-    align-items:center;
-    gap:14px;
-
-    padding:16px 28px;
-
-    color:white;
-    text-decoration:none;
-
-    transition:.3s;
-
+.logo {
+    text-align: center;
+    margin-bottom: 18px;
 }
 
-.menu a:hover{
-
-    background:#2455d6;
-
+.logo img {
+    width: 70px;
+    margin-bottom: 8px;
 }
 
-.menu a.active{
+.logo h4 {
+    font-weight: 700;
+    margin: 0;
+}
 
-    background:#2455d6;
+.logo p {
+    font-size: 13px;
+    opacity: .8;
+}
 
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    margin-bottom: 10px;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    white-space: normal;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 1.1;
+    transition: none;
+}
+
+.menu li a i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.menu li a:hover,
+.menu li a.active {
+    background: #2563EB;
 }
 
 /* ================= CONTENT ================= */
-
-.content{
-
-    margin-left:280px;
-
+.content {
+    margin-left: 270px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* ================= TOPBAR ================= */
-
-.topbar{
-
-    height:80px;
-
-    background:white;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:0 35px;
-
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
-
+.navbar-custom {
+    height: 80px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 35px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
 }
 
-.search{
-
-    width:450px;
-
+.search {
+    width: 350px;
+    transition: none;
 }
 
-.search input{
-
-    border-radius:30px;
-
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.right{
-
-    display:flex;
-    align-items:center;
-    gap:20px;
-
+.profile .bell-icon {
+    color: #1F2937;
+    font-size: 20px;
+    cursor: pointer;
 }
 
-.right i{
+.profile img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: contain;
+}
 
-    font-size:22px;
-
+.profile span {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1F2937;
 }
 
 /* ================= MAIN ================= */
@@ -228,103 +240,73 @@ body{
 <body>
 
 <!-- SIDEBAR -->
-
 <div class="sidebar">
+    <div class="logo">
+        <img src="{{ asset('images/logo.png') }}">
+        <h4>BSPJI</h4>
+        <p>PJI</p>
+    </div>
 
-<div class="logo">
-
-<h3>BSPJI</h3>
-
-<small>Palembang</small>
-
-</div>
-
-<div class="menu">
-
-<a href="/dashboard-pji">
-
-<i class="fa-solid fa-house"></i>
-
-Dashboard
-
-</a>
-
-<a href="/pji/perusahaan">
-
-<i class="fa-solid fa-building"></i>
-
-Kelola Perusahaan
-
-</a>
-
-<a href="/pji/audit">
-
-<i class="fa-solid fa-file-circle-check"></i>
-
-Kelola Audit
-
-</a>
-
-<a href="/pji/jadwal">
-
-<i class="fa-solid fa-calendar-days"></i>
-
-Jadwal Audit
-
-</a>
-
-<a href="/pji/tim-audit">
-
-<i class="fa-solid fa-users"></i>
-
-Tim Audit
-
-</a>
-
-<a href="/pji/review-katim" class="active">
-
-<i class="fa-solid fa-list-check"></i>
-
-Review Katim PJI
-
-</a>
-
-<a href="/pji/profil">
-
-<i class="fa-solid fa-user"></i>
-
-Profil
-
-</a>
-
-</div>
-
+    <ul class="menu">
+        <li>
+            <a href="/dashboard-pji">
+                <i class="fas fa-house"></i>
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/pji/perusahaan">
+                <i class="fas fa-building"></i>
+                Kelola Perusahaan
+            </a>
+        </li>
+        <li>
+            <a href="/pji/audit">
+                <i class="fas fa-file-signature"></i>
+                Kelola Audit
+            </a>
+        </li>
+        <li>
+            <a href="/pji/tim-audit">
+                <i class="fas fa-users"></i>
+                Tim Audit
+            </a>
+        </li>
+        <li>
+            <a href="/pji/review-katim" class="active">
+                <i class="fas fa-clipboard-check"></i>
+                Review Katim PJI
+            </a>
+        </li>
+        <li>
+            <a href="/pji/profil">
+                <i class="fas fa-user"></i>
+                Profil
+            </a>
+        </li>
+        <li>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1; cursor: pointer;">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Logout
+                </button>
+            </form>
+        </li>
+    </ul>
 </div>
 
 <!-- CONTENT -->
-
 <div class="content">
+    <div class="navbar-custom">
+        <input type="text" class="form-control search" placeholder="Cari...">
 
-<div class="topbar">
-
-<div class="search">
-
-<input
-type="text"
-class="form-control"
-placeholder="Cari...">
-
-</div>
-
-<div class="right">
-
-<i class="fa-regular fa-bell"></i>
-
-<i class="fa-regular fa-user"></i>
-
-</div>
-
-</div>
+        <div class="profile">
+            <i class="far fa-bell bell-icon"></i>
+            <img src="{{ asset('images/logo.png') }}">
+            <span>PJI</span>
+        </div>
+    </div>
 
 <div class="main">
 
