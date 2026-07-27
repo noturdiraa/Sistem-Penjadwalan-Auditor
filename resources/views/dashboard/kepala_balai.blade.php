@@ -517,7 +517,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
             </div>
 
             @php
-                $activeJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'timAudits.auditor'])
+                $activeJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'timAudits.auditor', 'reviewTeknis'])
                     ->where('status_jadwal', 'Aktif')
                     ->take(5)
                     ->get();
@@ -530,18 +530,39 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                         if ($leadTim && $leadTim->auditor) {
                             $leadAuditor = $leadTim->auditor->nama_auditor;
                         }
+
+                        $manualReview = $aj->reviewTeknis->where('status_review', 'Dikembalikan')->sortByDesc('created_at')->first();
                     @endphp
                     <div class="card p-3 border rounded-3 bg-white mb-3" style="box-shadow: 0 4px 12px rgba(15, 61, 145, 0.03); border-color: #E2E8F0 !important; text-align: left;">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
                             <div>
                                 <h6 class="fw-bold mb-1 text-dark">{{ $aj->audit->perusahaan->nama_perusahaan ?? '-' }}</h6>
-                                <small class="text-secondary d-block mb-2">Ruang Lingkup: {{ $aj->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</small>
-                                <div class="d-flex gap-3 text-secondary" style="font-size: 12px;">
-                                    <div>Ketua: <strong class="text-dark">{{ $leadAuditor }}</strong></div>
-                                    <div>Periode: <strong class="text-dark">{{ \Carbon\Carbon::parse($aj->tanggal_mulai)->format('d M Y') }}</strong></div>
-                                </div>
+                                <small class="text-secondary d-block mb-1">Ruang Lingkup: {{ $aj->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</small>
                             </div>
-                            <span class="badge bg-success-subtle text-success" style="font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: 600;">Aktif</span>
+                            <div>
+                                @if($manualReview)
+                                    <span class="badge bg-danger-subtle text-danger me-1" style="font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 500;">Auditor Diubah Manual</span>
+                                @endif
+                                <span class="badge bg-success-subtle text-success" style="font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 500;">Aktif</span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column gap-1 text-secondary" style="font-size: 12px;">
+                            <div>Periode: <strong class="text-dark">{{ \Carbon\Carbon::parse($aj->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($aj->tanggal_selesai)->format('d M Y') }}</strong></div>
+                            @if($manualReview)
+                                <div class="mt-1 p-2 rounded bg-light border-start border-danger border-3" style="font-size: 11px;">
+                                    <div class="text-danger mb-1"><i class="fas fa-users-slash me-1"></i><strong>Tim Awal (Rekomendasi):</strong> {{ $manualReview->tim_awal }}</div>
+                                    <div class="text-success"><i class="fas fa-users-gear me-1"></i><strong>Tim Baru (Hasil Ganti):</strong> {{ $leadAuditor }} (Lead)
+                                        @php
+                                            $otherMembers = $aj->timAudits->where('peran', 'Auditor')->map(fn($m) => $m->auditor->nama_auditor ?? '')->filter()->implode(', ');
+                                        @endphp
+                                        @if($otherMembers)
+                                            & {{ $otherMembers }}
+                                        @endif
+                                    </div>
+                                </div>
+                            @else
+                                <div>Ketua: <strong class="text-dark">{{ $leadAuditor }}</strong></div>
+                            @endif
                         </div>
                     </div>
                 @endforeach

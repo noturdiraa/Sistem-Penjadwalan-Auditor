@@ -15,6 +15,7 @@ class ReviewOperasional extends Model
         'id_user',
         'status_review',
         'catatan',
+        'tim_awal',
     ];
 
     public $timestamps = true;

@@ -170,11 +170,33 @@ Route::middleware(['auth'])->group(function () {
                 $jadwal->status_jadwal = 'Revisi';
                 $jadwal->audit->status = 'Revisi';
                 
+                // Capture original recommended team members before they get replaced
+                $currentTeam = \App\Models\TimAudit::with('auditor')
+                    ->where('id_jadwal', $jadwal->id_jadwal)
+                    ->get();
+                $lead = $currentTeam->where('peran', 'Lead Auditor')->first();
+                $members = $currentTeam->where('peran', 'Auditor');
+                
+                $timAwalParts = [];
+                if ($lead && $lead->auditor) {
+                    $timAwalParts[] = $lead->auditor->nama_auditor . ' (Lead)';
+                }
+                foreach ($members as $m) {
+                    if ($m->auditor) {
+                        $timAwalParts[] = $m->auditor->nama_auditor . ' (Anggota)';
+                    }
+                }
+                $timAwalStr = implode(', ', $timAwalParts);
+                if (empty($timAwalStr)) {
+                    $timAwalStr = 'Belum ada tim';
+                }
+
                 $review = \App\Models\ReviewOperasional::create([
                     'id_jadwal' => $jadwal->id_jadwal,
                     'id_user' => auth()->id(),
                     'status_review' => 'Dikembalikan',
                     'catatan' => $request->catatan,
+                    'tim_awal' => $timAwalStr,
                 ]);
 
                 if ($request->catatan) {
