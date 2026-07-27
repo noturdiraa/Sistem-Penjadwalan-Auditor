@@ -473,9 +473,9 @@
 
                         <!-- Kategori Wilayah -->
                         <div class="col-md-6 mb-4">
-                            <label class="form-label">Kategori Wilayah</label>
-                            <select name="kategori_wilayah" class="form-select @error('kategori_wilayah') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
-                                <option value="" disabled>Pilih Kategori Wilayah...</option>
+                            <label class="form-label">Kategori Wilayah (Opsional)</label>
+                            <select name="kategori_wilayah" class="form-select @error('kategori_wilayah') is-invalid @enderror" style="height: 48px; border-radius: 10px;">
+                                <option value="">Pilih Kategori Wilayah...</option>
                                 <option value="Dalam Kota" {{ old('kategori_wilayah', $riwayat->kategori_wilayah) == 'Dalam Kota' ? 'selected' : '' }}>Dalam Kota</option>
                                 <option value="Pinggiran Kota" {{ old('kategori_wilayah', $riwayat->kategori_wilayah) == 'Pinggiran Kota' ? 'selected' : '' }}>Pinggiran Kota</option>
                                 <option value="Luar Kota" {{ old('kategori_wilayah', $riwayat->kategori_wilayah) == 'Luar Kota' ? 'selected' : '' }}>Luar Kota</option>
