@@ -1,6 +1,6 @@
 @php
     $jadwalId = request()->query('id');
-    $allJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Review')->get();
+    $allJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan'])->where('status_jadwal', 'Revisi')->get();
     
     if ($jadwalId) {
         $jadwal = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup', 'lokasi'])->find($jadwalId);

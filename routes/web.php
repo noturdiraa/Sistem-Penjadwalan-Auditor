@@ -172,6 +172,15 @@ Route::middleware(['auth'])->group(function () {
                 ]);
             }
 
+            // Set status to Aktif as it has been manually reviewed and resolved
+            $jadwal->status_jadwal = 'Aktif';
+            $jadwal->save();
+
+            if ($jadwal->audit) {
+                $jadwal->audit->status = 'Aktif';
+                $jadwal->audit->save();
+            }
+
             return redirect()->route('operasional.reviewjadwal.index')->with('success', 'Tim audit manual berhasil disimpan.');
         })->name('operasional.inputauditor.save');
         Route::view('/operasional/input-auditor/create', 'operasional.input_auditor_manual.create')->name('operasional.inputauditor.create');
