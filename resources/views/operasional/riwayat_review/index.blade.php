@@ -510,6 +510,54 @@
                 $tanggal = $rev->created_at ? $rev->created_at->format('d M Y') : '-';
             }
 
+            // Compare original and new team to get replacements list
+            $replacementsList = [];
+            if ($rev->tim_awal) {
+                $origLead = null;
+                $origMembers = [];
+                
+                $parts = explode(',', $rev->tim_awal);
+                foreach ($parts as $part) {
+                    $part = trim($part);
+                    if (empty($part)) continue;
+                    
+                    if (preg_match('/^(.*?)\s*\(Lead\)$/i', $part, $matches)) {
+                        $origLead = trim($matches[1]);
+                    } elseif (preg_match('/^(.*?)\s*\(Anggota\)$/i', $part, $matches)) {
+                        $origMembers[] = trim($matches[1]);
+                    } else {
+                        $origMembers[] = $part;
+                    }
+                }
+                
+                $newLead = $ketua ? $ketua['name'] : null;
+                $newMembers = array_map(fn($m) => $m['name'], $anggotaList);
+                
+                // Compare Lead
+                if ($origLead && $newLead && $origLead !== $newLead) {
+                    $replacementsList[] = "Lead: <strong>{$origLead}</strong> &rarr; <strong>{$newLead}</strong>";
+                }
+                
+                // Compare Members
+                $removed = array_values(array_diff($origMembers, $newMembers));
+                $added = array_values(array_diff($newMembers, $origMembers));
+                
+                $count = min(count($removed), count($added));
+                for ($i = 0; $i < $count; $i++) {
+                    $replacementsList[] = "Anggota: <strong>{$removed[$i]}</strong> &rarr; <strong>{$added[$i]}</strong>";
+                }
+                if (count($removed) > $count) {
+                    for ($i = $count; $i < count($removed); $i++) {
+                        $replacementsList[] = "Anggota: <strong>{$removed[$i]}</strong> dihapus";
+                    }
+                }
+                if (count($added) > $count) {
+                    for ($i = $count; $i < count($added); $i++) {
+                        $replacementsList[] = "Anggota: <strong>{$added[$i]}</strong> ditambahkan";
+                    }
+                }
+            }
+
             $formattedReviews[] = [
                 'id' => 'AUD-' . ($jadwal->id_jadwal ?? $rev->id_review_operasional),
                 'perusahaan' => $perusahaan->nama_perusahaan ?? 'Belum diatur',
@@ -530,7 +578,8 @@
                 'timAudit' => [
                     'ketua' => $ketua,
                     'anggota' => $anggotaList
-                ]
+                ],
+                'replacements' => $replacementsList
             ];
         }
     @endphp
@@ -624,6 +673,20 @@
             } else {
                 anggotaHtml = `<p class="text-secondary mb-0" style="font-size: 13px; font-style: italic;">Tidak ada anggota tim.</p>`;
             }
+            // Build replacements list
+            let replacementsHtml = '';
+            if (item.replacements && item.replacements.length > 0) {
+                replacementsHtml = `
+                    <div class="card p-3 border-0 shadow-sm rounded-3 bg-white mb-3" style="border: 1px solid #e2e8f0 !important; background-color: #f8fafc !important;">
+                        <h6 class="fw-bold text-primary mb-2" style="font-size: 14px;">
+                            <i class="fas fa-right-left me-2"></i>Pergantian Auditor (Dari Rekomendasi &rarr; Baru)
+                        </h6>
+                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 13px; list-style-type: circle; line-height: 1.6;">
+                            ${item.replacements.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
 
             const html = `
                 <!-- Detail Jadwal Audit Card -->
@@ -697,6 +760,8 @@
                         ${item.timAwal}
                     </div>
                 </div>
+
+                ${replacementsHtml}
 
                 <!-- Tim Audit Card -->
                 <div class="card p-3 border-0 shadow-sm rounded-3 bg-white mb-3" style="border: 1px solid #eef2f6 !important;">
