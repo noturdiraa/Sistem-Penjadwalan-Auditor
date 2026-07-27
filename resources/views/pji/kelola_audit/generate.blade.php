@@ -568,25 +568,20 @@
                                     <div>
 
 
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <div>
-                                                <small class="text-secondary d-block text-uppercase" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">Skor Rekomendasi</small>
-                                                <h4 class="fw-bold text-primary mb-0" style="font-size: 22px;">{{ $auditor->scoring['total'] }} <span style="font-size: 12px; font-weight: 500;" class="text-secondary">/4 Poin</span></h4>
-                                            </div>
-
+                                        <div class="d-flex align-items-center justify-content-end mb-2">
                                             <div class="d-flex align-items-center">
                                                 @if($index === $leadIdx)
                                                     <!-- Hidden Lead input to submit -->
                                                     <input type="hidden" name="lead_auditor_id" value="{{ $auditor->id_auditor }}">
                                                     <span class="badge bg-primary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
                                                         Lead
-                                                    </span>
+                                                     </span>
                                                 @else
-                                                    <!-- Hidden Member inputs to submit -->
-                                                    <input type="hidden" name="auditor_ids[]" value="{{ $auditor->id_auditor }}">
-                                                    <span class="badge bg-secondary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
-                                                        Anggota
-                                                    </span>
+                                                     <!-- Hidden Member inputs to submit -->
+                                                     <input type="hidden" name="auditor_ids[]" value="{{ $auditor->id_auditor }}">
+                                                     <span class="badge bg-secondary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
+                                                         Anggota
+                                                     </span>
                                                 @endif
                                             </div>
                                         </div>
