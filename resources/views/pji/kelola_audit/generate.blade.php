@@ -468,9 +468,6 @@
                     <input type="hidden" name="kompetensi_json" value="{{ $request->kompetensi_json }}">
                     <input type="hidden" name="keterangan" value="{{ $request->keterangan }}">
 
-                    <!-- Hidden inputs for Lead and Members (populated by JavaScript) -->
-                    <div id="dynamicLeadInputs"></div>
-
                     <!-- ================= TIM AUDIT ================= -->
                     <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
                         <i class="fas fa-users text-primary"></i>
@@ -578,14 +575,19 @@
                                             </div>
 
                                             <div class="d-flex align-items-center">
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-role-toggle px-3 py-2 fs-7 rounded-3" 
-                                                        id="btn-role-{{ $auditor->id_auditor }}" 
-                                                        data-id="{{ $auditor->id_auditor }}"
-                                                        data-default-lead="{{ $index === $leadIdx ? 'true' : 'false' }}"
-                                                        style="font-weight: 600; min-width: 90px; border: none; transition: none;">
-                                                    {{ $index === $leadIdx ? 'Lead' : 'Anggota' }}
-                                                </button>
+                                                @if($index === $leadIdx)
+                                                    <!-- Hidden Lead input to submit -->
+                                                    <input type="hidden" name="lead_auditor_id" value="{{ $auditor->id_auditor }}">
+                                                    <span class="badge bg-primary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
+                                                        Lead
+                                                    </span>
+                                                @else
+                                                    <!-- Hidden Member inputs to submit -->
+                                                    <input type="hidden" name="auditor_ids[]" value="{{ $auditor->id_auditor }}">
+                                                    <span class="badge bg-secondary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
+                                                        Anggota
+                                                    </span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -626,75 +628,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        // Interactive Lead selection logic
-        const buttons = document.querySelectorAll('.btn-role-toggle');
-        const hiddenContainer = document.getElementById('dynamicLeadInputs');
-
-        function updateRoles(leadId) {
-            hiddenContainer.innerHTML = '';
-            
-            // Create hidden input for Lead
-            const leadInput = document.createElement('input');
-            leadInput.type = 'hidden';
-            leadInput.name = 'lead_auditor_id';
-            leadInput.value = leadId;
-            hiddenContainer.appendChild(leadInput);
-
-            buttons.forEach(btn => {
-                const currentId = btn.getAttribute('data-id');
-                const avatar = document.getElementById('avatar-' + currentId);
-                const isLead = currentId === leadId;
-
-                if (isLead) {
-                    btn.innerHTML = '<i class="fas fa-crown me-1 text-warning"></i> Lead';
-                    btn.className = 'btn btn-sm btn-primary px-3 py-2 fs-7 rounded-3 text-white';
-                    btn.style.backgroundColor = '#2563EB';
-                    
-                    if (avatar) {
-                        avatar.style.background = '#2563EB';
-                    }
-                } else {
-                    btn.innerHTML = 'Anggota';
-                    btn.className = 'btn btn-sm btn-outline-secondary px-3 py-2 fs-7 rounded-3';
-                    btn.style.backgroundColor = '';
-                    
-                    if (avatar) {
-                        const availBg = avatar.getAttribute('data-avail-bg');
-                        avatar.style.background = availBg;
-                    }
-
-                    // Create hidden input for Member
-                    const memberInput = document.createElement('input');
-                    memberInput.type = 'hidden';
-                    memberInput.name = 'auditor_ids[]';
-                    memberInput.value = currentId;
-                    hiddenContainer.appendChild(memberInput);
-                }
-            });
-        }
-
-        // Initialize with default lead
-        let initialLeadId = '';
-        buttons.forEach(btn => {
-            if (btn.getAttribute('data-default-lead') === 'true') {
-                initialLeadId = btn.getAttribute('data-id');
-            }
-        });
-
-        if (initialLeadId) {
-            updateRoles(initialLeadId);
-        }
-
-        // Click handler
-        buttons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const clickedId = this.getAttribute('data-id');
-                updateRoles(clickedId);
-            });
-        });
-    </script>
 </body>
 
 </html>
