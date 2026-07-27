@@ -58,6 +58,7 @@ class RiwayatAuditorController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'keterangan' => 'nullable|string',
+            'kategori_wilayah' => 'nullable|string|in:Dalam Kota,Pinggiran Kota,Luar Kota,Luar Negeri',
         ]);
 
         $otherTeamStr = null;
@@ -80,6 +81,7 @@ class RiwayatAuditorController extends Controller
             'id_lembaga' => $request->id_lembaga,
             'jenis_audit' => $request->jenis_audit,
             'tim_audit_lainnya' => $otherTeamStr,
+            'kategori_wilayah' => $request->kategori_wilayah,
             'peran_auditor' => $request->peran_auditor,
             'status_penugasan' => $request->status_penugasan,
             'tanggal_mulai' => $request->tanggal_mulai,
@@ -125,6 +127,7 @@ class RiwayatAuditorController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'keterangan' => 'nullable|string',
+            'kategori_wilayah' => 'nullable|string|in:Dalam Kota,Pinggiran Kota,Luar Kota,Luar Negeri',
         ]);
 
         $otherTeamStr = null;
@@ -147,6 +150,7 @@ class RiwayatAuditorController extends Controller
             'id_lembaga' => $request->id_lembaga,
             'jenis_audit' => $request->jenis_audit,
             'tim_audit_lainnya' => $otherTeamStr,
+            'kategori_wilayah' => $request->kategori_wilayah,
             'peran_auditor' => $request->peran_auditor,
             'status_penugasan' => $request->status_penugasan,
             'tanggal_mulai' => $request->tanggal_mulai,

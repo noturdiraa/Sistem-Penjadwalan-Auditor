@@ -21,6 +21,19 @@ class JadwalAudit extends Model
                 }
             }
         });
+
+        static::updated(function ($jadwal) {
+            $statusPenugasan = $jadwal->status_jadwal === 'Selesai' ? 'Selesai' : 'Berlangsung';
+            $kategoriWilayah = $jadwal->lokasi ? $jadwal->lokasi->kategori_wilayah : null;
+
+            \App\Models\RiwayatAuditor::where('id_jadwal', $jadwal->id_jadwal)
+                ->update([
+                    'status_penugasan' => $statusPenugasan,
+                    'tanggal_mulai' => $jadwal->tanggal_mulai,
+                    'tanggal_selesai' => $jadwal->tanggal_selesai,
+                    'kategori_wilayah' => $kategoriWilayah,
+                ]);
+        });
     }
 
     protected $primaryKey = 'id_jadwal';

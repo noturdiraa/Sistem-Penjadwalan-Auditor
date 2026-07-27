@@ -464,6 +464,21 @@
                             @enderror
                         </div>
 
+                        <!-- Kategori Wilayah -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Kategori Wilayah</label>
+                            <select name="kategori_wilayah" class="form-select @error('kategori_wilayah') is-invalid @enderror" required style="height: 48px; border-radius: 10px;">
+                                <option value="" selected disabled>Pilih Kategori Wilayah...</option>
+                                <option value="Dalam Kota" {{ old('kategori_wilayah') == 'Dalam Kota' ? 'selected' : '' }}>Dalam Kota</option>
+                                <option value="Pinggiran Kota" {{ old('kategori_wilayah') == 'Pinggiran Kota' ? 'selected' : '' }}>Pinggiran Kota</option>
+                                <option value="Luar Kota" {{ old('kategori_wilayah') == 'Luar Kota' ? 'selected' : '' }}>Luar Kota</option>
+                                <option value="Luar Negeri" {{ old('kategori_wilayah') == 'Luar Negeri' ? 'selected' : '' }}>Luar Negeri</option>
+                            </select>
+                            @error('kategori_wilayah')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Keterangan -->
                         <div class="col-md-12 mb-4">
                             <label class="form-label">Keterangan / Catatan</label>

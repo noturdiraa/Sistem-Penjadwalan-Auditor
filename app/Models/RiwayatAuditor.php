@@ -16,6 +16,7 @@ class RiwayatAuditor extends Model
         'id_lembaga',
         'jenis_audit',
         'tim_audit_lainnya',
+        'kategori_wilayah',
         'id_audit',
         'id_jadwal',
         'peran_auditor',

@@ -473,6 +473,7 @@
                                                 data-tanggal-selesai="{{ $riwayat->tanggal_selesai ? \Carbon\Carbon::parse($riwayat->tanggal_selesai)->format('d M Y') : '-' }}"
                                                 data-status="{{ $riwayat->status_penugasan }}"
                                                 data-keterangan="{{ $riwayat->keterangan ?? '-' }}"
+                                                data-kategori-wilayah="{{ $riwayat->kategori_wilayah ?? ($riwayat->jadwalAudit && $riwayat->jadwalAudit->lokasi ? $riwayat->jadwalAudit->lokasi->kategori_wilayah : '-') }}"
                                                 data-tim="@php
                                                     if ($riwayat->tim_audit_lainnya) {
                                                         echo $riwayat->tim_audit_lainnya;
@@ -542,6 +543,7 @@
                                     <div class="mb-2">Perusahaan: <strong class="text-dark" id="modalPerusahaanName">-</strong></div>
                                     <div class="mb-2">Lembaga: <strong class="text-dark" id="modalLembagaName">-</strong></div>
                                     <div class="mb-2">Jenis Audit: <strong class="text-dark" id="modalJenisAudit">-</strong></div>
+                                    <div class="mb-2">Kategori Wilayah: <strong class="text-dark" id="modalKategoriWilayah">-</strong></div>
                                 </div>
                             </div>
 
@@ -612,6 +614,7 @@
             const tanggalSelesai = button.getAttribute('data-tanggal-selesai');
             const status = button.getAttribute('data-status');
             const keterangan = button.getAttribute('data-keterangan');
+            const kategoriWilayah = button.getAttribute('data-kategori-wilayah');
             const tim = button.getAttribute('data-tim');
 
             // Populate Modal
@@ -621,6 +624,7 @@
             document.getElementById('modalPerusahaanName').innerText = perusahaan;
             document.getElementById('modalLembagaName').innerText = lembaga;
             document.getElementById('modalJenisAudit').innerText = jenisAudit;
+            document.getElementById('modalKategoriWilayah').innerText = kategoriWilayah || '-';
             document.getElementById('modalTanggalMulai').innerText = tanggalMulai;
             document.getElementById('modalTanggalSelesai').innerText = tanggalSelesai;
             document.getElementById('modalKeterangan').innerText = keterangan;
