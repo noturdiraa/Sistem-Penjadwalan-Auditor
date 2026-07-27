@@ -404,9 +404,9 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
     @php
         $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
-        $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
-        $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Revisi')->count();
-        $countTotal = \App\Models\JadwalAudit::count();
+        $countDisetujui = \App\Models\ReviewOperasional::where('status_review', 'Disetujui')->count();
+        $countDikembalikan = \App\Models\ReviewOperasional::where('status_review', 'Dikembalikan')->count();
+        $countTotal = $countMenunggu + $countDisetujui + $countDikembalikan;
     @endphp
 
     <!-- Menunggu Review -->
@@ -517,16 +517,25 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
                     'audit.perusahaan',
                     'audit.ruangLingkup',
                     'lokasi',
-                    'timAudits.auditor'
+                    'timAudits.auditor',
+                    'reviewTeknis'
                 ])
                 ->orderByRaw("FIELD(status_jadwal, 'Review', 'Revisi', 'Aktif', 'Selesai') ASC")
                 ->orderBy('updated_at', 'desc')
-                ->take(5)
+                ->take(10)
                 ->get();
             @endphp
             @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
                     @php
+                        // Filter out manually overridden schedules (status Aktif/Selesai but no Disetujui review)
+                        if ($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai') {
+                            $hasApproveReview = $jadwal->reviewTeknis->where('status_review', 'Disetujui')->isNotEmpty();
+                            if (!$hasApproveReview) {
+                                continue;
+                            }
+                        }
+
                         $statusLabel = $jadwal->status_jadwal;
                         $badgeClass = 'bg-secondary text-white';
                         if ($jadwal->status_jadwal === 'Review') {
