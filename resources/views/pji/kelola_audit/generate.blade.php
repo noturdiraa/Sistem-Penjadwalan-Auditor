@@ -468,6 +468,9 @@
                     <input type="hidden" name="kompetensi_json" value="{{ $request->kompetensi_json }}">
                     <input type="hidden" name="keterangan" value="{{ $request->keterangan }}">
 
+                    <!-- Hidden inputs for Lead and Members (populated by JavaScript) -->
+                    <div id="dynamicLeadInputs"></div>
+
                     <!-- ================= TIM AUDIT ================= -->
                     <h3 class="mb-4 fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 20px;">
                         <i class="fas fa-users text-primary"></i>
@@ -496,6 +499,7 @@
                                 $badgeText = $isBusy ? 'Sibuk' : 'Tersedia';
                                 
                                 // Color avatar based on status
+                                $availBg = $isBusy ? '#EF4444' : '#10B981';
                                 $avatarBg = $isBusy ? 'background: #EF4444;' : 'background: #10B981;';
                                 if ($index === $leadIdx) {
                                     $avatarBg = 'background: #2563EB;'; // Blue for Lead
@@ -507,7 +511,10 @@
                                     <!-- Bagian Atas: Profil Auditor -->
                                     <div>
                                         <div class="d-flex align-items-center gap-3 mb-3">
-                                            <div class="auditor-avatar flex-shrink-0" style="{{ $avatarBg }} width: 52px; height: 52px; border-radius: 12px; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; color: white;">
+                                            <div class="auditor-avatar flex-shrink-0" 
+                                                 id="avatar-{{ $auditor->id_auditor }}"
+                                                 data-avail-bg="{{ $availBg }}"
+                                                 style="{{ $avatarBg }} width: 52px; height: 52px; border-radius: 12px; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; color: white;">
                                                 {{ strtoupper(substr($auditor->nama_auditor, 0, 2)) }}
                                             </div>
                                             <div>
@@ -571,19 +578,14 @@
                                             </div>
 
                                             <div class="d-flex align-items-center">
-                                                @if($index === $leadIdx)
-                                                    <!-- Hidden Lead input to submit -->
-                                                    <input type="hidden" name="lead_auditor_id" value="{{ $auditor->id_auditor }}">
-                                                    <span class="badge bg-primary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
-                                                        <i class="fas fa-crown me-1 text-warning"></i> Lead
-                                                    </span>
-                                                @else
-                                                    <!-- Hidden Member inputs to submit -->
-                                                    <input type="hidden" name="auditor_ids[]" value="{{ $auditor->id_auditor }}">
-                                                    <span class="badge bg-secondary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
-                                                        Anggota
-                                                    </span>
-                                                @endif
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-role-toggle px-3 py-2 fs-7 rounded-3" 
+                                                        id="btn-role-{{ $auditor->id_auditor }}" 
+                                                        data-id="{{ $auditor->id_auditor }}"
+                                                        data-default-lead="{{ $index === $leadIdx ? 'true' : 'false' }}"
+                                                        style="font-weight: 600; min-width: 90px; border: none; transition: none;">
+                                                    {{ $index === $leadIdx ? 'Lead' : 'Anggota' }}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -625,7 +627,74 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- No client-side selection validation needed as Lead and Anggota roles are auto-assigned and static -->
+    <script>
+        // Interactive Lead selection logic
+        const buttons = document.querySelectorAll('.btn-role-toggle');
+        const hiddenContainer = document.getElementById('dynamicLeadInputs');
+
+        function updateRoles(leadId) {
+            hiddenContainer.innerHTML = '';
+            
+            // Create hidden input for Lead
+            const leadInput = document.createElement('input');
+            leadInput.type = 'hidden';
+            leadInput.name = 'lead_auditor_id';
+            leadInput.value = leadId;
+            hiddenContainer.appendChild(leadInput);
+
+            buttons.forEach(btn => {
+                const currentId = btn.getAttribute('data-id');
+                const avatar = document.getElementById('avatar-' + currentId);
+                const isLead = currentId === leadId;
+
+                if (isLead) {
+                    btn.innerHTML = '<i class="fas fa-crown me-1 text-warning"></i> Lead';
+                    btn.className = 'btn btn-sm btn-primary px-3 py-2 fs-7 rounded-3 text-white';
+                    btn.style.backgroundColor = '#2563EB';
+                    
+                    if (avatar) {
+                        avatar.style.background = '#2563EB';
+                    }
+                } else {
+                    btn.innerHTML = 'Anggota';
+                    btn.className = 'btn btn-sm btn-outline-secondary px-3 py-2 fs-7 rounded-3';
+                    btn.style.backgroundColor = '';
+                    
+                    if (avatar) {
+                        const availBg = avatar.getAttribute('data-avail-bg');
+                        avatar.style.background = availBg;
+                    }
+
+                    // Create hidden input for Member
+                    const memberInput = document.createElement('input');
+                    memberInput.type = 'hidden';
+                    memberInput.name = 'auditor_ids[]';
+                    memberInput.value = currentId;
+                    hiddenContainer.appendChild(memberInput);
+                }
+            });
+        }
+
+        // Initialize with default lead
+        let initialLeadId = '';
+        buttons.forEach(btn => {
+            if (btn.getAttribute('data-default-lead') === 'true') {
+                initialLeadId = btn.getAttribute('data-id');
+            }
+        });
+
+        if (initialLeadId) {
+            updateRoles(initialLeadId);
+        }
+
+        // Click handler
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const clickedId = this.getAttribute('data-id');
+                updateRoles(clickedId);
+            });
+        });
+    </script>
 </body>
 
 </html>
