@@ -551,7 +551,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                             @if($manualReview)
                                 <div class="mt-1 p-2 rounded bg-light border-start border-danger border-3" style="font-size: 11px;">
                                     <div class="text-danger mb-1"><i class="fas fa-users-slash me-1"></i><strong>Tim Awal (Rekomendasi):</strong> {{ $manualReview->tim_awal }}</div>
-                                    <div class="text-success"><i class="fas fa-users-gear me-1"></i><strong>Tim Baru (Hasil Ganti):</strong> {{ $leadAuditor }} (Lead)
+                                    <div class="text-success mb-1"><i class="fas fa-users-gear me-1"></i><strong>Tim Baru (Hasil Ganti):</strong> {{ $leadAuditor }} (Lead)
                                         @php
                                             $otherMembers = $aj->timAudits->where('peran', 'Auditor')->map(fn($m) => $m->auditor->nama_auditor ?? '')->filter()->implode(', ');
                                         @endphp
@@ -559,6 +559,11 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                                             & {{ $otherMembers }}
                                         @endif
                                     </div>
+                                    @if($manualReview->alasan_pergantian)
+                                        <div class="text-secondary ps-1 mt-1 border-top pt-1" style="font-size: 10.5px; font-style: italic;">
+                                            <i class="far fa-comment-dots me-1 text-primary"></i>Keterangan: "{{ $manualReview->alasan_pergantian }}"
+                                        </div>
+                                    @endif
                                 </div>
                             @else
                                 <div>Ketua: <strong class="text-dark">{{ $leadAuditor }}</strong></div>

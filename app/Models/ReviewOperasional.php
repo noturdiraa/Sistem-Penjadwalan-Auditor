@@ -16,6 +16,7 @@ class ReviewOperasional extends Model
         'status_review',
         'catatan',
         'tim_awal',
+        'alasan_pergantian',
     ];
 
     public $timestamps = true;
