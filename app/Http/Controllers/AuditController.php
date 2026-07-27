@@ -326,6 +326,11 @@ class AuditController extends Controller
         foreach ($audit->jadwalAudits as $jadwal) {
             $jadwal->timAudits()->delete();
             $jadwal->reviewKatimPjis()->delete();
+            
+            // Delete child AlasanPenolakan records first
+            $reviewOpsIds = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal)->pluck('id_review_operasional');
+            \App\Models\AlasanPenolakan::whereIn('id_review_operasional', $reviewOpsIds)->delete();
+            
             $jadwal->reviewTeknis()->delete();
             $jadwal->riwayatAuditors()->delete();
             \App\Models\RekomendasiAuditor::where('id_jadwal', $jadwal->id_jadwal)->delete();
