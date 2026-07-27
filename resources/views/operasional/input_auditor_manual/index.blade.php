@@ -32,7 +32,8 @@
             'role' => $aud->jenis_auditor ?? 'Auditor',
             'subrole' => $aud->posisi ?? 'Auditor',
             'lembaga' => count($compLembagas) > 0 ? implode(', ', $compLembagas) : '-',
-            'ruangLingkup' => count($compRuangs) > 0 ? $compRuangs[0] : '-',
+            'ruangLingkup' => count($compRuangs) > 0 ? implode(', ', $compRuangs) : '-',
+            'ruangLingkups' => $compRuangs,
             'point' => $point,
             'totalAudit' => $totalAudit,
             'lokasi' => $jadwal ? ($jadwal->lokasi->kategori_wilayah ?? 'Dalam Kota') : 'Dalam Kota',
@@ -558,7 +559,7 @@
                 // Lembaga
                 const matchLembaga = filterLembaga === "" || item.lembaga === filterLembaga || item.badges.includes(filterLembaga);
                 // Ruang Lingkup
-                const matchRuang = filterRuang === "" || item.ruangLingkup === filterRuang || item.ruangLingkup.includes(filterRuang);
+                const matchRuang = filterRuang === "" || (item.ruangLingkups && item.ruangLingkups.includes(filterRuang));
 
                 return matchSearch && matchLembaga && matchRuang;
             });
