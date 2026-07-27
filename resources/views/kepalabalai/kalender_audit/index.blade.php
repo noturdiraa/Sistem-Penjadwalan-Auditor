@@ -86,11 +86,13 @@
         .logo h4 {
             font-weight: 700;
             margin: 0;
+            font-size: 20px;
         }
 
         .logo p {
             font-size: 13px;
             opacity: .8;
+            margin: 5px 0 0 0;
         }
 
         .menu {
@@ -119,6 +121,12 @@
         .menu li a:hover,
         .menu li a.active {
             background: #2563EB;
+        }
+
+        .menu li i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
         }
 
         .content {
