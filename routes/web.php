@@ -166,6 +166,11 @@ Route::middleware(['auth'])->group(function () {
                     'status_review' => 'Disetujui',
                     'catatan' => $request->catatan,
                 ]);
+
+                $jadwal->save();
+                $jadwal->audit->save();
+
+                return redirect()->route('operasional.reviewjadwal.index')->with('success', 'Jadwal audit berhasil disetujui.');
             } else {
                 $jadwal->status_jadwal = 'Revisi';
                 $jadwal->audit->status = 'Revisi';
@@ -205,11 +210,12 @@ Route::middleware(['auth'])->group(function () {
                         'alasan_penolakan' => $request->catatan,
                     ]);
                 }
-            }
-            $jadwal->save();
-            $jadwal->audit->save();
 
-            return redirect()->route('operasional.reviewjadwal.index')->with('success', 'Keputusan review berhasil disimpan.');
+                $jadwal->save();
+                $jadwal->audit->save();
+
+                return redirect('/operasional/input-auditor?id=' . $jadwal->id_jadwal)->with('success', 'Jadwal audit berhasil dikembalikan. Silakan pilih auditor secara manual.');
+            }
         })->name('operasional.reviewjadwal.submit');
 
         Route::view('/operasional/input-auditor', 'operasional.input_auditor_manual.index')->name('operasional.inputauditor.index');
