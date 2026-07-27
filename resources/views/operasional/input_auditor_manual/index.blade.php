@@ -8,10 +8,17 @@
         $jadwal = $allJadwals->first();
     }
     $currentRoles = [];
-    if ($jadwal && $jadwal->timAudits) {
-        foreach ($jadwal->timAudits as $mt) {
-            $currentRoles[$mt->id_auditor] = $mt->peran;
+    $katimReview = null;
+    if ($jadwal) {
+        if ($jadwal->timAudits) {
+            foreach ($jadwal->timAudits as $mt) {
+                $currentRoles[$mt->id_auditor] = $mt->peran;
+            }
         }
+        $katimReview = \App\Models\ReviewKatimPji::where('id_jadwal', $jadwal->id_jadwal)
+            ->where('status_review', 'Dikembalikan')
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
     
     $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'timAudits', 'riwayatAuditors'])->get();
@@ -360,6 +367,17 @@
                 <h6 class="fw-bold text-primary mb-4" style="font-size: 16px;">
                     <i class="far fa-calendar-check me-2"></i>Jadwal Audit
                 </h6>
+
+                @if($katimReview)
+                <div class="alert alert-warning border-0 rounded-4 p-3 mb-4 d-flex align-items-start gap-3 shadow-sm" style="background-color: #FFFBEB; color: #D97706; border-left: 4px solid #F59E0B !important;">
+                    <i class="fas fa-circle-exclamation fs-5 mt-1"></i>
+                    <div>
+                        <strong class="d-block mb-1" style="font-size: 14px;">Catatan Pengembalian Katim PJI:</strong>
+                        <span style="font-size: 13px; font-style: italic;">"{{ $katimReview->catatan }}"</span>
+                    </div>
+                </div>
+                @endif
+
                 <div class="row">
                     <!-- Left Column -->
                     <div class="col-md-6">

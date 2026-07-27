@@ -488,20 +488,35 @@
                     }
                 }
             }
+            // Look for the latest Katim PJI review for this schedule
+            $latestKatimReview = \App\Models\ReviewKatimPji::with('user')
+                ->where('id_jadwal', $jadwal->id_jadwal)
+                ->orderBy('created_at', 'desc')
+                ->first();
 
-            // Keputusan is based on current schedule status:
-            // If Aktif or Selesai -> approved. Else -> still returned / revising.
-            $isApproved = ($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai');
-            $keputusan = $isApproved ? 'Disetujui' : 'Dikembalikan';
-            $statusText = $isApproved ? 'Selesai' : 'Review Katim PJI';
+            if ($latestKatimReview) {
+                $isApproved = ($latestKatimReview->status_review === 'Disetujui');
+                $keputusan = $isApproved ? 'Disetujui' : 'Dikembalikan';
+                $statusText = $isApproved ? 'Selesai' : 'Revisi (Katim PJI)';
+                $reviewer = $latestKatimReview->user->nama_user ?? 'Katim PJI';
+                $catatan = $latestKatimReview->catatan ?? '-';
+                $tanggal = $latestKatimReview->created_at ? $latestKatimReview->created_at->format('d M Y') : '-';
+            } else {
+                $isApproved = ($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai');
+                $keputusan = $isApproved ? 'Disetujui' : 'Dikembalikan';
+                $statusText = $isApproved ? 'Selesai' : 'Review Katim PJI';
+                $reviewer = $user->nama_user ?? 'Staff Operasional';
+                $catatan = $rev->catatan ?? '-';
+                $tanggal = $rev->created_at ? $rev->created_at->format('d M Y') : '-';
+            }
 
             $formattedReviews[] = [
                 'id' => 'AUD-' . ($jadwal->id_jadwal ?? $rev->id_review_operasional),
                 'perusahaan' => $perusahaan->nama_perusahaan ?? 'Belum diatur',
-                'tanggal' => $rev->created_at ? $rev->created_at->format('d M Y') : '-',
-                'reviewer' => $user->nama_user ?? 'Reviewer',
+                'tanggal' => $tanggal,
+                'reviewer' => $reviewer,
                 'keputusan' => $keputusan,
-                'catatan' => $rev->catatan ?? '-',
+                'catatan' => $catatan,
                 'timAwal' => $rev->tim_awal ?? 'Belum ada tim',
                 'alasanPergantian' => $rev->alasan_pergantian ?? '-',
                 'status' => $statusText,
