@@ -144,6 +144,10 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
         }
 
+        .search {
+            width: 350px;
+        }
+
         .profile {
             display: flex;
             align-items: center;
@@ -337,15 +341,12 @@
     <!-- ================= CONTENT ================= -->
         <div class="content">
         <div class="navbar-custom">
-            <div class="search-box-container" style="position: relative; width: 320px;">
-                <input type="text" class="form-control" placeholder="Cari..." style="height: 38px; border-radius: 20px; padding-left: 35px; font-size: 14px; border: 1px solid #E2E8F0; background-color: #F8FAFC;">
-                <i class="fas fa-search text-secondary" style="position: absolute; left: 12px; top: 12px; font-size: 14px;"></i>
-            </div>
+            <input type="text" class="form-control search" placeholder="Cari...">
 
             <div class="profile">
-                <i class="far fa-bell fs-5 me-3" style="cursor: pointer; color: #6B7280;"></i>
-                <img src="{{ asset('images/logo.png') }}">
-                <strong>Kepala Balai</strong>
+                <i class="far fa-bell fs-5"></i>
+                <img src="{{ asset('images/logo.png') }}" alt="Profil">
+                <span>Kepala Balai</span>
             </div>
         </div>
 
