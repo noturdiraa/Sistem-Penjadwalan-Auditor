@@ -7,6 +7,12 @@
     } else {
         $jadwal = $allJadwals->first();
     }
+    $currentRoles = [];
+    if ($jadwal && $jadwal->timAudits) {
+        foreach ($jadwal->timAudits as $mt) {
+            $currentRoles[$mt->id_auditor] = $mt->peran;
+        }
+    }
     
     $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'timAudits', 'riwayatAuditors'])->get();
     $lembagas = \App\Models\Lembaga::with('ruangLingkups')->get();
@@ -542,8 +548,15 @@
 
         // Auditor Dynamic Data from Database
         const dbAuditors = @json($dbAuditors);
+        const currentRoles = @json($currentRoles);
 
-        let selectedAuditorIds = [];
+        let selectedAuditorIds = [
+            @if($jadwal && $jadwal->timAudits)
+                @foreach($jadwal->timAudits as $mt)
+                    {{ $mt->id_auditor }},
+                @endforeach
+            @endif
+        ];
 
         // Cascading Dropdown Logic
         function updateRuangLingkupOptions() {
@@ -703,7 +716,10 @@
                 div.style.borderColor = '#e2e8f0';
 
                 // Determine default selected based on role
-                const isLead = item.role.toLowerCase().includes('lead') || item.subrole.toLowerCase().includes('lead');
+                const dbRole = currentRoles[item.id];
+                const isLead = dbRole 
+                    ? (dbRole === 'Lead Auditor')
+                    : (item.role.toLowerCase().includes('lead') || item.subrole.toLowerCase().includes('lead'));
                 const roleSelectHtml = `
                     <select class="role-select form-select form-select-sm mt-2" data-auditor-id="${item.id}" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
                         <option value="Ketua Tim" ${isLead ? 'selected' : ''}>Ketua Tim</option>
@@ -771,6 +787,7 @@
         }
 
         // Initial render
+        updateSelectedList();
         renderAuditors();
     </script>
 </body>
