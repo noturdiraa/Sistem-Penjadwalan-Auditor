@@ -558,10 +558,95 @@
                                 <div class="text-secondary" style="font-size: 13px;">
                                     Catatan: <strong class="text-dark">{{ $rev->catatan ?? '-' }}</strong>
                                 </div>
+                                @if($rev->alasan_pergantian)
+                                <div class="text-secondary" style="font-size: 13px;">
+                                    Alasan Ganti: <strong class="text-dark">{{ $rev->alasan_pergantian }}</strong>
+                                </div>
+                                @endif
                                 @if($rev->rekomendasi)
                                 <small class="text-muted d-block mt-1" style="font-size: 12px; font-style: italic;">
                                     Rekomendasi: {{ $rev->rekomendasi }}
                                 </small>
+                                @endif
+
+                                @if($rev->tim_awal)
+                                    @php
+                                         $replacementsList = [];
+                                         $origLead = null;
+                                         $origMembers = [];
+                                         
+                                         $parts = explode(',', $rev->tim_awal);
+                                         foreach ($parts as $part) {
+                                             $part = trim($part);
+                                             if (empty($part)) continue;
+                                             
+                                             if (preg_match('/^(.*?)\s*\(Lead\)$/i', $part, $matches)) {
+                                                 $origLead = trim($matches[1]);
+                                             } elseif (preg_match('/^(.*?)\s*\(Anggota\)$/i', $part, $matches)) {
+                                                 $origMembers[] = trim($matches[1]);
+                                             } else {
+                                                 $origMembers[] = $part;
+                                             }
+                                         }
+                                         
+                                         $newLead = $ketua ? $ketua['name'] : null;
+                                         $newMembers = array_map(fn($m) => $m['name'], $anggotaList);
+                                         
+                                         // Compare Lead
+                                         if ($origLead && $newLead && $origLead !== $newLead) {
+                                             $replacementsList[] = "Ketua Tim: <strong>{$origLead}</strong> &rarr; <strong>{$newLead}</strong>";
+                                         }
+                                         
+                                         // Compare Members
+                                         $removed = array_values(array_diff($origMembers, $newMembers));
+                                         $added = array_values(array_diff($newMembers, $origMembers));
+                                         
+                                         $count = min(count($removed), count($added));
+                                         for ($i = 0; $i < $count; $i++) {
+                                             $replacementsList[] = "Anggota: <strong>{$removed[$i]}</strong> &rarr; <strong>{$added[$i]}</strong>";
+                                         }
+                                         if (count($removed) > $count) {
+                                             for ($i = $count; $i < count($removed); $i++) {
+                                                 $replacementsList[] = "Anggota: <strong>{$removed[$i]}</strong> dihapus";
+                                             }
+                                         }
+                                         if (count($added) > $count) {
+                                             for ($i = $count; $i < count($added); $i++) {
+                                                 $replacementsList[] = "Anggota: <strong>{$added[$i]}</strong> ditambahkan";
+                                             }
+                                         }
+                                    @endphp
+                                    <div class="mt-2 p-3 rounded border border-light-subtle" style="font-size: 13px; max-width: 600px; background-color: #FFF5F5;">
+                                        <div class="mb-2">
+                                            <span class="badge text-danger fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #FDE8E8; border: 1px solid #FCA5A5;">Auditor Diubah Manual</span>
+                                        </div>
+                                        <div class="text-secondary mb-1">
+                                            <i class="fas fa-users-slash text-danger me-1"></i> Tim Awal (Rekomendasi): <span class="text-dark">{{ $rev->tim_awal }}</span>
+                                        </div>
+                                        <div class="text-secondary mb-2">
+                                            <i class="fas fa-users text-success me-1"></i> Tim Baru (Hasil Ganti): 
+                                            <span class="text-dark fw-medium">
+                                                @php
+                                                    $newTeamNames = [];
+                                                    if ($ketua) $newTeamNames[] = $ketua['name'] . ' (Lead)';
+                                                    foreach ($anggotaList as $ang) {
+                                                        $newTeamNames[] = $ang['name'] . ' (Anggota)';
+                                                    }
+                                                    echo implode(', ', $newTeamNames);
+                                                @endphp
+                                            </span>
+                                        </div>
+                                        @if(count($replacementsList) > 0)
+                                            <div class="border-top pt-2 mt-2">
+                                                <div class="fw-semibold text-dark mb-1" style="font-size: 12px;"><i class="fas fa-right-left text-primary me-1"></i>Pergantian:</div>
+                                                <ul class="mb-0 ps-3 text-secondary" style="font-size: 12.5px; line-height: 1.5;">
+                                                    @foreach($replacementsList as $rep)
+                                                        <li>{!! $rep !!}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                         </div>
