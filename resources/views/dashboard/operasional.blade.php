@@ -576,7 +576,11 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
                      @endphp
                      <tr>
                          <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
-                         <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
+                         <td class="text-center">
+                             @foreach(explode(', ', $jadwal->audit->jenis_audit ?? '-') as $jenis)
+                                 <span class="badge-light-blue me-1">{{ $jenis }}</span>
+                             @endforeach
+                         </td>
                          <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
                          <td class="text-center"><span class="badge" style="{{ $badgeStyle }} padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 6px;">{{ $statusLabel }}</span></td>
                         <td class="text-center">

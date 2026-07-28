@@ -513,7 +513,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                         <div>
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <span class="badge bg-warning text-dark fw-semibold" style="font-size: 12px; padding: 6px 12px; border-radius: 6px;">{{ $jadwal->status_jadwal }}</span>
-                                <span class="badge fw-semibold" style="font-size: 12px; padding: 6px 12px; border-radius: 6px; background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;">{{ $jadwal->audit->jenis_audit ?? '-' }}</span>
+                                @foreach(explode(', ', $jadwal->audit->jenis_audit ?? '-') as $jenis)
+                                    <span class="badge fw-semibold me-1" style="font-size: 12px; padding: 6px 12px; border-radius: 6px; background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;">{{ $jenis }}</span>
+                                @endforeach
                             </div>
                             <h5 class="fw-bold mb-1 text-dark" style="font-size: 16px;">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</h5>
                             <small class="text-secondary d-block" style="font-size: 13px; font-weight: 500;"><i class="fas fa-circle-nodes me-1 text-primary"></i>Ruang Lingkup: {{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</small>
