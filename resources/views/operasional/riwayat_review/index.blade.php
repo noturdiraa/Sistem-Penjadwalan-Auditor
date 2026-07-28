@@ -504,13 +504,16 @@
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            // Check if the schedule has been updated/re-submitted by Operasional
+            // Check if a new tim audit has been submitted by Operasional
             // after the last rejection (either by Operasional itself or by Katim PJI)
             $lastRejectionTime = $latestKatimReview 
                 ? $latestKatimReview->created_at 
                 : $rev->created_at;
+            
+            $latestTimAudit = $jadwal->timAudits->sortByDesc('created_at')->first();
+            $latestTimAuditTime = $latestTimAudit ? $latestTimAudit->created_at : $jadwal->created_at;
 
-            $hasBeenSubmitted = $jadwal->updated_at->gt($lastRejectionTime);
+            $hasBeenSubmitted = $latestTimAuditTime->gt($lastRejectionTime);
 
             if ($latestKatimReview && !$hasBeenSubmitted) {
                 $isApproved = ($latestKatimReview->status_review === 'Disetujui');

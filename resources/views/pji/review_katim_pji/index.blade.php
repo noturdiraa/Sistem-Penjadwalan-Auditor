@@ -398,7 +398,10 @@
                                 ? $lastReview->created_at 
                                 : ($rev ? $rev->created_at : $j->created_at);
 
-                            $hasBeenSubmitted = $j->updated_at->gt($lastRejectionTime);
+                             $latestTimAudit = $j->timAudits->sortByDesc('created_at')->first();
+                             $latestTimAuditTime = $latestTimAudit ? $latestTimAudit->created_at : $j->created_at;
+
+                             $hasBeenSubmitted = $latestTimAuditTime->gt($lastRejectionTime);
 
                             // Determine status review by Katim PJI
                             $statusKatim = 'Menunggu Persetujuan';
