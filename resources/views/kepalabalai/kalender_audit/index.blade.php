@@ -22,6 +22,7 @@
             $formattedDate = $date->format('Y-m-d');
             $calendarAudits[$formattedDate][] = [
                 'perusahaan' => $perusahaan->nama_perusahaan,
+                'jenis_audit' => $audit->jenis_audit ?? '-',
                 'ruang_lingkup' => $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '-'),
                 'waktu' => '08:00 - 16:00 WIB',
                 'auditor' => !empty($auditorNames) ? $auditorNames : '-',
@@ -554,9 +555,27 @@
                 audits[dateKey].forEach(a => {
                     let statusBadgeHtml = '';
                     if (a.status === 'Aktif') {
-                        statusBadgeHtml = `<span class="badge bg-success text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #10B981 !important;">Aktif</span>`;
+                        statusBadgeHtml = `<span class="badge bg-success text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #10B981 !important; flex-shrink: 0;">Aktif</span>`;
                     } else if (a.status === 'Selesai') {
-                        statusBadgeHtml = `<span class="badge bg-info text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #06B6D4 !important;">Selesai</span>`;
+                        statusBadgeHtml = `<span class="badge bg-info text-white ms-2" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #06B6D4 !important; flex-shrink: 0;">Selesai</span>`;
+                    }
+
+                    // Split Jenis Audit into multiple badges
+                    let jenisBadgesHtml = '';
+                    if (a.jenis_audit) {
+                        const jenisList = a.jenis_audit.split(', ');
+                        jenisList.forEach(ja => {
+                            jenisBadgesHtml += `<span class="badge bg-secondary text-secondary-emphasis bg-opacity-10 border border-secondary-subtle" style="font-size: 10px; padding: 3px 6px; border-radius: 4px;">${ja}</span>`;
+                        });
+                    }
+
+                    // Split Ruang Lingkup into multiple badges
+                    let ruangBadgesHtml = '';
+                    if (a.ruang_lingkup) {
+                        const ruangList = a.ruang_lingkup.split(', ');
+                        ruangList.forEach(rl => {
+                            ruangBadgesHtml += `<span class="badge bg-primary-subtle text-primary text-wrap text-start" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; max-width: 100%; font-weight: 500; line-height: 1.4;">${rl}</span>`;
+                        });
                     }
 
                     html += `
@@ -565,8 +584,11 @@
                                 <h6 class="fw-bold text-dark mb-2" style="font-size: 15px;">${a.perusahaan}</h6>
                                 ${statusBadgeHtml}
                             </div>
-                            <div class="mb-2">
-                                <span class="badge bg-primary-subtle text-primary" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">${a.ruang_lingkup}</span>
+                            <div class="d-flex flex-wrap gap-1 mb-2">
+                                ${jenisBadgesHtml}
+                            </div>
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                ${ruangBadgesHtml}
                             </div>
                             <div class="small text-secondary mb-1">
                                 <i class="far fa-clock me-1"></i> ${a.waktu}
