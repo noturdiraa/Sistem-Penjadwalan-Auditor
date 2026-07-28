@@ -765,7 +765,7 @@ menu.forEach(item => {
                 }
             }
 
-            // 1. Chart Ruang Lingkup (Horizontal Bar Chart)
+            // 1. Chart Ruang Lingkup (Vertical Bar Chart)
             const canvasScopes = document.getElementById('chartRuangLingkup');
             if (canvasScopes) {
                 new Chart(canvasScopes.getContext('2d'), {
@@ -777,11 +777,10 @@ menu.forEach(item => {
                             data: @json($scopesData),
                             backgroundColor: '#3B82F6',
                             borderRadius: 6,
-                            barThickness: 14
+                            maxBarThickness: 32
                         }]
                     },
                     options: {
-                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
@@ -789,6 +788,17 @@ menu.forEach(item => {
                         },
                         scales: {
                             x: {
+                                ticks: {
+                                    color: '#374151',
+                                    font: { family: 'Poppins', size: 9, weight: '500' },
+                                    callback: function(value) {
+                                        const label = this.getLabelForValue(value);
+                                        return label.length > 15 ? label.substring(0, 12) + '...' : label;
+                                    }
+                                },
+                                grid: { display: false }
+                            },
+                            y: {
                                 beginAtZero: true,
                                 ticks: {
                                     precision: 0,
@@ -796,24 +806,13 @@ menu.forEach(item => {
                                     font: { family: 'Poppins', size: 10 }
                                 },
                                 grid: { color: '#F3F4F6' }
-                            },
-                            y: {
-                                ticks: {
-                                    color: '#374151',
-                                    font: { family: 'Poppins', size: 10, weight: '500' },
-                                    callback: function(value) {
-                                        const label = this.getLabelForValue(value);
-                                        return label.length > 20 ? label.substring(0, 17) + '...' : label;
-                                    }
-                                },
-                                grid: { display: false }
                             }
                         }
                     }
                 });
             }
 
-            // 2. Chart Top Auditors (Horizontal Bar Chart)
+            // 2. Chart Top Auditors (Vertical Bar Chart)
             const canvasAuditors = document.getElementById('chartTopAuditors');
             if (canvasAuditors) {
                 new Chart(canvasAuditors.getContext('2d'), {
@@ -825,11 +824,10 @@ menu.forEach(item => {
                             data: @json($auditorData),
                             backgroundColor: '#10B981',
                             borderRadius: 6,
-                            barThickness: 14
+                            maxBarThickness: 32
                         }]
                     },
                     options: {
-                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
@@ -837,6 +835,17 @@ menu.forEach(item => {
                         },
                         scales: {
                             x: {
+                                ticks: {
+                                    color: '#374151',
+                                    font: { family: 'Poppins', size: 9, weight: '500' },
+                                    callback: function(value) {
+                                        const label = this.getLabelForValue(value);
+                                        return label.length > 15 ? label.substring(0, 12) + '...' : label;
+                                    }
+                                },
+                                grid: { display: false }
+                            },
+                            y: {
                                 beginAtZero: true,
                                 ticks: {
                                     precision: 0,
@@ -844,13 +853,6 @@ menu.forEach(item => {
                                     font: { family: 'Poppins', size: 10 }
                                 },
                                 grid: { color: '#F3F4F6' }
-                            },
-                            y: {
-                                ticks: {
-                                    color: '#374151',
-                                    font: { family: 'Poppins', size: 10, weight: '500' }
-                                },
-                                grid: { display: false }
                             }
                         }
                     }
