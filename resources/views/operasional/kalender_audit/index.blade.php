@@ -5,6 +5,8 @@
         'timAudits.auditor'
     ])->whereIn('status_jadwal', ['Aktif', 'Selesai'])->get();
 
+    $allDbScopes = \App\Models\RuangLingkup::pluck('nama_ruang_lingkup')->filter()->toArray();
+
     $calendarAudits = [];
     foreach ($jadwals as $j) {
         $audit = $j->audit;
@@ -18,12 +20,32 @@
 
         $auditorNames = $j->timAudits->map(fn($t) => $t->auditor->nama_auditor ?? '')->filter()->implode(', ');
 
+        $rawRuang = $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '');
+        $scopesList = [];
+        if (!empty($rawRuang)) {
+            foreach ($allDbScopes as $dbScope) {
+                if (stripos($rawRuang, $dbScope) !== false) {
+                    $scopesList[] = $dbScope;
+                }
+            }
+            if (empty($scopesList)) {
+                $scopesList[] = $rawRuang;
+            }
+        } else {
+            $scopesList[] = '-';
+        }
+
+        $jenisList = [];
+        if ($audit->jenis_audit) {
+            $jenisList = array_map('trim', explode(',', $audit->jenis_audit));
+        }
+
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
             $formattedDate = $date->format('Y-m-d');
             $calendarAudits[$formattedDate][] = [
                 'perusahaan' => $perusahaan->nama_perusahaan,
-                'jenis_audit' => $audit->jenis_audit ?? '-',
-                'ruang_lingkup' => $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '-'),
+                'jenis_audit_list' => $jenisList,
+                'ruang_lingkup_list' => $scopesList,
                 'waktu' => '08:00 - 16:00 WIB',
                 'auditor' => !empty($auditorNames) ? $auditorNames : '-',
                 'status' => $j->status_jadwal
@@ -568,20 +590,21 @@
 
                     // Split Jenis Audit into multiple badges
                     let jenisBadgesHtml = '';
-                    if (a.jenis_audit) {
-                        const jenisList = a.jenis_audit.split(', ');
-                        jenisList.forEach(ja => {
-                            jenisBadgesHtml += `<span class="badge bg-secondary text-secondary-emphasis bg-opacity-10 border border-secondary-subtle" style="font-size: 10px; padding: 3px 6px; border-radius: 4px;">${ja}</span>`;
+                    if (a.jenis_audit_list && a.jenis_audit_list.length > 0) {
+                        a.jenis_audit_list.forEach(ja => {
+                            if (ja.trim() && ja !== '-') {
+                                jenisBadgesHtml += `<span class="badge bg-secondary text-secondary-emphasis bg-opacity-10 border border-secondary-subtle" style="font-size: 10px; padding: 3px 6px; border-radius: 4px;">${ja}</span>`;
+                            }
                         });
                     }
 
                     // Split Ruang Lingkup into multiple badges
                     let ruangBadgesHtml = '';
-                    if (a.ruang_lingkup) {
-                        const separator = a.ruang_lingkup.includes(';') ? '; ' : ', ';
-                        const ruangList = a.ruang_lingkup.split(separator);
-                        ruangList.forEach(rl => {
-                            ruangBadgesHtml += `<span class="badge bg-primary-subtle text-primary text-wrap text-start" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; max-width: 100%; font-weight: 500; line-height: 1.4;">${rl}</span>`;
+                    if (a.ruang_lingkup_list && a.ruang_lingkup_list.length > 0) {
+                        a.ruang_lingkup_list.forEach(rl => {
+                            if (rl.trim() && rl !== '-') {
+                                ruangBadgesHtml += `<span class="badge bg-primary-subtle text-primary text-wrap text-start" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; max-width: 100%; font-weight: 500; line-height: 1.4;">${rl}</span>`;
+                            }
                         });
                     }
 

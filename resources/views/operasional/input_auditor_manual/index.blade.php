@@ -600,11 +600,19 @@
 
         let initRuangs = [];
         @if($jadwal && $jadwal->audit && $jadwal->audit->ruang_lingkup)
-            @if(strpos($jadwal->audit->ruang_lingkup, ';') !== false)
-                initRuangs = @json(explode('; ', $jadwal->audit->ruang_lingkup));
-            @else
-                initRuangs = @json(explode(', ', $jadwal->audit->ruang_lingkup));
-            @endif
+            @php
+                $rawRuang = $jadwal->audit->ruang_lingkup;
+                $matchedRuangs = [];
+                foreach ($ruangLingkups as $rl) {
+                    if (stripos($rawRuang, $rl->nama_ruang_lingkup) !== false) {
+                        $matchedRuangs[] = $rl->nama_ruang_lingkup;
+                    }
+                }
+                if (empty($matchedRuangs)) {
+                    $matchedRuangs[] = $rawRuang;
+                }
+            @endphp
+            initRuangs = @json($matchedRuangs);
         @endif
 
         let selectedLembagas = [];
