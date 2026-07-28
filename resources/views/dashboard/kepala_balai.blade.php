@@ -726,11 +726,7 @@ menu.forEach(item => {
                                 grid: { display: false },
                                 ticks: {
                                     color: '#374151',
-                                    font: { family: 'Poppins', size: 9, weight: '500' },
-                                    callback: function(value) {
-                                        const label = this.getLabelForValue(value);
-                                        return label.length > 15 ? label.substring(0, 12) + '...' : label;
-                                    }
+                                    font: { family: 'Poppins', size: 9, weight: '500' }
                                 }
                             },
                             y: {
@@ -783,11 +779,7 @@ menu.forEach(item => {
                                 grid: { display: false },
                                 ticks: {
                                     color: '#374151',
-                                    font: { family: 'Poppins', size: 9, weight: '500' },
-                                    callback: function(value) {
-                                        const label = this.getLabelForValue(value);
-                                        return label.length > 15 ? label.substring(0, 12) + '...' : label;
-                                    }
+                                    font: { family: 'Poppins', size: 9, weight: '500' }
                                 }
                             },
                             y: {
