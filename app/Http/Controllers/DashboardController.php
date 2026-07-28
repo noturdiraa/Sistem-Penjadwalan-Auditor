@@ -27,4 +27,13 @@ class DashboardController extends Controller
             'auditors'
         ));
     }
+
+    public function admin()
+    {
+        $totalUsers = \App\Models\User::count();
+        $usersPerRole = \App\Models\User::select('role', \DB::raw('count(*) as count'))
+            ->groupBy('role')
+            ->get();
+        return view('dashboard.admin', compact('totalUsers', 'usersPerRole'));
+    }
 }

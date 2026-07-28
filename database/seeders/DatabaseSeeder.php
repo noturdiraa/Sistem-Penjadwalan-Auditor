@@ -44,5 +44,13 @@ class DatabaseSeeder extends Seeder
             'password'  => Hash::make('bspji123'),
             'role'      => 'operasional',
         ]);
+
+        // 5. Akun Admin
+        User::create([
+            'nama_user' => 'Administrator',
+            'username'  => 'adminbspji',
+            'password'  => Hash::make('bspji123'),
+            'role'      => 'Admin',
+        ]);
     }
 }

@@ -14,6 +14,8 @@ Route::get('/', function () {
             return redirect()->route('dashboard.kepala_balai');
         } elseif ($role === 'operasional') {
             return redirect()->route('dashboard.operasional');
+        } elseif ($role === 'admin') {
+            return redirect()->route('dashboard.admin');
         }
     }
     return redirect()->route('login');
@@ -283,6 +285,19 @@ Route::middleware(['auth'])->group(function () {
         Route::view('/kepala-balai/kalender-audit', 'kepalabalai.kalender_audit.index')->name('kepalabalai.kalender.index');
         Route::view('/kepala-balai/grafik-penugasan', 'kepalabalai.grafik_penugasan.index')->name('kepalabalai.grafik.index');
         Route::view('/kepala-balai/profil', 'kepalabalai.profil.index')->name('kepalabalai.profil.index');
+    });
+
+    // ================= 5. ROLE: ADMIN =================
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/dashboard-admin', [App\Http\Controllers\DashboardController::class, 'admin'])->name('dashboard.admin');
+        
+        // Manajemen User CRUD routes
+        Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'index'])->name('admin.users.index');
+        Route::get('/admin/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('admin.users.create');
+        Route::post('/admin/users', [App\Http\Controllers\UserController::class, 'store'])->name('admin.users.store');
+        Route::get('/admin/users/{id}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('admin.users.edit');
+        Route::put('/admin/users/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('admin.users.update');
+        Route::delete('/admin/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('admin.users.destroy');
     });
 
 });
