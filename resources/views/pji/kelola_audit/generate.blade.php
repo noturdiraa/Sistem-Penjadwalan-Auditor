@@ -432,7 +432,7 @@
                                     $scopesList = [];
                                     if ($kompetensiData && is_array($kompetensiData)) {
                                         foreach ($kompetensiData as $lId => $info) {
-                                            $lembName = trim($info['lembaga_name'] ?? '');
+                                            $lembName = trim($info['name'] ?? '');
                                             if (!empty($info['scopes'])) {
                                                 $scopesList[] = "<strong>{$lembName}</strong>: " . implode(', ', $info['scopes']);
                                             }
