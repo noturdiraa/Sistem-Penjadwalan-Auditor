@@ -23,14 +23,13 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_user' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|string|in:Admin,Kepegawaian,PJI,Kepala Balai,Operasional',
         ]);
 
         User::create([
-            'nama_user' => $request->nama_user,
+            'nama_user' => $request->username,
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'role' => $request->role,
@@ -50,7 +49,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'nama_user' => 'required|string|max:255',
             'username' => [
                 'required',
                 'string',
@@ -62,7 +60,7 @@ class UserController extends Controller
         ]);
 
         $data = [
-            'nama_user' => $request->nama_user,
+            'nama_user' => $request->username,
             'username' => $request->username,
             'role' => $request->role,
         ];

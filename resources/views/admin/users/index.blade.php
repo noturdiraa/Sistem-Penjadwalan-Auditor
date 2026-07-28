@@ -318,8 +318,7 @@
                 <table class="table table-custom align-middle mb-0">
                     <thead>
                         <tr>
-                            <th class="text-start">Nama User</th>
-                            <th class="text-center">Username</th>
+                            <th class="text-start">Username</th>
                             <th class="text-center">Role</th>
                             <th class="text-center">Tanggal Terdaftar</th>
                             <th class="text-center" style="width: 120px;">Aksi</th>
@@ -344,8 +343,7 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td class="text-start fw-semibold text-dark">{{ $user->nama_user }}</td>
-                                    <td class="text-center text-secondary">{{ $user->username }}</td>
+                                    <td class="text-start fw-semibold text-dark">{{ $user->username }}</td>
                                     <td class="text-center">
                                         <span class="badge-role {{ $roleClass }}">{{ $roleText }}</span>
                                     </td>

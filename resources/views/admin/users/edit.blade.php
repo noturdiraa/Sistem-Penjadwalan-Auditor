@@ -274,14 +274,6 @@
                 @csrf
                 @method('PUT')
 
-                <!-- Nama -->
-                <div class="mb-4 text-start">
-                    <label for="nama_user" class="form-label">Nama</label>
-                    <input type="text" class="form-control @error('nama_user') is-invalid @enderror" id="nama_user" name="nama_user" value="{{ old('nama_user', $user->nama_user) }}" placeholder="Masukkan nama lengkap user..." required>
-                    @error('nama_user')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 <!-- Username -->
                 <div class="mb-4 text-start">
