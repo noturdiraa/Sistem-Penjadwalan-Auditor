@@ -392,15 +392,22 @@
                             $tanggalText = $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d F Y') : '-';
                             $ruangLingkup = $j->audit->ruangLingkup->nama_ruang_lingkup ?? '-';
                             
+                            $lastReview = $j->reviewKatimPjis->sortByDesc('created_at')->first();
+                            $rev = $j->reviewTeknis->where('status_review', 'Dikembalikan')->sortByDesc('created_at')->first();
+                            $lastRejectionTime = $lastReview 
+                                ? $lastReview->created_at 
+                                : ($rev ? $rev->created_at : $j->created_at);
+
+                            $hasBeenSubmitted = $j->updated_at->gt($lastRejectionTime->addSeconds(5));
+
                             // Determine status review by Katim PJI
                             $statusKatim = 'Menunggu Persetujuan';
                             $badgeClass = 'bg-warning text-dark';
-                            
-                            $lastReview = $j->reviewKatimPjis->sortByDesc('created_at')->first();
+
                             if ($j->status_jadwal === 'Aktif' || $j->status_jadwal === 'Selesai') {
                                 $statusKatim = 'Disetujui';
                                 $badgeClass = 'bg-success text-white';
-                            } elseif ($lastReview && $lastReview->status_review === 'Dikembalikan' && $j->status_jadwal === 'Revisi') {
+                            } elseif ($lastReview && $lastReview->status_review === 'Dikembalikan' && $j->status_jadwal === 'Revisi' && !$hasBeenSubmitted) {
                                 $statusKatim = 'Dikembalikan';
                                 $badgeClass = 'bg-danger text-white';
                             }

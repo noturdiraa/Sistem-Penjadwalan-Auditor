@@ -235,6 +235,15 @@
             font-weight: 600;
         }
 
+        .badge-pending {
+            background: #FEF3C7;
+            color: #92400E;
+            border-radius: 9999px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
         .footer {
             color: #6b7280;
             padding: 14px 0;
@@ -380,6 +389,7 @@
                         <option value="">Semua</option>
                         <option value="Disetujui">Disetujui</option>
                         <option value="Dikembalikan">Dikembalikan</option>
+                        <option value="Menunggu">Menunggu</option>
                     </select>
                     <button class="btn p-0 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; background: white;" onclick="resetFilters()" title="Reset Filter">
                         <i class="fas fa-rotate-right text-secondary"></i>
@@ -494,17 +504,31 @@
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            if ($latestKatimReview) {
+            // Check if the schedule has been updated/re-submitted by Operasional
+            // after the last rejection (either by Operasional itself or by Katim PJI)
+            $lastRejectionTime = $latestKatimReview 
+                ? $latestKatimReview->created_at 
+                : $rev->created_at;
+
+            $hasBeenSubmitted = $jadwal->updated_at->gt($lastRejectionTime->addSeconds(5));
+
+            if ($latestKatimReview && !$hasBeenSubmitted) {
                 $isApproved = ($latestKatimReview->status_review === 'Disetujui');
                 $keputusan = $isApproved ? 'Disetujui' : 'Dikembalikan';
                 $statusText = $isApproved ? 'Selesai' : 'Revisi (Katim PJI)';
                 $reviewer = $latestKatimReview->user->nama_user ?? 'Katim PJI';
                 $catatan = $latestKatimReview->catatan ?? '-';
                 $tanggal = $latestKatimReview->created_at ? $latestKatimReview->created_at->format('d M Y') : '-';
+            } elseif ($hasBeenSubmitted) {
+                $keputusan = 'Menunggu';
+                $statusText = 'Menunggu Review Katim PJI';
+                $reviewer = 'Staff Operasional';
+                $catatan = 'Menunggu persetujuan Katim PJI';
+                $tanggal = $jadwal->updated_at->format('d M Y');
             } else {
                 $isApproved = ($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai');
                 $keputusan = $isApproved ? 'Disetujui' : 'Dikembalikan';
-                $statusText = $isApproved ? 'Selesai' : 'Review Katim PJI';
+                $statusText = $isApproved ? 'Selesai' : 'Revisi (Operasional)';
                 $reviewer = $user->nama_user ?? 'Staff Operasional';
                 $catatan = $rev->catatan ?? '-';
                 $tanggal = $rev->created_at ? $rev->created_at->format('d M Y') : '-';
@@ -623,7 +647,7 @@
 
             let html = '';
             filtered.forEach((item) => {
-                const badgeClass = item.keputusan === "Disetujui" ? "badge-success" : "badge-warning";
+                const badgeClass = item.keputusan === "Disetujui" ? "badge-success" : (item.keputusan === "Menunggu" ? "badge-pending" : "badge-warning");
                 html += `
                     <tr>
                         <td class="fw-semibold text-dark">${item.perusahaan}</td>
@@ -651,7 +675,7 @@
             if (!item) return;
 
             // Build decisions badge class
-            const badgeClass = item.keputusan === "Disetujui" ? "badge-success" : "badge-warning";
+            const badgeClass = item.keputusan === "Disetujui" ? "badge-success" : (item.keputusan === "Menunggu" ? "badge-pending" : "badge-warning");
 
             // Build Members (Anggota) list
             let anggotaHtml = '';
