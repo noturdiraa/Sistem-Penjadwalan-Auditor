@@ -628,41 +628,47 @@
             const container = document.getElementById('ruangLingkupCheckboxContainer');
             if (!container) return;
 
-            let options = [];
-            if (selectedLembagas.length === 0) {
-                for (const lName in ruangLingkupByLembaga) {
-                    options = options.concat(ruangLingkupByLembaga[lName]);
-                }
-            } else {
-                selectedLembagas.forEach(lName => {
-                    options = options.concat(ruangLingkupByLembaga[lName] || []);
-                });
+            let html = '';
+            let idx = 0;
+
+            let lembagasToDisplay = selectedLembagas;
+            if (lembagasToDisplay.length === 0) {
+                lembagasToDisplay = Object.keys(ruangLingkupByLembaga);
             }
 
-            options = Array.from(new Set(options));
-
             const prevChecked = new Set(selectedRuangLingkups);
-            selectedRuangLingkups = [];
 
-            let html = '';
-            options.forEach((opt, idx) => {
-                const isChecked = prevChecked.has(opt);
-                if (isChecked) {
-                    selectedRuangLingkups.push(opt);
+            lembagasToDisplay.forEach(lName => {
+                const options = ruangLingkupByLembaga[lName] || [];
+                if (options.length > 0) {
+                    html += `
+                        <li class="dropdown-header text-primary fw-bold ps-2 mb-1 mt-2" style="font-size: 13px; background-color: #F8FAFC; border-radius: 4px; padding: 4px 8px; list-style: none;">
+                            ${lName}
+                        </li>
+                    `;
+                    options.forEach(opt => {
+                        const isChecked = prevChecked.has(opt);
+                        html += `
+                            <li class="mb-1 ps-3" style="list-style: none;">
+                                <div class="form-check">
+                                    <input class="form-check-input filter-ruang-check" type="checkbox" value="${opt}" id="chkRuang_${idx}" ${isChecked ? 'checked' : ''} onchange="onRuangCheckChange()">
+                                    <label class="form-check-label text-dark" for="chkRuang_${idx}" style="font-size: 13px; cursor: pointer; user-select: none;">
+                                        ${opt}
+                                    </label>
+                                </div>
+                            </li>
+                        `;
+                        idx++;
+                    });
                 }
-                html += `
-                    <li class="mb-2">
-                        <div class="form-check">
-                            <input class="form-check-input filter-ruang-check" type="checkbox" value="${opt}" id="chkRuang_${idx}" ${isChecked ? 'checked' : ''} onchange="onRuangCheckChange()">
-                            <label class="form-check-label text-dark" for="chkRuang_${idx}" style="font-size: 13px; cursor: pointer; user-select: none;">
-                                ${opt}
-                            </label>
-                        </div>
-                    </li>
-                `;
             });
 
             container.innerHTML = html || '<span class="text-muted" style="font-size: 13px; padding-left: 10px;">Tidak ada ruang lingkup.</span>';
+            
+            // Re-sync selectedRuangLingkups based on checked inputs currently in DOM
+            const checks = document.querySelectorAll('.filter-ruang-check:checked');
+            selectedRuangLingkups = Array.from(checks).map(cb => cb.value);
+            
             updateRuangLabel();
         }
 
