@@ -566,22 +566,20 @@
 
                                     <!-- Bagian Bawah: Skor & Aksi -->
                                     <div>
-
-
                                         <div class="d-flex align-items-center justify-content-end mb-2">
                                             <div class="d-flex align-items-center">
                                                 @if($index === $leadIdx)
-                                                    <!-- Hidden Lead input to submit -->
-                                                    <input type="hidden" name="lead_auditor_id" value="{{ $auditor->id_auditor }}">
-                                                    <span class="badge bg-primary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
-                                                        Lead
-                                                     </span>
+                                                     <!-- Hidden Lead input to submit -->
+                                                     <input type="hidden" name="lead_auditor_id" value="{{ $auditor->id_auditor }}">
+                                                     <span class="badge bg-primary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
+                                                         {{ trim($auditor->posisi) === 'AMMI' ? 'Lead Auditor' : 'Ketua Audit' }}
+                                                      </span>
                                                 @else
                                                      <!-- Hidden Member inputs to submit -->
                                                      <input type="hidden" name="auditor_ids[]" value="{{ $auditor->id_auditor }}">
                                                      <span class="badge bg-secondary text-white px-3 py-2 fs-7 rounded-3" style="font-weight: 600;">
                                                          Anggota
-                                                     </span>
+                                                      </span>
                                                 @endif
                                             </div>
                                         </div>

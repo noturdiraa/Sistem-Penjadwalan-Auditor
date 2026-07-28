@@ -223,8 +223,11 @@ class AuditController extends Controller
 
         $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])->get();
 
+        // Ambil kategori lokasi audit
+        $kategoriLokasi = trim($request->kategori_lokasi);
+
         // Filter: Hanya auditor yang memiliki kompetensi Lembaga & Ruang Lingkup yang sesuai
-        $auditors = $auditors->filter(function($auditor) use ($selectedLembagaIds, $requestedScopes) {
+        $auditors = $auditors->filter(function($auditor) use ($selectedLembagaIds, $requestedScopes, $kategoriLokasi) {
             // Cek apakah auditor terdaftar di Lembaga terpilih
             $hasLembaga = $auditor->detailAuditors->contains(function($d) use ($selectedLembagaIds) {
                 return in_array($d->ruangLingkup->id_lembaga ?? null, $selectedLembagaIds);
@@ -244,7 +247,14 @@ class AuditController extends Controller
                         break;
                     }
                 }
-                return $hasAnyScope;
+                if (!$hasAnyScope) {
+                    return false;
+                }
+            }
+
+            // Aturan Kertas: Jika kategori lokasi = Luar Negeri, hanya auditor AMMI yang boleh dipilih
+            if ($kategoriLokasi === 'Luar Negeri') {
+                return trim($auditor->posisi) === 'AMMI';
             }
 
             return true;

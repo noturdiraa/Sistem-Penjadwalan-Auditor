@@ -712,6 +712,11 @@
 
             // Filter data
             const filtered = dbAuditors.filter(item => {
+                // Aturan Kertas: Jika kategori lokasi = Luar Negeri, hanya auditor AMMI yang boleh dipilih
+                if (item.lokasi === 'Luar Negeri' && item.subrole !== 'AMMI') {
+                    return false;
+                }
+
                 // Search term
                 const matchSearch = item.name.toLowerCase().includes(searchVal) || item.nip.includes(searchVal);
                 
@@ -854,9 +859,10 @@
                 const isLead = dbRole 
                     ? (dbRole === 'Lead Auditor')
                     : (item.role.toLowerCase().includes('lead') || item.subrole.toLowerCase().includes('lead'));
+                const leadLabel = item.subrole === 'AMMI' ? 'Lead Auditor' : 'Ketua Audit';
                 const roleSelectHtml = `
                     <select class="role-select form-select form-select-sm mt-2" data-auditor-id="${item.id}" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
-                        <option value="Ketua Tim" ${isLead ? 'selected' : ''}>Ketua Tim</option>
+                        <option value="Ketua Tim" ${isLead ? 'selected' : ''}>${leadLabel}</option>
                         <option value="Anggota" ${!isLead ? 'selected' : ''}>Anggota</option>
                     </select>
                 `;

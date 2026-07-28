@@ -371,7 +371,7 @@
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                                             <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $auditor->nama_auditor }}</h6>
-                                            <span class="badge" style="background: {{ $timAudit->peran === 'Lead Auditor' ? '#FAF5FF' : '#E0F2FE' }}; color: {{ $timAudit->peran === 'Lead Auditor' ? '#7E3AF2' : '#0369A1' }}; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">{{ $timAudit->peran }}</span>
+                                            <span class="badge" style="background: {{ $timAudit->peran === 'Lead Auditor' ? '#FAF5FF' : '#E0F2FE' }}; color: {{ $timAudit->peran === 'Lead Auditor' ? '#7E3AF2' : '#0369A1' }}; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">{{ $timAudit->peran === 'Lead Auditor' ? (($auditor->posisi ?? '') === 'AMMI' ? 'Lead Auditor' : 'Ketua Audit') : 'Auditor' }}</span>
                                         </div>
                                         <small class="text-secondary d-block mb-3" style="font-size: 12px; font-weight: 500;">NIP: {{ $auditor->nip ?? '-' }}</small>
                                         
