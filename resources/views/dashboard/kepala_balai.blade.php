@@ -601,21 +601,6 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                     $auditorLabels[] = $ta->nama_auditor;
                     $auditorData[] = $ta->total_assignments;
                 }
-
-                // Tren Penugasan Bulanan
-                $monthlyDays = array_fill(1, 12, 0);
-                $currentYear = now()->year;
-                $allJadwals = \App\Models\JadwalAudit::whereYear('tanggal_mulai', $currentYear)->get();
-                foreach ($allJadwals as $j) {
-                    if ($j->tanggal_mulai && $j->tanggal_selesai) {
-                        $start = \Carbon\Carbon::parse($j->tanggal_mulai);
-                        $end = \Carbon\Carbon::parse($j->tanggal_selesai);
-                        $days = $start->diffInDays($end) + 1;
-                        $monthNum = (int)$start->format('n');
-                        $monthlyDays[$monthNum] += $days;
-                    }
-                }
-                $monthlyDaysData = array_values($monthlyDays);
             @endphp
 
             <div class="stat-section mb-4" style="text-align: left;">
@@ -629,7 +614,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                 @endif
             </div>
 
-            <div class="stat-section mb-4" style="text-align: left;">
+            <div class="stat-section" style="text-align: left;">
                 <h6 class="fw-semibold mb-3 text-center">Performa Auditor Terbaik</h6>
                 @if(count($auditorData) > 0)
                     <div style="height: 200px; position: relative;">
@@ -638,13 +623,6 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                 @else
                     <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data auditor terbaik.</p>
                 @endif
-            </div>
-
-            <div class="stat-section" style="text-align: left;">
-                <h6 class="fw-semibold mb-3 text-center">Tren Hari Penugasan Bulanan</h6>
-                <div style="height: 200px; position: relative;">
-                    <canvas id="chartMonthlyTrend"></canvas>
-                </div>
             </div>
 
         </div>
@@ -712,113 +690,21 @@ menu.forEach(item => {
                 }
             }
 
-            // 1. Chart Ruang Lingkup (Horizontal Bar Chart)
+            // 1. Chart Ruang Lingkup (Line Chart with Gradient Fill)
             const canvasScopes = document.getElementById('chartRuangLingkup');
             if (canvasScopes) {
-                new Chart(canvasScopes.getContext('2d'), {
-                    type: 'bar',
+                const ctxScopes = canvasScopes.getContext('2d');
+                const gradientBg = ctxScopes.createLinearGradient(0, 0, 0, 180);
+                gradientBg.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+                gradientBg.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+                new Chart(ctxScopes, {
+                    type: 'line',
                     data: {
                         labels: @json($scopesLabels),
                         datasets: [{
                             label: 'Jumlah Audit',
                             data: @json($scopesData),
-                            backgroundColor: '#3B82F6',
-                            borderRadius: 6,
-                            barThickness: 14
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0,
-                                    color: '#6B7280',
-                                    font: { family: 'Poppins', size: 10 }
-                                },
-                                grid: { color: '#F3F4F6' }
-                            },
-                            y: {
-                                ticks: {
-                                    color: '#374151',
-                                    font: { family: 'Poppins', size: 10, weight: '500' },
-                                    callback: function(value) {
-                                        const label = this.getLabelForValue(value);
-                                        return label.length > 20 ? label.substring(0, 17) + '...' : label;
-                                    }
-                                },
-                                grid: { display: false }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // 2. Chart Top Auditors (Horizontal Bar Chart)
-            const canvasAuditors = document.getElementById('chartTopAuditors');
-            if (canvasAuditors) {
-                new Chart(canvasAuditors.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: @json($auditorLabels),
-                        datasets: [{
-                            label: 'Penugasan',
-                            data: @json($auditorData),
-                            backgroundColor: '#10B981',
-                            borderRadius: 6,
-                            barThickness: 14
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0,
-                                    color: '#6B7280',
-                                    font: { family: 'Poppins', size: 10 }
-                                },
-                                grid: { color: '#F3F4F6' }
-                            },
-                            y: {
-                                ticks: {
-                                    color: '#374151',
-                                    font: { family: 'Poppins', size: 10, weight: '500' }
-                                },
-                                grid: { display: false }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // 3. Chart Tren Bulanan (Line Chart with Gradient Fill)
-            const canvasTrend = document.getElementById('chartMonthlyTrend');
-            if (canvasTrend) {
-                const ctxTrend = canvasTrend.getContext('2d');
-                const gradientBg = ctxTrend.createLinearGradient(0, 0, 0, 180);
-                gradientBg.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
-                gradientBg.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-
-                new Chart(ctxTrend, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-                        datasets: [{
-                            label: 'Jumlah Hari Kerja',
-                            data: @json($monthlyDaysData),
                             borderColor: '#3B82F6',
                             backgroundColor: gradientBg,
                             fill: true,
@@ -839,8 +725,69 @@ menu.forEach(item => {
                             x: {
                                 grid: { display: false },
                                 ticks: {
+                                    color: '#374151',
+                                    font: { family: 'Poppins', size: 9, weight: '500' },
+                                    callback: function(value) {
+                                        const label = this.getLabelForValue(value);
+                                        return label.length > 15 ? label.substring(0, 12) + '...' : label;
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0,
                                     color: '#6B7280',
                                     font: { family: 'Poppins', size: 9 }
+                                },
+                                grid: { color: '#F3F4F6' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Chart Top Auditors (Line Chart with Gradient Fill)
+            const canvasAuditors = document.getElementById('chartTopAuditors');
+            if (canvasAuditors) {
+                const ctxAuditors = canvasAuditors.getContext('2d');
+                const gradientBg = ctxAuditors.createLinearGradient(0, 0, 0, 180);
+                gradientBg.addColorStop(0, 'rgba(16, 185, 129, 0.4)');
+                gradientBg.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+                new Chart(ctxAuditors, {
+                    type: 'line',
+                    data: {
+                        labels: @json($auditorLabels),
+                        datasets: [{
+                            label: 'Penugasan',
+                            data: @json($auditorData),
+                            borderColor: '#10B981',
+                            backgroundColor: gradientBg,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#10B981',
+                            pointBorderColor: '#FFFFFF',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#374151',
+                                    font: { family: 'Poppins', size: 9, weight: '500' },
+                                    callback: function(value) {
+                                        const label = this.getLabelForValue(value);
+                                        return label.length > 15 ? label.substring(0, 12) + '...' : label;
+                                    }
                                 }
                             },
                             y: {
