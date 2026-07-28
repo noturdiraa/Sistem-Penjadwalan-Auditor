@@ -418,7 +418,7 @@
                             </div>
                             <div>
                                 <small class="text-secondary d-block mb-1" style="font-size: 12px; font-weight: 500;">Ruang Lingkup</small>
-                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
+                                <span class="fw-bold text-dark" style="font-size: 14px;">{{ $jadwal->audit->ruang_lingkup ?: ($jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</span>
                             </div>
                         </div>
                     </div>

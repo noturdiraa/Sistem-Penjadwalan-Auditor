@@ -29,6 +29,7 @@ class Audit extends Model
     protected $fillable = [
         'id_perusahaan',
         'id_ruang_lingkup',
+        'ruang_lingkup',
         'tanggal_permohonan',
         'jenis_audit',
         'status',

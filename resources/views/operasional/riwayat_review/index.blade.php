@@ -597,7 +597,7 @@
                 'status' => $statusText,
                 'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
                 'lembaga' => $audit->jenis_audit ?? 'LSSM',
-                'ruangLingkup' => $ruangLingkup->nama_ruang_lingkup ?? '-',
+                'ruangLingkup' => $audit->ruang_lingkup ?: ($ruangLingkup->nama_ruang_lingkup ?? '-'),
                 'tanggalMulai' => $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-',
                 'tanggalSelesai' => $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d M Y') : '-',
                 'lokasi' => $lokasi->nama_lokasi ?? '-',

@@ -518,7 +518,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                                 @endforeach
                             </div>
                             <h5 class="fw-bold mb-1 text-dark" style="font-size: 16px;">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</h5>
-                            <small class="text-secondary d-block" style="font-size: 13px; font-weight: 500;"><i class="fas fa-circle-nodes me-1 text-primary"></i>Ruang Lingkup: {{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</small>
+                            <small class="text-secondary d-block" style="font-size: 13px; font-weight: 500;"><i class="fas fa-circle-nodes me-1 text-primary"></i>Ruang Lingkup: {{ $jadwal->audit->ruang_lingkup ?: ($jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</small>
                         </div>
                         <div class="d-flex align-items-center gap-4 flex-wrap">
                             <span class="text-secondary" style="font-size: 14px;">

@@ -71,11 +71,15 @@ class AuditController extends Controller
 
         $lembagaNames = [];
         $idRuangLingkup = null;
+        $allScopes = [];
 
         foreach ($kompetensiData as $lembagaId => $info) {
             $lembagaNames[] = $info['name'] ?? '-';
+            $scopes = $info['scopes'] ?? [];
+            foreach ($scopes as $sc) {
+                $allScopes[] = $sc;
+            }
             if (empty($idRuangLingkup)) {
-                $scopes = $info['scopes'] ?? [];
                 if (!empty($scopes)) {
                     $rl = \App\Models\RuangLingkup::where('nama_ruang_lingkup', $scopes[0])->first();
                     if ($rl) {
@@ -86,11 +90,13 @@ class AuditController extends Controller
         }
 
         $jenisAuditStr = implode(', ', $lembagaNames) ?: '-';
+        $ruangLingkupStr = implode(', ', $allScopes) ?: '-';
 
         // 1. Create Audit
         $audit = \App\Models\Audit::create([
             'id_perusahaan' => $request->id_perusahaan,
             'id_ruang_lingkup' => $idRuangLingkup,
+            'ruang_lingkup' => $ruangLingkupStr,
             'tanggal_permohonan' => now()->format('Y-m-d'),
             'jenis_audit' => $jenisAuditStr,
             'status' => 'Review',

@@ -390,7 +390,7 @@
                             $perusahaan = $j->audit->perusahaan->nama_perusahaan ?? '-';
                             $jenisAudit = $j->audit->jenis_audit ?? '-';
                             $tanggalText = $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d F Y') : '-';
-                            $ruangLingkup = $j->audit->ruangLingkup->nama_ruang_lingkup ?? '-';
+                            $ruangLingkup = $j->audit->ruang_lingkup ?: ($j->audit->ruangLingkup->nama_ruang_lingkup ?? '-');
                             
                             $lastReview = $j->reviewKatimPjis->sortByDesc('created_at')->first();
                             $rev = $j->reviewTeknis->where('status_review', 'Dikembalikan')->sortByDesc('created_at')->first();

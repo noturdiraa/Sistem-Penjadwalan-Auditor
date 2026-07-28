@@ -397,7 +397,7 @@ Buat Audit
                             <tr>
                                 <td>
                                     <strong>{{ $audit->perusahaan->nama_perusahaan ?? '-' }}</strong>
-                                    <span class="d-block text-secondary mt-1" style="font-size: 12px;">Ruang Lingkup: {{ $audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
+                                    <span class="d-block text-secondary mt-1" style="font-size: 12px;">Ruang Lingkup: {{ $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</span>
                                 </td>
                                 <td class="text-center">
                                     @if($firstJadwal)
@@ -411,7 +411,7 @@ Buat Audit
                                 </td>
                                 <td class="text-center">
                                     <span class="badge {{ $statusBadge }}" style="padding: 8px 12px; font-size: 13px; color: white;">
-                                        {{ $audit->status }}
+                                         {{ $audit->status }}
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -424,7 +424,7 @@ Buat Audit
                                                 data-id="{{ $audit->id_audit }}"
                                                 data-perusahaan="{{ $audit->perusahaan->nama_perusahaan ?? '-' }}"
                                                 data-jenis-audit="{{ $audit->jenis_audit ?? '-' }}"
-                                                data-ruang-lingkup="{{ $audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}"
+                                                data-ruang-lingkup="{{ $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}"
                                                 data-tanggal-mulai="{{ $firstJadwal ? \Carbon\Carbon::parse($firstJadwal->tanggal_mulai)->format('d F Y') : '-' }}"
                                                 data-tanggal-selesai="{{ $firstJadwal ? \Carbon\Carbon::parse($firstJadwal->tanggal_selesai)->format('d F Y') : '-' }}"
                                                 data-lead-auditor="{{ $leadAuditor }}"

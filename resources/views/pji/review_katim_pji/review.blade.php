@@ -363,7 +363,7 @@ Periksa informasi audit sebelum dikembalikan.
         <div class="col-md-6">
             <div class="info-item">
                 <label>Ruang Lingkup</label>
-                <p>{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</p>
+                <p>{{ $jadwal->audit->ruang_lingkup ?: ($jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</p>
             </div>
         </div>
 
