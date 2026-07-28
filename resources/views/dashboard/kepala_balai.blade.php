@@ -690,6 +690,27 @@ menu.forEach(item => {
                 }
             }
 
+            // Helper function to wrap long labels into multiple lines
+            function wrapLabel(text, maxLength = 15) {
+                if (!text) return '';
+                const words = text.split(' ');
+                const lines = [];
+                let currentLine = '';
+
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxLength) {
+                        lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                });
+                if (currentLine.trim()) {
+                    lines.push(currentLine.trim());
+                }
+                return lines;
+            }
+
             // 1. Chart Ruang Lingkup (Line Chart with Gradient Fill)
             const canvasScopes = document.getElementById('chartRuangLingkup');
             if (canvasScopes) {
@@ -698,10 +719,13 @@ menu.forEach(item => {
                 gradientBg.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
                 gradientBg.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
 
+                const rawScopesLabels = @json($scopesLabels);
+                const wrappedScopesLabels = rawScopesLabels.map(label => wrapLabel(label, 15));
+
                 new Chart(ctxScopes, {
                     type: 'line',
                     data: {
-                        labels: @json($scopesLabels),
+                        labels: wrappedScopesLabels,
                         datasets: [{
                             label: 'Jumlah Audit',
                             data: @json($scopesData),
@@ -718,6 +742,11 @@ menu.forEach(item => {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 10
+                            }
+                        },
                         plugins: {
                             legend: { display: false }
                         },
@@ -726,7 +755,10 @@ menu.forEach(item => {
                                 grid: { display: false },
                                 ticks: {
                                     color: '#374151',
-                                    font: { family: 'Poppins', size: 9, weight: '500' }
+                                    font: { family: 'Poppins', size: 9, weight: '500' },
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    autoSkip: false
                                 }
                             },
                             y: {
@@ -751,10 +783,13 @@ menu.forEach(item => {
                 gradientBg.addColorStop(0, 'rgba(16, 185, 129, 0.4)');
                 gradientBg.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
+                const rawAuditorLabels = @json($auditorLabels);
+                const wrappedAuditorLabels = rawAuditorLabels.map(label => wrapLabel(label, 12));
+
                 new Chart(ctxAuditors, {
                     type: 'line',
                     data: {
-                        labels: @json($auditorLabels),
+                        labels: wrappedAuditorLabels,
                         datasets: [{
                             label: 'Penugasan',
                             data: @json($auditorData),
@@ -771,6 +806,11 @@ menu.forEach(item => {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 10
+                            }
+                        },
                         plugins: {
                             legend: { display: false }
                         },
@@ -779,7 +819,10 @@ menu.forEach(item => {
                                 grid: { display: false },
                                 ticks: {
                                     color: '#374151',
-                                    font: { family: 'Poppins', size: 9, weight: '500' }
+                                    font: { family: 'Poppins', size: 9, weight: '500' },
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    autoSkip: false
                                 }
                             },
                             y: {
