@@ -573,7 +573,7 @@
                                                     {{ $auditor->scoring['total'] }} / 4 Poin
                                                 </span>
                                                 <small class="text-secondary" style="font-size: 11px;">
-                                                    (Beban: {{ $auditor->scoring['penugasan'] }} pt, Wilayah: {{ $auditor->scoring['kategori'] }} pt)
+                                                    (Beban: {{ $auditor->scoring['penugasan'] }} poin, Wilayah: {{ $auditor->scoring['kategori'] }} poin)
                                                 </small>
                                             </div>
                                         </div>
