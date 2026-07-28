@@ -416,7 +416,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
         @php
             $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
-            $countDisetujui = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
+            $countDisetujui = \App\Models\JadwalAudit::whereIn('status_jadwal', ['Aktif', 'Selesai'])->count();
             $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Revisi')->count();
             $countTotal = \App\Models\JadwalAudit::count();
         @endphp
@@ -513,8 +513,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                         <div>
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <span class="badge bg-warning text-dark fw-semibold" style="font-size: 12px; padding: 6px 12px; border-radius: 6px;">{{ $jadwal->status_jadwal }}</span>
+                                <span class="badge fw-semibold" style="font-size: 12px; padding: 6px 12px; border-radius: 6px; background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;">{{ $jadwal->audit->jenis_audit ?? '-' }}</span>
                             </div>
-                            <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</h5>
+                            <h5 class="fw-bold mb-1 text-dark" style="font-size: 16px;">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</h5>
+                            <small class="text-secondary d-block" style="font-size: 13px; font-weight: 500;"><i class="fas fa-circle-nodes me-1 text-primary"></i>Ruang Lingkup: {{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}</small>
                         </div>
                         <div class="d-flex align-items-center gap-4 flex-wrap">
                             <span class="text-secondary" style="font-size: 14px;">

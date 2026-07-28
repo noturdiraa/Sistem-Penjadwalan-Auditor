@@ -64,124 +64,113 @@ class AuditController extends Controller
         ]);
 
         $kompetensiData = json_decode($request->kompetensi_json, true);
-        $firstLembagaName = '-';
-        $idRuangLingkup = null;
 
-        if ($kompetensiData && is_array($kompetensiData)) {
-            foreach ($kompetensiData as $lembagaId => $info) {
-                $firstLembagaName = $info['name'] ?? '-';
-                $scopes = $info['scopes'] ?? [];
-                if (!empty($scopes)) {
-                    $rl = \App\Models\RuangLingkup::where('nama_ruang_lingkup', $scopes[0])->first();
-                    if ($rl) {
-                        $idRuangLingkup = $rl->id_ruang_lingkup;
-                    }
-                }
-                break;
-            }
+        if (!$kompetensiData || !is_array($kompetensiData)) {
+            return back()->with('error', 'Data kompetensi/lembaga sertifikasi tidak valid.');
         }
 
-        // 1. Create Audit
-        $audit = \App\Models\Audit::create([
-            'id_perusahaan' => $request->id_perusahaan,
-            'id_ruang_lingkup' => $idRuangLingkup,
-            'tanggal_permohonan' => now()->format('Y-m-d'),
-            'jenis_audit' => $firstLembagaName,
-            'status' => 'Review',
-        ]);
+        foreach ($kompetensiData as $lembagaId => $info) {
+            $lembagaName = $info['name'] ?? '-';
+            $idRuangLingkup = null;
+            $scopes = $info['scopes'] ?? [];
+            if (!empty($scopes)) {
+                $rl = \App\Models\RuangLingkup::where('nama_ruang_lingkup', $scopes[0])->first();
+                if ($rl) {
+                    $idRuangLingkup = $rl->id_ruang_lingkup;
+                }
+            }
 
-        // 2. Create Lokasi
-        $lokasi = \App\Models\Lokasi::create([
-            'nama_lokasi' => $request->lokasi,
-            'kategori_wilayah' => $request->kategori_lokasi,
-            'keterangan' => null,
-        ]);
+            // 1. Create Audit
+            $audit = \App\Models\Audit::create([
+                'id_perusahaan' => $request->id_perusahaan,
+                'id_ruang_lingkup' => $idRuangLingkup,
+                'tanggal_permohonan' => now()->format('Y-m-d'),
+                'jenis_audit' => $lembagaName,
+                'status' => 'Review',
+            ]);
 
-        // 3. Create Jadwal Audit
-        $jadwal = \App\Models\JadwalAudit::create([
-            'id_audit' => $audit->id_audit,
-            'id_lokasi' => $lokasi->id_lokasi,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'status_jadwal' => 'Review',
-            'keterangan' => $request->keterangan,
-        ]);
+            // 2. Create Lokasi
+            $lokasi = \App\Models\Lokasi::create([
+                'nama_lokasi' => $request->lokasi,
+                'kategori_wilayah' => $request->kategori_lokasi,
+                'keterangan' => null,
+            ]);
 
-        // 4. Create Tim Audit - Lead Auditor
-        \App\Models\TimAudit::create([
-            'id_jadwal' => $jadwal->id_jadwal,
-            'id_auditor' => $request->lead_auditor_id,
-            'peran' => 'Lead Auditor',
-        ]);
+            // 3. Create Jadwal Audit
+            $jadwal = \App\Models\JadwalAudit::create([
+                'id_audit' => $audit->id_audit,
+                'id_lokasi' => $lokasi->id_lokasi,
+                'tanggal_mulai' => $request->tanggal_mulai,
+                'tanggal_selesai' => $request->tanggal_selesai,
+                'status_jadwal' => 'Review',
+                'keterangan' => $request->keterangan,
+            ]);
 
-        // 5. Create Tim Audit - Member Auditors
-        foreach ($request->auditor_ids as $auditorId) {
-            // Avoid duplicate Lead as Member
-            if ($auditorId == $request->lead_auditor_id) continue;
-            
+            // 4. Create Tim Audit - Lead Auditor
             \App\Models\TimAudit::create([
                 'id_jadwal' => $jadwal->id_jadwal,
-                'id_auditor' => $auditorId,
-                'peran' => 'Auditor',
+                'id_auditor' => $request->lead_auditor_id,
+                'peran' => 'Lead Auditor',
             ]);
-        }
 
-        // 6. Save Recommendation Scores to rekomendasi_auditors table
-        $requestedScopes = [];
-        $selectedLembagaIds = [];
-        if ($kompetensiData && is_array($kompetensiData)) {
-            foreach ($kompetensiData as $lId => $info) {
-                $selectedLembagaIds[] = $lId;
-                if (!empty($info['scopes'])) {
-                    $requestedScopes = array_merge($requestedScopes, $info['scopes']);
-                }
+            // 5. Create Tim Audit - Member Auditors
+            foreach ($request->auditor_ids as $auditorId) {
+                // Avoid duplicate Lead as Member
+                if ($auditorId == $request->lead_auditor_id) continue;
+                
+                \App\Models\TimAudit::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_auditor' => $auditorId,
+                    'peran' => 'Auditor',
+                ]);
             }
-        }
 
-        $selectedAuditorIds = array_merge(
-            [$request->lead_auditor_id],
-            $request->auditor_ids ?? []
-        );
+            // 6. Save Recommendation Scores to rekomendasi_auditors table
+            $selectedAuditorIds = array_merge(
+                [$request->lead_auditor_id],
+                $request->auditor_ids ?? []
+            );
 
-        $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])
-            ->whereIn('id_auditor', $selectedAuditorIds)
-            ->get();
+            $auditors = \App\Models\Auditor::with(['detailAuditors.ruangLingkup.lembaga', 'riwayatAuditors', 'timAudits.jadwalAudit'])
+                ->whereIn('id_auditor', $selectedAuditorIds)
+                ->get();
 
-        foreach ($auditors as $auditor) {
-            $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
-            
-            $scorePenugasan = 1;
-            if ($workloadCount <= 2) {
+            foreach ($auditors as $auditor) {
+                $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+                
                 $scorePenugasan = 1;
-            } elseif ($workloadCount <= 4) {
-                $scorePenugasan = 2;
-            } elseif ($workloadCount <= 6) {
-                $scorePenugasan = 3;
-            } else {
-                $scorePenugasan = 4;
-            }
+                if ($workloadCount <= 2) {
+                    $scorePenugasan = 1;
+                } elseif ($workloadCount <= 4) {
+                    $scorePenugasan = 2;
+                } elseif ($workloadCount <= 6) {
+                    $scorePenugasan = 3;
+                } else {
+                    $scorePenugasan = 4;
+                }
 
-            $currentKategori = trim($request->kategori_lokasi);
-            $scoreKategori = 1;
-            if ($currentKategori === 'Dalam Kota') {
+                $currentKategori = trim($request->kategori_lokasi);
                 $scoreKategori = 1;
-            } elseif ($currentKategori === 'Pinggiran Kota') {
-                $scoreKategori = 2;
-            } elseif ($currentKategori === 'Luar Kota') {
-                $scoreKategori = 3;
-            } elseif ($currentKategori === 'Luar Negeri') {
-                $scoreKategori = 4;
+                if ($currentKategori === 'Dalam Kota') {
+                    $scoreKategori = 1;
+                } elseif ($currentKategori === 'Pinggiran Kota') {
+                    $scoreKategori = 2;
+                } elseif ($currentKategori === 'Luar Kota') {
+                    $scoreKategori = 3;
+                } elseif ($currentKategori === 'Luar Negeri') {
+                    $scoreKategori = 4;
+                }
+
+                // Gabungkan skala 2-8, lalu petakan/skalakan kembali ke 1-4 agar sesuai grafik kepala balai
+                $totalScore = (int) ceil(($scorePenugasan + $scoreKategori) / 2);
+
+                // Save to rekomendasi_auditors
+                \App\Models\RekomendasiAuditor::create([
+                    'id_jadwal' => $jadwal->id_jadwal,
+                    'id_auditor' => $auditor->id_auditor,
+                    'nilai_rekomendasi' => $totalScore,
+                ]);
             }
-
-            // Gabungkan skala 2-8, lalu petakan/skalakan kembali ke 1-4 agar sesuai grafik kepala balai
-            $totalScore = (int) ceil(($scorePenugasan + $scoreKategori) / 2);
-
-            // Save to rekomendasi_auditors
-            \App\Models\RekomendasiAuditor::create([
-                'id_jadwal' => $jadwal->id_jadwal,
-                'id_auditor' => $auditor->id_auditor,
-                'nilai_rekomendasi' => $totalScore,
-            ]);
         }
 
         return redirect()->route('pji.audit.index')->with('success', 'Jadwal audit dan tim audit berhasil dibuat.');
