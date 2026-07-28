@@ -591,7 +591,7 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
                                     data-id="{{ $jadwal->id_jadwal }}"
                                     data-perusahaan="{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}"
                                     data-jenis-audit="{{ $jadwal->audit->jenis_audit ?? '-' }}"
-                                    data-ruang-lingkup="{{ $jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-' }}"
+                                    data-ruang-lingkup="{{ $jadwal->audit->ruang_lingkup ?: ($jadwal->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}"
                                     data-tanggal-mulai="{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d F Y') : '-' }}"
                                     data-tanggal-selesai="{{ $jadwal->tanggal_selesai ? \Carbon\Carbon::parse($jadwal->tanggal_selesai)->format('d F Y') : '-' }}"
                                     data-lead-auditor="{{ $leadAuditor }}"
