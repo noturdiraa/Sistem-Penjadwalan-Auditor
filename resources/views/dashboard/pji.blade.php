@@ -11,6 +11,9 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
@@ -478,6 +481,14 @@ padding:.45em .7em;
     $jadwalAudit = \App\Models\JadwalAudit::count();
     $menungguReview = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
     $auditAktif = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
+    $auditSelesai = \App\Models\JadwalAudit::where('status_jadwal', 'Selesai')->count();
+    $auditRevisi = \App\Models\JadwalAudit::where('status_jadwal', 'Revisi')->count();
+
+    // Fetch 5 latest schedules
+    $latestJadwals = \App\Models\JadwalAudit::with(['audit.perusahaan', 'audit.ruangLingkup'])
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get();
 @endphp
 
 <div class="row">
@@ -606,12 +617,48 @@ padding:.45em .7em;
 
             </div>
 
-            <div class="panel-list text-center py-5">
-                <div class="text-secondary">
-                    <i class="fas fa-calendar-times fa-2x mb-3"></i>
-                    <p class="mb-1 fw-semibold">Belum ada Jadwal Audit Terbaru</p>
-                    <small>Data jadwal audit akan muncul setelah dibuat.</small>
-                </div>
+            <div class="panel-list">
+                @if(count($latestJadwals) > 0)
+                    @foreach($latestJadwals as $lj)
+                        @php
+                            $statusLabel = $lj->status_jadwal;
+                            $badgeStyle = 'background-color: #E2E8F0; color: #475569;';
+                            if ($statusLabel === 'Review') {
+                                $statusLabel = 'Menunggu Review';
+                                $badgeStyle = 'background-color: #FEF3C7; color: #D97706;';
+                            } elseif ($statusLabel === 'Aktif') {
+                                $statusLabel = 'Disetujui';
+                                $badgeStyle = 'background-color: #D1FAE5; color: #059669;';
+                            } elseif ($statusLabel === 'Selesai') {
+                                $statusLabel = 'Selesai';
+                                $badgeStyle = 'background-color: #CFFAFE; color: #0891B2;';
+                            } elseif ($statusLabel === 'Revisi') {
+                                $statusLabel = 'Revisi';
+                                $badgeStyle = 'background-color: #FEE2E2; color: #DC2626;';
+                            }
+                        @endphp
+                        <div class="panel-item">
+                            <div class="d-flex flex-column align-items-start gap-1">
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 14px;">{{ $lj->audit->perusahaan->nama_perusahaan ?? '-' }}</h5>
+                                <div class="text-secondary" style="font-size: 12px; font-weight: 500;">
+                                    <i class="fas fa-circle-nodes me-1 text-primary"></i>
+                                    {{ $lj->audit->ruang_lingkup ?: ($lj->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}
+                                </div>
+                                <div class="text-secondary" style="font-size: 11px;">
+                                    <i class="far fa-calendar me-1"></i>
+                                    {{ $lj->tanggal_mulai ? \Carbon\Carbon::parse($lj->tanggal_mulai)->format('d M') : '-' }} - {{ $lj->tanggal_selesai ? \Carbon\Carbon::parse($lj->tanggal_selesai)->format('d M Y') : '-' }}
+                                </div>
+                            </div>
+                            <span class="badge" style="{{ $badgeStyle }} font-weight: 600; padding: 6px 12px; border-radius: 8px;">{{ $statusLabel }}</span>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center py-5 text-secondary">
+                        <i class="fas fa-calendar-times fa-2x mb-3"></i>
+                        <p class="mb-1 fw-semibold">Belum ada Jadwal Audit Terbaru</p>
+                        <small>Data jadwal audit akan muncul setelah dibuat.</small>
+                    </div>
+                @endif
             </div>
 
         </div>
@@ -620,17 +667,23 @@ padding:.45em .7em;
 
     <div class="col-lg-5">
 
-            <div class="chart-box h-100 d-flex flex-column justify-content-center align-items-center text-center px-4">
+        <div class="chart-box h-100 d-flex flex-column align-items-center justify-content-start text-center px-4">
 
             <h4 class="fw-bold mb-4">
                 Statistik Audit Bulan Ini
             </h4>
 
-            <div class="text-secondary">
-                <i class="fas fa-chart-bar fa-2x mb-3"></i>
-                <p class="mb-1 fw-semibold">Belum ada data statistik</p>
-                <small>Statistik audit akan muncul setelah data audit tersedia.</small>
-            </div>
+            @if(count($latestJadwals) > 0)
+                <div style="width: 100%; height: 250px; position: relative;" class="mt-2">
+                    <canvas id="chartStatusDistribution"></canvas>
+                </div>
+            @else
+                <div class="text-secondary py-5 text-center">
+                    <i class="fas fa-chart-bar fa-2x mb-3"></i>
+                    <p class="mb-1 fw-semibold">Belum ada data statistik</p>
+                    <small>Statistik audit akan muncul setelah data audit tersedia.</small>
+                </div>
+            @endif
 
         </div>
 
@@ -672,6 +725,39 @@ menu.forEach(item=>{
     });
 
 });
+
+// Chart Status Distribution
+const canvasStatus = document.getElementById('chartStatusDistribution');
+if (canvasStatus) {
+    new Chart(canvasStatus.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Review', 'Aktif', 'Selesai', 'Revisi'],
+            datasets: [{
+                data: [{{ $menungguReview }}, {{ $auditAktif }}, {{ $auditSelesai }}, {{ $auditRevisi }}],
+                backgroundColor: ['#F59E0B', '#10B981', '#06B6D4', '#EF4444'],
+                borderWidth: 2,
+                borderColor: '#FFFFFF'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        font: { family: 'Poppins', size: 11 },
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+}
 
 </script>
 
