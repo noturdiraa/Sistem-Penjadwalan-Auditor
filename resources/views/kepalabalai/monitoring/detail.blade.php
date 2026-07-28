@@ -478,7 +478,7 @@
                             <i class="fas fa-tags"></i>
                             <div>
                                 <div class="info-item-label">Ruang Lingkup</div>
-                                <div class="info-item-value">{{ $ruangLingkup->nama_ruang_lingkup ?? '-' }}</div>
+                                <div class="info-item-value">{{ $audit->ruang_lingkup ?: ($ruangLingkup->nama_ruang_lingkup ?? '-') }}</div>
                             </div>
                         </div>
                     </div>

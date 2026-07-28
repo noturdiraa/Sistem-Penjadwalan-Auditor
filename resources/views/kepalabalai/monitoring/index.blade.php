@@ -29,7 +29,7 @@
         $monitoringData[] = [
             'id' => $j->id_jadwal,
             'perusahaan' => $perusahaan->nama_perusahaan,
-            'ruang_lingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
+            'ruang_lingkup' => $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '-'),
             'periode' => $periode,
             'ketua_tim' => $leadAuditor,
             'status' => $status

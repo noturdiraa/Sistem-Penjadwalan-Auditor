@@ -22,7 +22,7 @@
             $formattedDate = $date->format('Y-m-d');
             $calendarAudits[$formattedDate][] = [
                 'perusahaan' => $perusahaan->nama_perusahaan,
-                'ruang_lingkup' => $audit->ruangLingkup->nama_ruang_lingkup ?? '-',
+                'ruang_lingkup' => $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '-'),
                 'waktu' => '08:00 - 16:00 WIB',
                 'auditor' => !empty($auditorNames) ? $auditorNames : '-',
                 'status' => $j->status_jadwal
