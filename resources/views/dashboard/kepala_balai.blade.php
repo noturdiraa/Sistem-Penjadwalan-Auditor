@@ -574,19 +574,6 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
             </div>
 
             @php
-                $scopesStats = \App\Models\Audit::select('id_ruang_lingkup', \DB::raw('count(*) as total'))
-                    ->groupBy('id_ruang_lingkup')
-                    ->with('ruangLingkup')
-                    ->take(5)
-                    ->get();
-                    
-                $scopesLabels = [];
-                $scopesData = [];
-                foreach ($scopesStats as $ss) {
-                    $scopesLabels[] = $ss->ruangLingkup->nama_ruang_lingkup ?? 'Tidak Diketahui';
-                    $scopesData[] = $ss->total;
-                }
-
                 $topAuditors = \App\Models\Auditor::withCount(['timAudits', 'riwayatAuditors'])->get()
                     ->map(function($aud) {
                         $aud->total_assignments = $aud->tim_audits_count + $aud->riwayat_auditors_count;
@@ -603,21 +590,10 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                 }
             @endphp
 
-            <div class="stat-section mb-4" style="text-align: left;">
-                <h6 class="fw-semibold mb-3 text-center">Audit per Ruang Lingkup</h6>
-                @if(count($scopesData) > 0)
-                    <div style="height: 200px; position: relative;">
-                        <canvas id="chartRuangLingkup"></canvas>
-                    </div>
-                @else
-                    <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data ruang lingkup audit.</p>
-                @endif
-            </div>
-
             <div class="stat-section" style="text-align: left;">
                 <h6 class="fw-semibold mb-3 text-center">Performa Auditor Terbaik</h6>
                 @if(count($auditorData) > 0)
-                    <div style="height: 200px; position: relative;">
+                    <div style="height: 250px; position: relative;">
                         <canvas id="chartTopAuditors"></canvas>
                     </div>
                 @else
@@ -709,70 +685,6 @@ menu.forEach(item => {
                     lines.push(currentLine.trim());
                 }
                 return lines;
-            }
-
-            // 1. Chart Ruang Lingkup (Line Chart with Gradient Fill)
-            const canvasScopes = document.getElementById('chartRuangLingkup');
-            if (canvasScopes) {
-                const ctxScopes = canvasScopes.getContext('2d');
-                const gradientBg = ctxScopes.createLinearGradient(0, 0, 0, 180);
-                gradientBg.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
-                gradientBg.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-
-                const rawScopesLabels = @json($scopesLabels);
-                const wrappedScopesLabels = rawScopesLabels.map(label => wrapLabel(label, 15));
-
-                new Chart(ctxScopes, {
-                    type: 'line',
-                    data: {
-                        labels: wrappedScopesLabels,
-                        datasets: [{
-                            label: 'Jumlah Audit',
-                            data: @json($scopesData),
-                            borderColor: '#3B82F6',
-                            backgroundColor: gradientBg,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#3B82F6',
-                            pointBorderColor: '#FFFFFF',
-                            pointBorderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                bottom: 10
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: {
-                                grid: { display: false },
-                                ticks: {
-                                    color: '#374151',
-                                    font: { family: 'Poppins', size: 9, weight: '500' },
-                                    maxRotation: 0,
-                                    minRotation: 0,
-                                    autoSkip: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0,
-                                    color: '#6B7280',
-                                    font: { family: 'Poppins', size: 9 }
-                                },
-                                grid: { color: '#F3F4F6' }
-                            }
-                        }
-                    }
-                });
             }
 
             // 2. Chart Top Auditors (Line Chart with Gradient Fill)
