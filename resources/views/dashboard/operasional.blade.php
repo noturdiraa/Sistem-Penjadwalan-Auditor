@@ -404,8 +404,8 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
 
     @php
         $countMenunggu = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
-        $countDisetujui = \App\Models\ReviewOperasional::where('status_review', 'Disetujui')->count();
-        $countDikembalikan = \App\Models\ReviewOperasional::where('status_review', 'Dikembalikan')->count();
+        $countDisetujui = \App\Models\JadwalAudit::whereIn('status_jadwal', ['Aktif', 'Selesai'])->count();
+        $countDikembalikan = \App\Models\JadwalAudit::where('status_jadwal', 'Revisi')->count();
         $countTotal = $countMenunggu + $countDisetujui + $countDikembalikan;
     @endphp
 
@@ -527,47 +527,58 @@ Silakan lakukan review jadwal audit yang dikirim oleh PJI.
             @endphp
             @if($jadwals->count() > 0)
                 @foreach($jadwals as $jadwal)
-                    @php
-                        // Filter out manually overridden schedules (status Aktif/Selesai but no Disetujui review)
-                        if ($jadwal->status_jadwal === 'Aktif' || $jadwal->status_jadwal === 'Selesai') {
-                            $hasApproveReview = $jadwal->reviewTeknis->where('status_review', 'Disetujui')->isNotEmpty();
-                            if (!$hasApproveReview) {
-                                continue;
-                            }
-                        }
+                     @php
+                         $statusLabel = $jadwal->status_jadwal;
+                         $badgeStyle = 'background: #E2E8F0; color: #475569;';
 
-                        $statusLabel = $jadwal->status_jadwal;
-                        $badgeClass = 'bg-secondary text-white';
-                        if ($jadwal->status_jadwal === 'Review') {
-                            $statusLabel = 'Menunggu Review';
-                            $badgeClass = 'bg-warning text-dark';
-                        } elseif ($jadwal->status_jadwal === 'Aktif') {
-                            $statusLabel = 'Disetujui';
-                            $badgeClass = 'bg-success text-white';
-                        } elseif ($jadwal->status_jadwal === 'Revisi') {
-                            $statusLabel = 'Dikembalikan';
-                            $badgeClass = 'bg-danger text-white';
-                        } elseif ($jadwal->status_jadwal === 'Selesai') {
-                            $statusLabel = 'Selesai';
-                            $badgeClass = 'bg-info text-white';
-                        }
+                         if ($jadwal->status_jadwal === 'Review') {
+                             $statusLabel = 'Menunggu Review';
+                             $badgeStyle = 'background: #FFFBEB; color: #D97706; border: 1px solid #FCD34D;';
+                         } elseif ($jadwal->status_jadwal === 'Aktif') {
+                             $statusLabel = 'Disetujui';
+                             $badgeStyle = 'background: #DEF7EC; color: #03543F; border: 1px solid #A7F3D0;';
+                         } elseif ($jadwal->status_jadwal === 'Selesai') {
+                             $statusLabel = 'Selesai';
+                             $badgeStyle = 'background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;';
+                         } elseif ($jadwal->status_jadwal === 'Revisi') {
+                             // Check if a new tim audit has been submitted by Operasional
+                             // after the last rejection (either by Operasional itself or by Katim PJI)
+                             $latestKatimReview = $jadwal->reviewKatimPjis->sortByDesc('created_at')->first();
+                             $rev = $jadwal->reviewTeknis->where('status_review', 'Dikembalikan')->sortByDesc('created_at')->first();
+                             $lastRejectionTime = $latestKatimReview 
+                                 ? $latestKatimReview->created_at 
+                                 : ($rev ? $rev->created_at : $jadwal->created_at);
 
-                        $leadAuditor = '-';
-                        $memberNames = [];
-                        foreach ($jadwal->timAudits as $mt) {
-                            if ($mt->peran === 'Lead Auditor' && $mt->auditor) {
-                                $leadAuditor = $mt->auditor->nama_auditor;
-                            } elseif ($mt->peran === 'Auditor' && $mt->auditor) {
-                                $memberNames[] = $mt->auditor->nama_auditor;
-                            }
-                        }
-                        $anggotaList = implode(', ', $memberNames) ?: '-';
-                    @endphp
-                    <tr>
-                        <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
-                        <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
-                        <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
-                        <td class="text-center"><span class="badge {{ $badgeClass }}" style="padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 6px;">{{ $statusLabel }}</span></td>
+                             $latestTimAudit = $jadwal->timAudits->sortByDesc('created_at')->first();
+                             $latestTimAuditTime = $latestTimAudit ? $latestTimAudit->created_at : $jadwal->created_at;
+
+                             $hasBeenSubmitted = $latestTimAuditTime->gt($lastRejectionTime);
+
+                             if ($hasBeenSubmitted) {
+                                 $statusLabel = 'Menunggu';
+                                 $badgeStyle = 'background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D;';
+                             } else {
+                                 $statusLabel = 'Dikembalikan';
+                                 $badgeStyle = 'background: #FDE8E8; color: #9B1C1C; border: 1px solid #FCA5A5;';
+                             }
+                         }
+
+                         $leadAuditor = '-';
+                         $memberNames = [];
+                         foreach ($jadwal->timAudits as $mt) {
+                             if ($mt->peran === 'Lead Auditor' && $mt->auditor) {
+                                 $leadAuditor = $mt->auditor->nama_auditor;
+                             } elseif ($mt->peran === 'Auditor' && $mt->auditor) {
+                                 $memberNames[] = $mt->auditor->nama_auditor;
+                             }
+                         }
+                         $anggotaList = implode(', ', $memberNames) ?: '-';
+                     @endphp
+                     <tr>
+                         <td class="text-start text-start-cell"><a href="/operasional/review-jadwal/review?id={{ $jadwal->id_jadwal }}" class="kode-link">{{ $jadwal->audit->perusahaan->nama_perusahaan ?? '-' }}</a></td>
+                         <td class="text-center"><span class="badge-light-blue">{{ $jadwal->audit->jenis_audit ?? '-' }}</span></td>
+                         <td class="text-center">{{ $jadwal->tanggal_mulai ? \Carbon\Carbon::parse($jadwal->tanggal_mulai)->format('d M Y') : '-' }}</td>
+                         <td class="text-center"><span class="badge" style="{{ $badgeStyle }} padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 6px;">{{ $statusLabel }}</span></td>
                         <td class="text-center">
                             <button class="btn btn-outline-info btn-sm d-inline-flex align-items-center justify-content-center btn-detail" 
                                     style="border-radius: 8px; padding: 6px 10px;"
