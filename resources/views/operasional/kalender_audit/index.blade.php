@@ -385,7 +385,7 @@
             <input type="text" class="form-control search" placeholder="Cari...">
 
             <div class="profile">
-                <i class="far fa-bell fs-5"></i>
+                
                 <img src="{{ asset('images/logo.png') }}" alt="Profil">
                 <span>Operasional</span>
             </div>

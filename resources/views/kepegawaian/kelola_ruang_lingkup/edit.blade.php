@@ -239,7 +239,7 @@
         <div class="navbar-custom">
             <div></div>
             <div class="right-menu">
-                <i class="far fa-bell"></i>
+                
                 <div class="profile">
                     <img src="{{ asset('images/logo.png') }}">
                     <span>Kepegawaian</span>

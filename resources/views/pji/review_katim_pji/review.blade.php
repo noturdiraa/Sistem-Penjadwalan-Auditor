@@ -302,7 +302,7 @@ body {
         <input type="text" class="form-control search" placeholder="Cari...">
 
         <div class="profile">
-            <i class="far fa-bell bell-icon"></i>
+            
             <img src="{{ asset('images/logo.png') }}">
             <span>PJI</span>
         </div>

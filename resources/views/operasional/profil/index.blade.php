@@ -288,7 +288,7 @@
             <input type="text" class="form-control search" placeholder="Cari...">
             
             <div class="right-menu d-flex align-items-center gap-3">
-                <i class="far fa-bell fs-5 cursor-pointer"></i>
+                
                 <div class="profile">
                     <img src="{{ asset('images/logo.png') }}">
                     <span>Operasional</span>

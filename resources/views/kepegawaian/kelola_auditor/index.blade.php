@@ -553,7 +553,7 @@ color:#EF4444;
 
     <div class="right-menu">
 
-        <i class="far fa-bell"></i>
+        
 
         <div class="profile">
 

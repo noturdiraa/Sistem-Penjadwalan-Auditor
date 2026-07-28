@@ -416,7 +416,7 @@
 
         <div class="right-menu">
 
-            <i class="far fa-bell"></i>
+            
 
             <div class="profile">
 

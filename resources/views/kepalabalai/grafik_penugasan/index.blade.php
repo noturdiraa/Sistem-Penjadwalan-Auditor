@@ -267,7 +267,7 @@
             </div>
 
             <div class="profile">
-                <i class="far fa-bell fs-5 me-3" style="cursor: pointer; color: #6B7280;"></i>
+                
                 <img src="{{ asset('images/logo.png') }}">
                 <strong>Kepala Balai</strong>
             </div>

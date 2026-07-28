@@ -390,7 +390,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
         <div class="profile">
 
-            <i class="far fa-bell fs-5"></i>
+            
 
             <img src="{{ asset('images/logo.png') }}" alt="Profil">
 
