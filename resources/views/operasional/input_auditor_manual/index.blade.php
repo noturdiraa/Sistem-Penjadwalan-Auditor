@@ -472,17 +472,33 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-6">
-                                <select class="form-select" id="filterLembaga" onchange="updateRuangLingkupOptions()">
-                                    <option value="" selected>Semua Jenis Audit</option>
-                                    @foreach($lembagas as $l)
-                                        <option value="{{ $l->nama_lembaga }}">{{ $l->nama_lembaga }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center form-select" type="button" id="dropdownLembaga" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" style="border-color: #E2E8F0; font-size: 14px; padding: 10px 14px; background: white; color: #495057;">
+                                        <span id="selectedLembagaLabel" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Semua Jenis Audit</span>
+                                    </button>
+                                    <ul class="dropdown-menu p-3 w-100 shadow-sm" aria-labelledby="dropdownLembaga" style="max-height: 250px; overflow-y: auto;">
+                                        @foreach($lembagas as $l)
+                                            <li class="mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input filter-lembaga-check" type="checkbox" value="{{ $l->nama_lembaga }}" id="chkLembaga_{{ $l->id_lembaga }}" onchange="onLembagaCheckChange()">
+                                                    <label class="form-check-label text-dark" for="chkLembaga_{{ $l->id_lembaga }}" style="font-size: 13px; cursor: pointer; user-select: none;">
+                                                        {{ $l->nama_lembaga }}
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
                             <div class="col-md-4 col-6">
-                                <select class="form-select" id="filterRuangLingkup" onchange="renderAuditors()">
-                                    <option value="" selected>Semua Ruang Lingkup</option>
-                                </select>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center form-select" type="button" id="dropdownRuang" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" style="border-color: #E2E8F0; font-size: 14px; padding: 10px 14px; background: white; color: #495057;">
+                                        <span id="selectedRuangLabel" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Semua Ruang Lingkup</span>
+                                    </button>
+                                    <ul class="dropdown-menu p-3 w-100 shadow-sm" id="ruangLingkupCheckboxContainer" aria-labelledby="dropdownRuang" style="max-height: 250px; overflow-y: auto; min-width: 280px;">
+                                        <span class="text-muted" style="font-size: 13px; padding-left: 10px;">Pilih Jenis Audit dahulu.</span>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -576,26 +592,98 @@
             @endif
         ];
 
-        // Cascading Dropdown Logic
-        function updateRuangLingkupOptions() {
-            const lembagaSelect = document.getElementById('filterLembaga');
-            const ruangSelect = document.getElementById('filterRuangLingkup');
-            const selectedLembaga = lembagaSelect.value;
+        // Initialize from current schedule
+        let initLembagas = [];
+        @if($jadwal && $jadwal->audit && $jadwal->audit->jenis_audit)
+            initLembagas = @json(explode(', ', $jadwal->audit->jenis_audit));
+        @endif
 
-            // Reset Ruang Lingkup Select
-            ruangSelect.innerHTML = '<option value="" selected>Semua Ruang Lingkup</option>';
+        let initRuangs = [];
+        @if($jadwal && $jadwal->audit && $jadwal->audit->ruang_lingkup)
+            initRuangs = @json(explode(', ', $jadwal->audit->ruang_lingkup));
+        @endif
 
-            if (selectedLembaga !== "") {
-                const options = ruangLingkupByLembaga[selectedLembaga] || [];
-                options.forEach(opt => {
-                    const el = document.createElement('option');
-                    el.value = opt;
-                    el.innerText = opt;
-                    ruangSelect.appendChild(el);
+        let selectedLembagas = [];
+        let selectedRuangLingkups = [];
+
+        function onLembagaCheckChange() {
+            const checks = document.querySelectorAll('.filter-lembaga-check:checked');
+            selectedLembagas = Array.from(checks).map(cb => cb.value);
+
+            // Update Label
+            const label = document.getElementById('selectedLembagaLabel');
+            if (selectedLembagas.length === 0) {
+                label.innerText = 'Semua Jenis Audit';
+            } else if (selectedLembagas.length <= 2) {
+                label.innerText = selectedLembagas.join(', ');
+            } else {
+                label.innerText = selectedLembagas.length + ' Jenis Audit Terpilih';
+            }
+
+            updateRuangLingkupCheckboxes();
+            renderAuditors();
+        }
+
+        function updateRuangLingkupCheckboxes() {
+            const container = document.getElementById('ruangLingkupCheckboxContainer');
+            if (!container) return;
+
+            let options = [];
+            if (selectedLembagas.length === 0) {
+                for (const lName in ruangLingkupByLembaga) {
+                    options = options.concat(ruangLingkupByLembaga[lName]);
+                }
+            } else {
+                selectedLembagas.forEach(lName => {
+                    options = options.concat(ruangLingkupByLembaga[lName] || []);
                 });
             }
 
+            options = Array.from(new Set(options));
+
+            const prevChecked = new Set(selectedRuangLingkups);
+            selectedRuangLingkups = [];
+
+            let html = '';
+            options.forEach((opt, idx) => {
+                const isChecked = prevChecked.has(opt);
+                if (isChecked) {
+                    selectedRuangLingkups.push(opt);
+                }
+                html += `
+                    <li class="mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input filter-ruang-check" type="checkbox" value="${opt}" id="chkRuang_${idx}" ${isChecked ? 'checked' : ''} onchange="onRuangCheckChange()">
+                            <label class="form-check-label text-dark" for="chkRuang_${idx}" style="font-size: 13px; cursor: pointer; user-select: none;">
+                                ${opt}
+                            </label>
+                        </div>
+                    </li>
+                `;
+            });
+
+            container.innerHTML = html || '<span class="text-muted" style="font-size: 13px; padding-left: 10px;">Tidak ada ruang lingkup.</span>';
+            updateRuangLabel();
+        }
+
+        function onRuangCheckChange() {
+            const checks = document.querySelectorAll('.filter-ruang-check:checked');
+            selectedRuangLingkups = Array.from(checks).map(cb => cb.value);
+            updateRuangLabel();
             renderAuditors();
+        }
+
+        function updateRuangLabel() {
+            const label = document.getElementById('selectedRuangLabel');
+            if (selectedRuangLingkups.length === 0) {
+                label.innerText = 'Semua Ruang Lingkup';
+            } else if (selectedRuangLingkups.length <= 2) {
+                label.innerText = selectedRuangLingkups.map(s => {
+                    return s.length > 20 ? s.substring(0, 17) + '...' : s;
+                }).join(', ');
+            } else {
+                label.innerText = selectedRuangLingkups.length + ' Ruang Lingkup Terpilih';
+            }
         }
 
         // Render functions
@@ -603,17 +691,27 @@
             const container = document.getElementById('auditorCardsContainer');
             if (!container) return;
             const searchVal = document.getElementById('searchAuditor').value.toLowerCase().trim();
-            const filterLembaga = document.getElementById('filterLembaga').value;
-            const filterRuang = document.getElementById('filterRuangLingkup').value;
 
             // Filter data
             const filtered = dbAuditors.filter(item => {
                 // Search term
                 const matchSearch = item.name.toLowerCase().includes(searchVal) || item.nip.includes(searchVal);
+                
                 // Lembaga
-                const matchLembaga = filterLembaga === "" || item.lembaga === filterLembaga || item.badges.includes(filterLembaga);
+                let matchLembaga = true;
+                if (selectedLembagas.length > 0) {
+                    matchLembaga = selectedLembagas.some(lName => 
+                        item.lembaga === lName || (item.badges && item.badges.includes(lName))
+                    );
+                }
+
                 // Ruang Lingkup
-                const matchRuang = filterRuang === "" || (item.ruangLingkups && item.ruangLingkups.includes(filterRuang));
+                let matchRuang = true;
+                if (selectedRuangLingkups.length > 0) {
+                    matchRuang = selectedRuangLingkups.some(rName => 
+                        item.ruangLingkups && item.ruangLingkups.includes(rName)
+                    );
+                }
 
                 return matchSearch && matchLembaga && matchRuang;
             });
@@ -799,14 +897,49 @@
         if (searchInput) {
             searchInput.addEventListener('input', renderAuditors);
         }
-        const ruangFilter = document.getElementById('filterRuangLingkup');
-        if (ruangFilter) {
-            ruangFilter.addEventListener('change', renderAuditors);
-        }
 
-        // Initial render
-        updateSelectedList();
-        renderAuditors();
+        // Auto-initialize checkboxes from current schedule on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initLembagas.forEach(lName => {
+                const cb = Array.from(document.querySelectorAll('.filter-lembaga-check')).find(el => el.value === lName);
+                if (cb) {
+                    cb.checked = true;
+                }
+            });
+
+            // Update SelectedLembagas
+            const checks = document.querySelectorAll('.filter-lembaga-check:checked');
+            selectedLembagas = Array.from(checks).map(cb => cb.value);
+
+            // Update Label
+            const label = document.getElementById('selectedLembagaLabel');
+            if (selectedLembagas.length === 0) {
+                label.innerText = 'Semua Jenis Audit';
+            } else if (selectedLembagas.length <= 2) {
+                label.innerText = selectedLembagas.join(', ');
+            } else {
+                label.innerText = selectedLembagas.length + ' Jenis Audit Terpilih';
+            }
+
+            // Populate Ruang Lingkup checkboxes list
+            updateRuangLingkupCheckboxes();
+
+            // Check initial Ruang Lingkups
+            initRuangs.forEach(rName => {
+                const cb = Array.from(document.querySelectorAll('.filter-ruang-check')).find(el => el.value === rName);
+                if (cb) {
+                    cb.checked = true;
+                }
+            });
+
+            // Update SelectedRuangLingkups
+            const ruangChecks = document.querySelectorAll('.filter-ruang-check:checked');
+            selectedRuangLingkups = Array.from(ruangChecks).map(cb => cb.value);
+            updateRuangLabel();
+
+            updateSelectedList();
+            renderAuditors();
+        });
     </script>
 </body>
 </html>
