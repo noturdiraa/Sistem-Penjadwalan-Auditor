@@ -90,7 +90,7 @@ class AuditController extends Controller
         }
 
         $jenisAuditStr = implode(', ', $lembagaNames) ?: '-';
-        $ruangLingkupStr = implode(', ', $allScopes) ?: '-';
+        $ruangLingkupStr = implode('; ', $allScopes) ?: '-';
 
         // 1. Create Audit
         $audit = \App\Models\Audit::create([

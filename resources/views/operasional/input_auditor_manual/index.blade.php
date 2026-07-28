@@ -600,7 +600,11 @@
 
         let initRuangs = [];
         @if($jadwal && $jadwal->audit && $jadwal->audit->ruang_lingkup)
-            initRuangs = @json(explode(', ', $jadwal->audit->ruang_lingkup));
+            @if(strpos($jadwal->audit->ruang_lingkup, ';') !== false)
+                initRuangs = @json(explode('; ', $jadwal->audit->ruang_lingkup));
+            @else
+                initRuangs = @json(explode(', ', $jadwal->audit->ruang_lingkup));
+            @endif
         @endif
 
         let selectedLembagas = [];

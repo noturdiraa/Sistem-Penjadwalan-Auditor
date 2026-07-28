@@ -572,7 +572,8 @@
                     // Split Ruang Lingkup into multiple badges
                     let ruangBadgesHtml = '';
                     if (a.ruang_lingkup) {
-                        const ruangList = a.ruang_lingkup.split(', ');
+                        const separator = a.ruang_lingkup.includes(';') ? '; ' : ', ';
+                        const ruangList = a.ruang_lingkup.split(separator);
                         ruangList.forEach(rl => {
                             ruangBadgesHtml += `<span class="badge bg-primary-subtle text-primary text-wrap text-start" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; max-width: 100%; font-weight: 500; line-height: 1.4;">${rl}</span>`;
                         });
