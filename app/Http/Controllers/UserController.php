@@ -85,7 +85,19 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
+        // Delete related alasan_penolakans
+        $reviewOperasionalIds = \App\Models\ReviewOperasional::where('id_user', $user->id_user)->pluck('id_review_operasional');
+        \App\Models\AlasanPenolakan::whereIn('id_review_operasional', $reviewOperasionalIds)->delete();
+
+        // Delete related review_operasionals
+        \App\Models\ReviewOperasional::where('id_user', $user->id_user)->delete();
+
+        // Delete related review_katim_pjis
+        \App\Models\ReviewKatimPji::where('id_user', $user->id_user)->delete();
+
+        // Finally delete user
         $user->delete();
+        
         return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
     }
 }
