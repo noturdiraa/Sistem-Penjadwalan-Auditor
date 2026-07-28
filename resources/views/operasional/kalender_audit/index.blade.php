@@ -5,7 +5,11 @@
         'timAudits.auditor'
     ])->whereIn('status_jadwal', ['Aktif', 'Selesai'])->get();
 
-    $allDbScopes = \App\Models\RuangLingkup::pluck('nama_ruang_lingkup')->filter()->toArray();
+    $allDbScopes = \App\Models\RuangLingkup::pluck('nama_ruang_lingkup')
+        ->filter()
+        ->unique()
+        ->sortByDesc(fn($name) => strlen($name))
+        ->toArray();
 
     $calendarAudits = [];
     foreach ($jadwals as $j) {
@@ -23,17 +27,25 @@
         $rawRuang = $audit->ruang_lingkup ?: ($audit->ruangLingkup->nama_ruang_lingkup ?? '');
         $scopesList = [];
         if (!empty($rawRuang)) {
-            foreach ($allDbScopes as $dbScope) {
-                if (stripos($rawRuang, $dbScope) !== false) {
-                    $scopesList[] = $dbScope;
+            if (strpos($rawRuang, ';') !== false) {
+                $scopesList = array_map('trim', explode(';', $rawRuang));
+            } else {
+                $tempString = $rawRuang;
+                foreach ($allDbScopes as $dbScope) {
+                    if (empty($dbScope)) continue;
+                    if (stripos($tempString, $dbScope) !== false) {
+                        $scopesList[] = $dbScope;
+                        $tempString = str_ireplace($dbScope, '', $tempString);
+                    }
                 }
-            }
-            if (empty($scopesList)) {
-                $scopesList[] = $rawRuang;
+                if (empty($scopesList)) {
+                    $scopesList[] = $rawRuang;
+                }
             }
         } else {
             $scopesList[] = '-';
         }
+        $scopesList = array_values(array_filter(array_unique($scopesList)));
 
         $jenisList = [];
         if ($audit->jenis_audit) {
