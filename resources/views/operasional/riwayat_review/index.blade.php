@@ -510,7 +510,7 @@
                 ? $latestKatimReview->created_at 
                 : $rev->created_at;
 
-            $hasBeenSubmitted = $jadwal->updated_at->gt($lastRejectionTime->addSeconds(5));
+            $hasBeenSubmitted = $jadwal->updated_at->gt($lastRejectionTime);
 
             if ($latestKatimReview && !$hasBeenSubmitted) {
                 $isApproved = ($latestKatimReview->status_review === 'Disetujui');

@@ -243,11 +243,11 @@ Route::middleware(['auth'])->group(function () {
 
             // Keep status as 'Revisi' so Katim PJI can review it
             $jadwal->status_jadwal = 'Revisi';
-            $jadwal->save();
+            $jadwal->touch(); // Force update updated_at to indicate new submission
 
             if ($jadwal->audit) {
                 $jadwal->audit->status = 'Revisi';
-                $jadwal->audit->save();
+                $jadwal->audit->touch();
             }
 
             // Save the reasons of change
