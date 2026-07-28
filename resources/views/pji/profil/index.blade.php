@@ -348,31 +348,11 @@
                         PJI
                     </div>
 
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Nama Akun</label>
-                            <input type="text" class="form-control" value="Tim Penilai Jaminan Mutu (PJI) BSPJI Palembang" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
-                        </div>
-                        <div class="col-md-6">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-start">
                             <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Role Sistem</label>
                             <input type="text" class="form-control" value="PJI" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
                         </div>
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Instansi</label>
-                            <input type="text" class="form-control" value="BSPJI Palembang" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Email Akses</label>
-                            <input type="text" class="form-control" value="pji.bspji@gmail.com" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
-                        </div>
-                    </div>
-
-                    <!-- Hak Akses / Fungsi Box -->
-                    <div class="mt-4 p-3 rounded bg-light border-start border-primary border-4" style="text-align: left;">
-                        <h6 class="fw-bold text-dark mb-2" style="font-size: 14px;"><i class="fas fa-circle-info me-2 text-primary"></i>Fungsi & Tanggung Jawab Akun:</h6>
-                        <p class="mb-0 text-secondary" style="font-size: 13px; line-height: 1.6;">
-                            Mengelola data perusahaan, mendaftarkan permohonan audit baru, serta menyusun usulan tim rekomendasi auditor berdasarkan kompetensi ruang lingkup di BSPJI Palembang.
-                        </p>
                     </div>
 
                 </div>

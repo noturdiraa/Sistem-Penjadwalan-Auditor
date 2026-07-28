@@ -276,34 +276,11 @@
                 </div>
 
                 <!-- Info Fields -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-6">
-                        <div class="profile-field-label">Nama Akun</div>
-                        <div class="profile-field-value">Kepala Balai BSPJI Palembang</div>
-                    </div>
-
-                    <div class="col-md-6">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-start">
                         <div class="profile-field-label">Role Sistem</div>
                         <div class="profile-field-value">Kepala Balai</div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="profile-field-label">Instansi</div>
-                        <div class="profile-field-value">BSPJI Palembang</div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="profile-field-label">Email Akses</div>
-                        <div class="profile-field-value">kepala.bspji@gmail.com</div>
-                    </div>
-                </div>
-
-                <!-- Hak Akses / Fungsi Box -->
-                <div class="mt-4 p-3 rounded bg-light border-start border-primary border-4">
-                    <h6 class="fw-bold text-dark mb-2"><i class="fas fa-circle-info me-2 text-primary"></i>Fungsi & Tanggung Jawab Akun:</h6>
-                    <p class="mb-0 text-secondary" style="font-size: 13.5px; line-height: 1.6;">
-                        Melakukan pemantauan (monitoring) jadwal audit, memeriksa agenda kalender audit secara berkala, serta memantau visualisasi statistik performa penugasan auditor di BSPJI Palembang.
-                    </p>
                 </div>
 
             </div>
