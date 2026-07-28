@@ -536,40 +536,52 @@
 
             <!-- ================= RIWAYAT PERUBAHAN CARD ================= -->
             <div class="detail-card mt-4">
-                <h4 class="fw-bold text-dark mb-4" style="font-size: 18px;"><i class="fas fa-history me-2 text-primary"></i>Riwayat Review Operasional</h4>
+                <h4 class="fw-bold text-dark mb-4" style="font-size: 18px;"><i class="fas fa-history me-2 text-primary"></i>Riwayat Review Jadwal</h4>
                 
                 @php
-                    $reviews = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal ?? 0)->orderBy('created_at', 'desc')->get();
+                    $reviewsOperasional = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal ?? 0)->get();
+                    $reviewsPji = \App\Models\ReviewKatimPji::where('id_jadwal', $jadwal->id_jadwal ?? 0)->get();
+                    $allReviews = $reviewsOperasional->concat($reviewsPji)->sortByDesc('created_at');
                 @endphp
                 <div class="timeline-container">
-                    @if($reviews->count() > 0)
-                        @foreach($reviews as $rev)
+                    @if($allReviews->count() > 0)
+                        @foreach($allReviews as $rev)
+                        @php
+                            $isPji = $rev instanceof \App\Models\ReviewKatimPji;
+                            $badgeStyle = 'background: #E2E8F0; color: #475569;';
+                            if ($rev->status_review === 'Disetujui') {
+                                $badgeStyle = 'background: #DEF7EC; color: #03543F; border: 1px solid #A7F3D0;';
+                            } elseif ($rev->status_review === 'Dikembalikan') {
+                                $badgeStyle = 'background: #FDE8E8; color: #9B1C1C; border: 1px solid #FCA5A5;';
+                            }
+                        @endphp
                         <div class="d-flex gap-3 mb-4">
                             <div class="d-flex flex-column align-items-center">
-                                <div class="rounded-circle bg-primary d-flex justify-content-center align-items-center text-white" style="width: 32px; height: 32px; font-size: 14px;">
-                                    <i class="fas fa-user-sync"></i>
+                                <div class="rounded-circle bg-primary d-flex justify-content-center align-items-center text-white" style="width: 32px; height: 32px; font-size: 14px; background-color: {{ $isPji ? '#0E9F6E' : '#3F83F8' }} !important;">
+                                    <i class="{{ $isPji ? 'fas fa-shield-halved' : 'fas fa-user-sync' }}"></i>
                                 </div>
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Review Operasional: {{ $rev->status_review }}</h6>
+                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">{{ $isPji ? 'Review Katim PJI' : 'Review Operasional' }}</h6>
+                                    <span class="badge" style="{{ $badgeStyle }} font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600;">{{ $rev->status_review }}</span>
                                     <span class="badge bg-light text-secondary border" style="font-size: 11px;">{{ \Carbon\Carbon::parse($rev->created_at)->format('d F Y') }}</span>
                                 </div>
                                 <div class="text-secondary" style="font-size: 13px;">
                                     Catatan: <strong class="text-dark">{{ $rev->catatan ?? '-' }}</strong>
                                 </div>
-                                @if($rev->alasan_pergantian)
+                                @if(!$isPji && $rev->alasan_pergantian)
                                 <div class="text-secondary" style="font-size: 13px;">
                                     Alasan Ganti: <strong class="text-dark">{{ $rev->alasan_pergantian }}</strong>
                                 </div>
                                 @endif
-                                @if($rev->rekomendasi)
+                                @if(!$isPji && $rev->rekomendasi)
                                 <small class="text-muted d-block mt-1" style="font-size: 12px; font-style: italic;">
                                     Rekomendasi: {{ $rev->rekomendasi }}
                                 </small>
                                 @endif
 
-                                @if($rev->tim_awal)
+                                @if(!$isPji && $rev->tim_awal)
                                     @php
                                          $replacementsList = [];
                                          $origLead = null;
