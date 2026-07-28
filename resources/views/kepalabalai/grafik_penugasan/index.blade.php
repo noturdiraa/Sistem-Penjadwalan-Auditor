@@ -19,12 +19,14 @@
 
     $dalamKota = $locationCounts['Dalam Kota'] ?? 0;
     $luarKota = $locationCounts['Luar Kota'] ?? 0;
-    $luarProvinsi = $locationCounts['Luar Provinsi'] ?? 0;
-    $totalLocation = $dalamKota + $luarKota + $luarProvinsi;
+    $pinggiranKota = $locationCounts['Pinggiran Kota'] ?? 0;
+    $luarNegeri = $locationCounts['Luar Negeri'] ?? 0;
+    $totalLocation = $dalamKota + $luarKota + $pinggiranKota + $luarNegeri;
 
     $dalamKotaPercent = $totalLocation > 0 ? round(($dalamKota / $totalLocation) * 100) : 0;
     $luarKotaPercent = $totalLocation > 0 ? round(($luarKota / $totalLocation) * 100) : 0;
-    $luarProvinsiPercent = $totalLocation > 0 ? round(($luarProvinsi / $totalLocation) * 100) : 0;
+    $pinggiranKotaPercent = $totalLocation > 0 ? round(($pinggiranKota / $totalLocation) * 100) : 0;
+    $luarNegeriPercent = $totalLocation > 0 ? round(($luarNegeri / $totalLocation) * 100) : 0;
 
     $monthlyDays = array_fill(1, 12, 0);
     $currentYear = now()->year;
@@ -332,19 +334,24 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td><i class="fas fa-circle text-primary me-2" style="font-size: 10px;"></i> Dalam Kota (Palembang)</td>
+                                                <td><i class="fas fa-circle text-primary me-2" style="font-size: 10px;"></i> Dalam Kota</td>
                                                 <td class="text-center fw-semibold">{{ $dalamKota }}</td>
                                                 <td class="text-center text-primary fw-bold">{{ $dalamKotaPercent }}%</td>
                                             </tr>
                                             <tr>
-                                                <td><i class="fas fa-circle text-success me-2" style="font-size: 10px;"></i> Luar Kota (Sumsel)</td>
+                                                <td><i class="fas fa-circle text-success me-2" style="font-size: 10px;"></i> Luar Kota</td>
                                                 <td class="text-center fw-semibold">{{ $luarKota }}</td>
                                                 <td class="text-center text-success fw-bold">{{ $luarKotaPercent }}%</td>
                                             </tr>
                                             <tr>
-                                                <td><i class="fas fa-circle text-warning me-2" style="font-size: 10px;"></i> Luar Provinsi</td>
-                                                <td class="text-center fw-semibold">{{ $luarProvinsi }}</td>
-                                                <td class="text-center text-warning fw-bold">{{ $luarProvinsiPercent }}%</td>
+                                                <td><i class="fas fa-circle text-pink me-2" style="font-size: 10px; color: #EC4899;"></i> Pinggiran Kota</td>
+                                                <td class="text-center fw-semibold">{{ $pinggiranKota }}</td>
+                                                <td class="text-center fw-bold" style="color: #EC4899;">{{ $pinggiranKotaPercent }}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="fas fa-circle text-warning me-2" style="font-size: 10px;"></i> Luar Negeri</td>
+                                                <td class="text-center fw-semibold">{{ $luarNegeri }}</td>
+                                                <td class="text-center text-warning fw-bold">{{ $luarNegeriPercent }}%</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -496,10 +503,10 @@
             new Chart(ctxLokasi, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Dalam Kota', 'Luar Kota', 'Luar Provinsi'],
+                    labels: ['Dalam Kota', 'Luar Kota', 'Pinggiran Kota', 'Luar Negeri'],
                     datasets: [{
-                        data: [{{ $dalamKota }}, {{ $luarKota }}, {{ $luarProvinsi }}],
-                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
+                        data: [{{ $dalamKota }}, {{ $luarKota }}, {{ $pinggiranKota }}, {{ $luarNegeri }}],
+                        backgroundColor: ['#3B82F6', '#10B981', '#EC4899', '#F59E0B'],
                         borderWidth: 2,
                         borderColor: '#FFFFFF'
                     }]
