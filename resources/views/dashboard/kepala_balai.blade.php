@@ -645,50 +645,56 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
         <div class="table-box">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-
                 <h4 class="fw-bold mb-0">Statistik Audit</h4>
-
             </div>
 
             @php
                 $scopesStats = \App\Models\Audit::select('id_ruang_lingkup', \DB::raw('count(*) as total'))
                     ->groupBy('id_ruang_lingkup')
                     ->with('ruangLingkup')
-                    ->take(3)
+                    ->take(5)
                     ->get();
-            @endphp
-            <div class="stat-section mb-4" style="text-align: left;">
-                <h6 class="fw-semibold mb-3 text-center">Audit per Ruang Lingkup</h6>
-                @if($scopesStats->count() > 0)
-                    @foreach($scopesStats as $ss)
-                        <div class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-secondary" style="font-size: 13px;">{{ $ss->ruangLingkup->nama_ruang_lingkup ?? '-' }}</span>
-                            <span class="badge bg-primary text-white" style="font-size: 11px; border-radius: 6px; padding: 4px 8px;">{{ $ss->total }} Audit</span>
-                        </div>
-                    @endforeach
-                @else
-                    <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data ruang lingkup audit.</p>
-                @endif
-            </div>
+                    
+                $scopesLabels = [];
+                $scopesData = [];
+                foreach ($scopesStats as $ss) {
+                    $scopesLabels[] = $ss->ruangLingkup->nama_ruang_lingkup ?? 'Tidak Diketahui';
+                    $scopesData[] = $ss->total;
+                }
 
-            @php
                 $topAuditors = \App\Models\Auditor::withCount(['timAudits', 'riwayatAuditors'])->get()
                     ->map(function($aud) {
                         $aud->total_assignments = $aud->tim_audits_count + $aud->riwayat_auditors_count;
                         return $aud;
                     })
                     ->sortByDesc('total_assignments')
-                    ->take(3);
+                    ->take(5);
+
+                $auditorLabels = [];
+                $auditorData = [];
+                foreach ($topAuditors as $ta) {
+                    $auditorLabels[] = $ta->nama_auditor;
+                    $auditorData[] = $ta->total_assignments;
+                }
             @endphp
+
+            <div class="stat-section mb-4" style="text-align: left;">
+                <h6 class="fw-semibold mb-3 text-center">Audit per Ruang Lingkup</h6>
+                @if(count($scopesData) > 0)
+                    <div style="height: 200px; position: relative;">
+                        <canvas id="chartRuangLingkup"></canvas>
+                    </div>
+                @else
+                    <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data ruang lingkup audit.</p>
+                @endif
+            </div>
+
             <div class="stat-section" style="text-align: left;">
                 <h6 class="fw-semibold mb-3 text-center">Performa Auditor Terbaik</h6>
-                @if($topAuditors->count() > 0)
-                    @foreach($topAuditors as $ta)
-                        <div class="mb-2 d-flex justify-content-between align-items-center">
-                            <span class="text-secondary" style="font-size: 13px;">{{ $ta->nama_auditor }}</span>
-                            <span class="badge bg-success text-white" style="font-size: 11px; border-radius: 6px; padding: 4px 8px;">{{ $ta->total_assignments }} Penugasan</span>
-                        </div>
-                    @endforeach
+                @if(count($auditorData) > 0)
+                    <div style="height: 200px; position: relative;">
+                        <canvas id="chartTopAuditors"></canvas>
+                    </div>
                 @else
                     <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data auditor terbaik.</p>
                 @endif
@@ -726,7 +732,10 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- ================= MENU AKTIF ================= -->
+<!-- ================= Chart.js ================= -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ================= MENU AKTIF & CHARTS ================= -->
 
 <script>
 
@@ -754,6 +763,98 @@ menu.forEach(item => {
                 if (profileImg) {
                     profileImg.src = savedAvatar;
                 }
+            }
+
+            // 1. Chart Ruang Lingkup (Horizontal Bar Chart)
+            const canvasScopes = document.getElementById('chartRuangLingkup');
+            if (canvasScopes) {
+                new Chart(canvasScopes.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: @json($scopesLabels),
+                        datasets: [{
+                            label: 'Jumlah Audit',
+                            data: @json($scopesData),
+                            backgroundColor: '#3B82F6',
+                            borderRadius: 6,
+                            barThickness: 14
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0,
+                                    color: '#6B7280',
+                                    font: { family: 'Poppins', size: 10 }
+                                },
+                                grid: { color: '#F3F4F6' }
+                            },
+                            y: {
+                                ticks: {
+                                    color: '#374151',
+                                    font: { family: 'Poppins', size: 10, weight: '500' },
+                                    callback: function(value) {
+                                        const label = this.getLabelForValue(value);
+                                        return label.length > 20 ? label.substring(0, 17) + '...' : label;
+                                    }
+                                },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Chart Top Auditors (Horizontal Bar Chart)
+            const canvasAuditors = document.getElementById('chartTopAuditors');
+            if (canvasAuditors) {
+                new Chart(canvasAuditors.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: @json($auditorLabels),
+                        datasets: [{
+                            label: 'Penugasan',
+                            data: @json($auditorData),
+                            backgroundColor: '#10B981',
+                            borderRadius: 6,
+                            barThickness: 14
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0,
+                                    color: '#6B7280',
+                                    font: { family: 'Poppins', size: 10 }
+                                },
+                                grid: { color: '#F3F4F6' }
+                            },
+                            y: {
+                                ticks: {
+                                    color: '#374151',
+                                    font: { family: 'Poppins', size: 10, weight: '500' }
+                                },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
             }
         });
     </script>
