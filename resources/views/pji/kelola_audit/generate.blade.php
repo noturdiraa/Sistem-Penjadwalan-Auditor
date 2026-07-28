@@ -562,6 +562,21 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                        
+                                        <!-- Bagian: Skor Rekomendasi -->
+                                        <div class="mb-3 text-start">
+                                            <div class="text-secondary fw-semibold mb-1" style="font-size: 13px;">
+                                                <i class="fas fa-star text-warning me-1"></i> Skor Rekomendasi:
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 fs-7" style="border-radius: 8px;">
+                                                    {{ $auditor->scoring['total'] }} / 4 Poin
+                                                </span>
+                                                <small class="text-secondary" style="font-size: 11px;">
+                                                    (Beban: {{ $auditor->scoring['penugasan'] }} pt, Wilayah: {{ $auditor->scoring['kategori'] }} pt)
+                                                </small>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Bagian Bawah: Skor & Aksi -->
