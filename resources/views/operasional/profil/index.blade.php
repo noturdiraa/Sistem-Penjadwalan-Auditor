@@ -303,22 +303,38 @@
             </div>
 
             <!-- PROFILE CARD -->
-            <div class="card-profil">
+            <div class="card-profil" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,.06);">
                 <div class="avatar-container">
-                    <div class="avatar-circle">
-                        O
+                    <div class="avatar-circle" style="width: 120px; height: 120px; border-radius: 50%; background-color: #2563EB; color: white; display: flex; justify-content: center; align-items: center; font-size: 40px; font-weight: bold; margin: 0 auto 30px; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);">
+                        OP
                     </div>
                 </div>
                 
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                        <label>NIP</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly disabled>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Nama Akun</label>
+                        <input type="text" class="form-control" value="Divisi Operasional BSPJI Palembang" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Role</label>
-                        <input type="text" class="form-control" value="" placeholder="Belum diatur" readonly disabled>
+                    <div class="col-md-6">
+                        <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Role Sistem</label>
+                        <input type="text" class="form-control" value="Operasional" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
                     </div>
+                    <div class="col-md-6">
+                        <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Instansi</label>
+                        <input type="text" class="form-control" value="BSPJI Palembang" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="fw-semibold text-secondary mb-2" style="font-size: 13px; text-align: left; display: block;">Email Akses</label>
+                        <input type="text" class="form-control" value="operasional.bspji@gmail.com" style="background-color: #F8FAFC; border-radius: 10px; padding: 12px 16px; border: 1px solid #E2E8F0; font-size: 15px;" readonly>
+                    </div>
+                </div>
+
+                <!-- Hak Akses / Fungsi Box -->
+                <div class="mt-4 p-3 rounded bg-light border-start border-primary border-4" style="text-align: left;">
+                    <h6 class="fw-bold text-dark mb-2" style="font-size: 14px;"><i class="fas fa-circle-info me-2 text-primary"></i>Fungsi & Tanggung Jawab Akun:</h6>
+                    <p class="mb-0 text-secondary" style="font-size: 13px; line-height: 1.6;">
+                        Mengatur penugasan auditor secara manual, meninjau kesiapan jadwal audit, serta mengelola usulan review dan persetujuan jadwal audit di BSPJI Palembang.
+                    </p>
                 </div>
 
             </div>
