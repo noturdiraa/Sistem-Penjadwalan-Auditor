@@ -319,48 +319,36 @@
 
         <!-- STATS CARDS -->
         <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card-stat">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="fw-bold mb-1 text-dark">{{ $totalUsers }}</h3>
-                            <small class="text-secondary">Total Pengguna</small>
-                        </div>
-                        <div class="icon-box bg-blue">
-                            <i class="fas fa-users"></i>
-                        </div>
+            <div class="col-md-4">
+                <div class="card-stat d-flex align-items-center justify-content-between" style="height: 90px; padding: 15px 25px;">
+                    <div>
+                        <h3 class="fw-bold mb-0 text-dark" style="font-size: 28px; line-height: 1.1;">{{ $totalUsers }}</h3>
+                        <small class="text-secondary" style="font-size: 13px;">Total Pengguna</small>
+                    </div>
+                    <div class="icon-box bg-blue" style="width: 48px; height: 48px; border-radius: 12px; font-size: 20px;">
+                        <i class="fas fa-users"></i>
                     </div>
                 </div>
             </div>
-            
-            @php
-                $roles = ['Admin', 'Kepegawaian', 'PJI', 'Kepala Balai', 'Operasional'];
-                $bgColors = ['bg-purple', 'bg-red', 'bg-orange', 'bg-blue', 'bg-green'];
-                $icons = ['fa-user-shield', 'fa-user-tie', 'fa-file-signature', 'fa-user-check', 'fa-cogs'];
-            @endphp
-
-            @foreach($roles as $index => $roleName)
-                @php
-                    $count = $usersPerRole->firstWhere('role', $roleName)->count ?? 0;
-                    if ($roleName === 'Kepala Balai') {
-                        // DB check case insensitivity
-                        $count = $usersPerRole->filter(fn($u) => strtolower($u->role) === 'kepala balai')->first()->count ?? 0;
-                    }
-                @endphp
-                <div class="col-md-3">
-                    <div class="card-stat">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h3 class="fw-bold mb-1 text-dark">{{ $count }}</h3>
-                                <small class="text-secondary">User {{ $roleName }}</small>
-                            </div>
-                            <div class="icon-box {{ $bgColors[$index] }}">
-                                <i class="fas {{ $icons[$index] }}"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-8">
+                <div class="card-stat d-flex align-items-center justify-content-start flex-wrap gap-2" style="height: 90px; padding: 15px 25px;">
+                    @php
+                        $roles = ['Admin', 'Kepegawaian', 'PJI', 'Kepala Balai', 'Operasional'];
+                        $bgClasses = ['role-admin', 'role-kepegawaian', 'role-pji', 'role-kepala', 'role-operasional'];
+                    @endphp
+                    @foreach($roles as $index => $roleName)
+                        @php
+                            $count = $usersPerRole->firstWhere('role', $roleName)->count ?? 0;
+                            if ($roleName === 'Kepala Balai') {
+                                $count = $usersPerRole->filter(fn($u) => strtolower($u->role) === 'kepala balai')->first()->count ?? 0;
+                            }
+                        @endphp
+                        <span class="badge-role {{ $bgClasses[$index] }} d-inline-flex align-items-center gap-1" style="font-size: 13px; padding: 8px 14px; border-radius: 10px;">
+                            {{ $roleName }}: <strong style="font-size: 14px;">{{ $count }}</strong>
+                        </span>
+                    @endforeach
                 </div>
-            @endforeach
+            </div>
         </div>
 
         <!-- LATEST USERS PANEL -->

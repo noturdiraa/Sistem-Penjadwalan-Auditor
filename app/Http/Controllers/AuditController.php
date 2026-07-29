@@ -275,6 +275,7 @@ class AuditController extends Controller
                 })->exists();
 
             $workloadCount = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+            $auditor->workload_count = $workloadCount;
             
             $scorePenugasan = 1;
             if ($workloadCount <= 2) {
@@ -312,8 +313,20 @@ class AuditController extends Controller
             ];
         }
 
-        // Sort by total score ascending (smallest workload/points first)
-        $auditors = $auditors->sortBy(fn($a) => $a->scoring['total']);
+        // Urutkan: Tersedia dulu, lalu jumlah keberangkatan paling sedikit (poin 0 teratas), lalu jarak lokasi
+        $auditors = $auditors->sort(function ($a, $b) {
+            $availA = $a->scoring['ketersediaan_status'] === 'Tersedia' ? 0 : 1;
+            $availB = $b->scoring['ketersediaan_status'] === 'Tersedia' ? 0 : 1;
+            if ($availA !== $availB) {
+                return $availA <=> $availB;
+            }
+
+            if ($a->workload_count !== $b->workload_count) {
+                return $a->workload_count <=> $b->workload_count;
+            }
+
+            return $a->scoring['kategori'] <=> $b->scoring['kategori'];
+        });
 
         // Prioritize available auditors and take exactly 3
         $availableAuditors = $auditors->filter(fn($a) => $a->scoring['ketersediaan_status'] === 'Tersedia');
