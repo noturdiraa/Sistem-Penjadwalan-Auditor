@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         * {
@@ -318,64 +317,16 @@
             <p>Kelola akun pengguna, atur hak akses, dan pantau aktivitas pengguna di Sistem Penjadwalan Auditor BSPJI Palembang.</p>
         </div>
 
-        <!-- MAIN GRID SECTION -->
+        <!-- STATS CARDS -->
         <div class="row g-4 mb-4">
-            <!-- Left Column: Metrics & Quick Actions -->
-            <div class="col-md-5">
-                <!-- Total Users Card with Gradient -->
-                <div class="card-stat text-white mb-4" style="background: linear-gradient(135deg, #0F3D91 0%, #2563EB 100%); border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(15, 61, 145, 0.15); border: none; height: 160px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <span class="opacity-75" style="font-size: 13.5px; font-weight: 500;">Kapasitas Akun Sistem</span>
-                            <h3 class="fw-bold mt-1 mb-0" style="font-size: 34px;">{{ $totalUsers }} <span style="font-size: 16px; font-weight: 500; opacity: 0.8;">User Aktif</span></h3>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center" style="width: 48px; height: 48px; border-radius: 12px; background: rgba(255,255,255,0.15); font-size: 20px;">
-                            <i class="fas fa-users-gear"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4">
+                <div class="card-stat d-flex align-items-center justify-content-between" style="background: white; border-radius: 16px; padding: 20px 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); height: 95px; border: none;">
                     <div>
-                        @php
-                            $percentage = min(($totalUsers / 50) * 100, 100);
-                        @endphp
-                        <div class="progress" style="height: 6px; background: rgba(255,255,255,0.25); border-radius: 10px; margin-bottom: 6px;">
-                            <div class="progress-bar bg-white" role="progressbar" style="width: {{ $percentage }}%; border-radius: 10px;" aria-valuenow="{{ $totalUsers }}" aria-valuemin="0" aria-valuemax="50"></div>
-                        </div>
-                        <div class="d-flex justify-content-between" style="font-size: 11px; opacity: 0.85;">
-                            <span>{{ $totalUsers }} Terpakai</span>
-                            <span>Maksimal 50 Akun</span>
-                        </div>
+                        <h3 class="fw-bold mb-0 text-dark" style="font-size: 26px;">{{ $totalUsers }}</h3>
+                        <small class="text-secondary" style="font-weight: 500; font-size: 13px;">Total Pengguna Terdaftar</small>
                     </div>
-                </div>
-
-                <!-- Quick Navigation Card -->
-                <div class="card-stat" style="background: white; border-radius: 20px; padding: 22px; box-shadow: 0 8px 20px rgba(0,0,0,.04); border: none; height: 170px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <h5 class="fw-bold text-dark mb-3" style="font-size: 15px;"><i class="fas fa-bolt text-warning me-2"></i>Pintasan Navigasi</h5>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-primary w-100 d-flex flex-column align-items-center justify-content-center gap-2 py-3" style="border-radius: 12px; font-size: 12.5px; font-weight: 600; box-shadow: 0 4px 10px rgba(15, 61, 145, 0.1);">
-                                <i class="fas fa-users-cog fs-5"></i>
-                                Kelola User
-                            </a>
-                        </div>
-                        <div class="col-6">
-                            <a href="{{ route('admin.users.create') }}" class="btn btn-outline-primary w-100 d-flex flex-column align-items-center justify-content-center gap-2 py-3" style="border-radius: 12px; font-size: 12.5px; font-weight: 600;">
-                                <i class="fas fa-user-plus fs-5"></i>
-                                Tambah User
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Interactive Doughnut Chart -->
-            <div class="col-md-7">
-                <div class="card-stat" style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,.04); border: none; height: 350px; display: flex; flex-direction: column;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold text-dark mb-0" style="font-size: 16px;"><i class="fas fa-chart-pie text-primary me-2"></i>Komposisi Peran Akun</h5>
-                        <span class="badge bg-secondary-subtle text-secondary" style="font-size: 11px; padding: 5px 10px; border-radius: 6px;">Real-time</span>
-                    </div>
-                    <div class="flex-grow-1 position-relative" style="min-height: 240px;">
-                        <canvas id="roleDistributionChart"></canvas>
+                    <div class="d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 50px; height: 50px; border-radius: 12px; font-size: 22px;">
+                        <i class="fas fa-users"></i>
                     </div>
                 </div>
             </div>
@@ -445,75 +396,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('roleDistributionChart').getContext('2d');
-            
-            // Collect dynamic role data from PHP
-            @php
-                $chartLabels = ['Admin', 'Kepegawaian', 'PJI', 'Kepala Balai', 'Operasional'];
-                $chartData = [];
-                foreach ($chartLabels as $roleName) {
-                    $count = $usersPerRole->firstWhere('role', $roleName)->count ?? 0;
-                    if ($roleName === 'Kepala Balai') {
-                        $count = $usersPerRole->filter(fn($u) => strtolower($u->role) === 'kepala balai')->first()->count ?? 0;
-                    }
-                    $chartData[] = $count;
-                }
-            @endphp
-
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: @json($chartLabels),
-                    datasets: [{
-                        data: @json($chartData),
-                        backgroundColor: [
-                            '#8B5CF6',  // Purple (Admin)
-                            '#EF4444',  // Red (Kepegawaian)
-                            '#F59E0B',  // Orange (PJI)
-                            '#2563EB',  // Blue (Kepala Balai)
-                            '#10B981'   // Green (Operasional)
-                        ],
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        hoverOffset: 12
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                color: '#475569',
-                                font: {
-                                    family: 'Poppins',
-                                    size: 11,
-                                    weight: '600'
-                                },
-                                padding: 12,
-                                usePointStyle: true,
-                                pointStyle: 'circle'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(0) : 0;
-                                    return ` ${context.label}: ${value} user (${percentage}%)`;
-                                }
-                            }
-                        }
-                    },
-                    cutout: '68%'
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
