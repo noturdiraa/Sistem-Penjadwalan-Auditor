@@ -49,9 +49,8 @@
             // Assign avatar background class
             $avatarBg = ($tim->peran === 'Lead Auditor') ? 'bg-avatar-blue' : 'bg-avatar-green';
 
-            // Calculate point
-            $rekomendasi = \App\Models\RekomendasiAuditor::where('id_jadwal', $j->id_jadwal)->where('id_auditor', $auditor->id_auditor)->first();
-            $point = $rekomendasi ? (float)$rekomendasi->nilai_rekomendasi : 0;
+            // Calculate point (workload count)
+            $point = $totalAudit;
 
             $members[] = [
                 'name' => $auditor->nama_auditor,
@@ -763,7 +762,7 @@
                             </div>
                             <div class="border-top pt-2 d-flex justify-content-between align-items-center">
                                 <span class="text-success fw-semibold" style="font-size: 12px;"><i class="fas fa-circle fs-8 me-1"></i> ${m.status}</span>
-                                <span class="fw-bold text-dark" style="font-size: 13px;">Point: ${m.point}</span>
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Poin Keberangkatan: ${m.point} Poin</span>
                             </div>
                         </div>
                     </div>

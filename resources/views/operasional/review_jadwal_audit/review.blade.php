@@ -379,11 +379,10 @@
                                         <div class="row g-2 mb-3">
                                             <div class="col-sm-6">
                                                 <small class="text-secondary d-block" style="font-size: 12px;">Posisi: <strong class="text-dark">{{ $auditor->posisi ?? '-' }}</strong></small>
-                                                <small class="text-secondary d-block mt-1" style="font-size: 12px;">Total Penugasan: <strong class="text-dark">{{ $totalAudit }}</strong></small>
+                                                <small class="text-secondary d-block mt-1" style="font-size: 12px;">Poin Keberangkatan: <strong class="{{ $totalAudit === 0 ? 'text-success' : 'text-primary' }}">{{ $totalAudit }} Poin</strong> @if($totalAudit === 0) <span class="badge bg-success text-white ms-1" style="font-size: 9px; padding: 2px 5px;">Prioritas Utama</span> @endif</small>
                                             </div>
                                             <div class="col-sm-6">
-                                                <small class="text-secondary d-block" style="font-size: 12px;">Poin Rekomendasi: <strong class="text-success">{{ $scoreVal }} / 4</strong></small>
-                                                <small class="text-secondary d-block mt-1" style="font-size: 12px;">Status: <strong class="text-dark">{{ $auditor->status ?? '-' }}</strong></small>
+                                                <small class="text-secondary d-block" style="font-size: 12px;">Status: <strong class="text-dark">{{ $auditor->status ?? '-' }}</strong></small>
                                             </div>
                                         </div>
                                         
