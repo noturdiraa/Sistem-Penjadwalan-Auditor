@@ -437,6 +437,24 @@ color:#777;
 
         </div>
 
+        <!-- Jabatan -->
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Jabatan
+            </label>
+
+            <select name="jabatan" class="form-select" required>
+
+                <option value="" selected disabled>Pilih Jabatan</option>
+                <option value="Lead Auditor">Lead Auditor</option>
+                <option value="Auditor">Auditor</option>
+                <option value="Calon Auditor">Calon Auditor</option>
+
+            </select>
+
+        </div>
+
         <!-- Status -->
         <div class="col-md-6 mb-4">
 

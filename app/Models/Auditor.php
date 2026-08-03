@@ -16,6 +16,7 @@ class Auditor extends Model
         'jenis_auditor',
         'posisi',
         'status',
+        'jabatan',
     ];
 
     public $timestamps = true;

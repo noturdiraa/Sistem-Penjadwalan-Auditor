@@ -62,6 +62,7 @@
             'nip' => $aud->nip ?? '-',
             'role' => $aud->jenis_auditor ?? 'Auditor',
             'subrole' => $aud->posisi ?? 'Auditor',
+            'jabatan' => $aud->jabatan ?? 'Auditor',
             'lembaga' => count($compLembagas) > 0 ? implode(', ', $compLembagas) : '-',
             'ruangLingkup' => count($compRuangs) > 0 ? implode(', ', $compRuangs) : '-',
             'ruangLingkups' => $compRuangs,
@@ -787,7 +788,7 @@
                                         <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">${item.name}</h6>
                                         <span class="badge" style="background: #FAF5FF; color: #7E3AF2; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">${item.role}</span>
                                     </div>
-                                    <small class="text-secondary d-block mb-2" style="font-size: 12px;">NIP: ${item.nip} · ${item.subrole}</small>
+                                    <small class="text-secondary d-block mb-2" style="font-size: 12px;">NIP: ${item.nip} · ${item.subrole} · ${item.jabatan}</small>
                                     
                                     <div class="d-flex gap-4 flex-wrap text-secondary" style="font-size: 12px;">
                                         <div>Jenis Audit: <strong class="text-dark">${item.lembaga}</strong></div>
@@ -858,16 +859,21 @@
 
                 // Determine default selected based on role
                 const dbRole = currentRoles[item.id];
-                const isLead = dbRole 
-                    ? (dbRole === 'Lead Auditor')
-                    : (item.role.toLowerCase().includes('lead') || item.subrole.toLowerCase().includes('lead'));
+                const isLead = dbRole === 'Lead Auditor';
                 const leadLabel = item.subrole === 'AMMI' ? 'Lead Auditor' : 'Ketua Audit';
-                const roleSelectHtml = `
-                    <select class="role-select form-select form-select-sm mt-2" data-auditor-id="${item.id}" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
-                        <option value="Ketua Tim" ${isLead ? 'selected' : ''}>${leadLabel}</option>
-                        <option value="Anggota" ${!isLead ? 'selected' : ''}>Anggota</option>
-                    </select>
-                `;
+                let roleSelectHtml = '';
+                if (item.jabatan === 'Lead Auditor') {
+                    roleSelectHtml = `
+                        <select class="role-select form-select form-select-sm mt-2" data-auditor-id="${item.id}" style="font-size: 11px; height: 30px; padding: 2px 8px; border-radius: 6px; width: 110px;">
+                            <option value="Ketua Tim" ${isLead ? 'selected' : ''}>${leadLabel}</option>
+                            <option value="Anggota" ${!isLead ? 'selected' : ''}>Anggota</option>
+                        </select>
+                    `;
+                } else {
+                    roleSelectHtml = `
+                        <span class="badge bg-secondary text-white mt-2 d-inline-block" style="font-size: 10px; font-weight: 500; padding: 4px 8px; border-radius: 6px;">Anggota</span>
+                    `;
+                }
 
                 div.innerHTML = `
                     <div class="d-flex align-items-center justify-content-between">

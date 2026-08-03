@@ -328,8 +328,8 @@ class AuditController extends Controller
             return $a->scoring['kategori'] <=> $b->scoring['kategori'];
         });
 
-        // Filter auditors based on position: Lead must be AMMI
-        $potentialLeads = $auditors->filter(fn($a) => trim($a->posisi) === 'AMMI')->values();
+        // Filter auditors based on position: Lead must be Lead Auditor
+        $potentialLeads = $auditors->filter(fn($a) => trim($a->jabatan) === 'Lead Auditor')->values();
         
         // Select the top 1 Lead Auditor (first available, or fallback to first busy)
         $leadAuditor = null;

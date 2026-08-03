@@ -416,7 +416,7 @@ color:#777;
             type="text"
             name="nama"
             class="form-control"
-            value="{{ $auditor->nama ?? '' }}"
+            value="{{ $auditor->nama_auditor ?? '' }}"
             placeholder="Masukkan Nama Auditor"
             required>
 
@@ -435,6 +435,24 @@ color:#777;
                 <option value="AMMI" {{ (!empty($auditor) && $auditor->posisi == 'AMMI') ? 'selected' : '' }}>AMMI</option>
                 <option value="Non AMMI" {{ (!empty($auditor) && $auditor->posisi == 'Non AMMI') ? 'selected' : '' }}>Non AMMI</option>
                 <option value="Subkon" {{ (!empty($auditor) && $auditor->posisi == 'Subkon') ? 'selected' : '' }}>Subkon</option>
+
+            </select>
+
+        </div>
+
+        <!-- Jabatan -->
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Jabatan
+            </label>
+
+            <select name="jabatan" class="form-select" required>
+
+                <option value="" disabled {{ empty($auditor) ? 'selected' : '' }}>Pilih Jabatan</option>
+                <option value="Lead Auditor" {{ (!empty($auditor) && $auditor->jabatan == 'Lead Auditor') ? 'selected' : '' }}>Lead Auditor</option>
+                <option value="Auditor" {{ (!empty($auditor) && $auditor->jabatan == 'Auditor') ? 'selected' : '' }}>Auditor</option>
+                <option value="Calon Auditor" {{ (!empty($auditor) && $auditor->jabatan == 'Calon Auditor') ? 'selected' : '' }}>Calon Auditor</option>
 
             </select>
 

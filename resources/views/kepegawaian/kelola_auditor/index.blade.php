@@ -699,6 +699,7 @@ Tambah Auditor
                    data-nama="{{ $auditor->nama_auditor }}"
                    data-nip="{{ $auditor->nip }}"
                    data-posisi="{{ $auditor->posisi }}"
+                   data-jabatan="{{ $auditor->jabatan }}"
                    data-status="{{ $auditor->status }}"
                    data-lembaga="
                        @php
@@ -796,7 +797,8 @@ Tambah Auditor
                             <div class="avatar me-3" id="modalAvatar" style="width: 60px; height: 60px; font-size: 24px;">-</div>
                             <div>
                                 <h5 class="fw-bold mb-1" id="modalNama">-</h5>
-                                <span class="text-muted small" id="modalPosisi">-</span>
+                                <span class="text-muted small" id="modalPosisi">-</span> · 
+                                <span class="text-muted small" id="modalJabatan">-</span>
                             </div>
                         </div>
                         
@@ -864,6 +866,7 @@ if (detailModal) {
         const nama = button.getAttribute('data-nama');
         const nip = button.getAttribute('data-nip');
         const posisi = button.getAttribute('data-posisi');
+        const jabatan = button.getAttribute('data-jabatan') || 'Auditor';
         const status = button.getAttribute('data-status');
         const lembagaData = button.getAttribute('data-lembaga'); // Format string: "Lembaga A: Lingkup A, B | Lembaga B: Lingkup C"
         
@@ -871,6 +874,7 @@ if (detailModal) {
         detailModal.querySelector('#modalNama').textContent = nama;
         detailModal.querySelector('#modalNip').textContent = nip;
         detailModal.querySelector('#modalPosisi').textContent = posisi;
+        detailModal.querySelector('#modalJabatan').textContent = jabatan;
         
         // Tentukan inisial avatar dari huruf pertama nama
         const inisial = nama ? nama.charAt(0).toUpperCase() : '-';

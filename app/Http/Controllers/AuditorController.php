@@ -40,6 +40,7 @@ class AuditorController extends Controller
             'nip' => $nipRule,
             'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
+            'jabatan' => 'required|in:Lead Auditor,Auditor,Calon Auditor',
         ]);
 
         $auditor = Auditor::create([
@@ -48,6 +49,7 @@ class AuditorController extends Controller
             'jenis_auditor' => $request->posisi == 'Subkon' ? 'Subkontrak' : 'Pegawai',
             'posisi' => $request->posisi,
             'status' => $request->status,
+            'jabatan' => $request->jabatan,
         ]);
 
         $kompetensi_json = json_decode($request->kompetensi_lembaga, true);
@@ -105,6 +107,7 @@ class AuditorController extends Controller
             'nip' => $nipRule,
             'posisi' => 'required|string|max:255',
             'status' => 'required|in:Aktif,Nonaktif',
+            'jabatan' => 'required|in:Lead Auditor,Auditor,Calon Auditor',
         ]);
 
         $auditor = Auditor::findOrFail($id);
@@ -115,6 +118,7 @@ class AuditorController extends Controller
             'jenis_auditor' => $request->posisi == 'Subkon' ? 'Subkontrak' : 'Pegawai',
             'posisi' => $request->posisi,
             'status' => $request->status,
+            'jabatan' => $request->jabatan,
         ]);
 
         \App\Models\DetailAuditor::where('id_auditor', $id)->delete();
