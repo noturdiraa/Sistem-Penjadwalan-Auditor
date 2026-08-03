@@ -538,27 +538,7 @@
                 </form>
             </div>
 
-            <!-- ================= STATISTIK BOX ================= -->
-            <div class="statistik">
-                <div class="stat-card">
-                    <div>
-                        <h6>Total Audit Selesai</h6>
-                        <h2>{{ $jadwalAudits->count() }} Audit</h2>
-                    </div>
-                    <div class="icon-circle">
-                        <i class="fas fa-clipboard-check"></i>
-                    </div>
-                </div>
-                <div class="stat-card secondary-border">
-                    <div>
-                        <h6>Total Hari Perjalanan Dinas</h6>
-                        <h2>{{ $totalHari }} Hari</h2>
-                    </div>
-                    <div class="icon-circle" style="background: #EEF2FF; color: #2563EB;">
-                        <i class="fas fa-route"></i>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- ================= TABLE CARD ================= -->
             <div class="table-card">
