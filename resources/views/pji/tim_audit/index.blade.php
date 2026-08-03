@@ -117,7 +117,7 @@
             height: 100vh;
             background: #0F3D91; /* Warna background disamakan dengan Dashboard PJI (#0F3D91) */
             color: white;
-            padding: 14px 18px; /* Padding disamakan dengan Dashboard PJI */
+            padding: 10px 12px; /* Padding disamakan dengan Dashboard PJI */
             overflow-y: auto; /* Aktifkan scroll di samping sidebar jika menu melebihi tinggi layar */
             z-index: 1000;
         }
@@ -510,7 +510,7 @@
                             <li>
                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
-                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1; cursor: pointer;">
+                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 10px 12px; font-size: 15px; line-height: 1.1; cursor: pointer;">
                         <i class="fas fa-right-from-bracket"></i>
                         Logout
                     </button>

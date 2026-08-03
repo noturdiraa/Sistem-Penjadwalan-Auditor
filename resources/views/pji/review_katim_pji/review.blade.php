@@ -41,7 +41,7 @@ body {
     height: 100vh;
     background: #0F3D91;
     color: white;
-    padding: 14px 18px;
+    padding: 10px 12px;
     overflow-y: auto;
     z-index: 1000;
 }
@@ -287,7 +287,7 @@ body {
         <li>
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                 @csrf
-                <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 14px 18px; font-size: 15px; line-height: 1.1; cursor: pointer;">
+                <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 10px 12px; font-size: 15px; line-height: 1.1; cursor: pointer;">
                     <i class="fas fa-right-from-bracket"></i>
                     Logout
                 </button>

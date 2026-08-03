@@ -31,7 +31,7 @@
             height: 100vh;
             background: #0F3D91;
             color: white;
-            padding: 14px 18px;
+            padding: 10px 12px;
             overflow-y: auto;
             z-index: 1000;
         }
