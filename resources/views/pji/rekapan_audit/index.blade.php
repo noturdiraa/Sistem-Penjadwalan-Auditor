@@ -111,18 +111,18 @@
         .content {
             margin-left: 270px;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .navbar-custom {
-            position: sticky;
-            top: 0;
+            height: 80px;
             background: white;
-            padding: 20px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            z-index: 999;
+            padding: 0 35px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
         }
 
         .navbar-custom .search {
