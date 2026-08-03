@@ -354,7 +354,7 @@
                             @php
                                 $auditor = $timAudit->auditor;
                                 $initial = strtoupper(substr($auditor->nama_auditor ?? 'A', 0, 1));
-                                $totalAudit = $auditor->riwayatAuditors->count() + $auditor->timAudits->count();
+                                $totalAudit = $auditor->riwayatAuditors->where('id_jadwal', '!=', $jadwal->id_jadwal)->count() + $auditor->timAudits->where('id_jadwal', '!=', $jadwal->id_jadwal)->count();
                                 $rekomendasi = \App\Models\RekomendasiAuditor::where('id_jadwal', $jadwal->id_jadwal)->where('id_auditor', $auditor->id_auditor)->first();
                                 $scoreVal = $rekomendasi ? $rekomendasi->nilai_rekomendasi : '-';
                                 $competencies = $auditor->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique();

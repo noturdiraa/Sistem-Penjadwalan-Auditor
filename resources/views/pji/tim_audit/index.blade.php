@@ -50,6 +50,7 @@
             $avatarBg = ($tim->peran === 'Lead Auditor') ? 'bg-avatar-blue' : 'bg-avatar-green';
 
             // Calculate point (workload count)
+            $totalAudit = $auditor->riwayatAuditors->where('id_jadwal', '!=', $j->id_jadwal)->count() + $auditor->timAudits->where('id_jadwal', '!=', $j->id_jadwal)->count();
             $point = $totalAudit;
 
             $members[] = [

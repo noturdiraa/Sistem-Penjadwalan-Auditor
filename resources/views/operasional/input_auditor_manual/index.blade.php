@@ -31,6 +31,9 @@
         $compRuangs = $aud->detailAuditors->map(fn($d) => $d->ruangLingkup->nama_ruang_lingkup ?? '')->filter()->unique()->values()->all();
         
         $totalAudit = $aud->riwayatAuditors->count() + $aud->timAudits->count();
+        if ($jadwal) {
+            $totalAudit = $aud->riwayatAuditors->where('id_jadwal', '!=', $jadwal->id_jadwal)->count() + $aud->timAudits->where('id_jadwal', '!=', $jadwal->id_jadwal)->count();
+        }
         
         $point = 0;
         if ($jadwal) {
