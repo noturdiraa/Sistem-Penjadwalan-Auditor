@@ -313,35 +313,40 @@ class AuditController extends Controller
             ];
         }
 
-        // Urutkan: Tersedia dulu, lalu jumlah keberangkatan paling sedikit (poin 0 teratas), lalu jarak lokasi
+        // Urutkan: Tersedia dulu, lalu Pegawai vs Subkontrak, lalu jumlah keberangkatan paling sedikit (poin 0 teratas), lalu jarak lokasi
         $auditors = $auditors->sort(function ($a, $b) {
+            // 1. Ketersediaan (Tersedia dulu)
             $availA = $a->scoring['ketersediaan_status'] === 'Tersedia' ? 0 : 1;
             $availB = $b->scoring['ketersediaan_status'] === 'Tersedia' ? 0 : 1;
             if ($availA !== $availB) {
                 return $availA <=> $availB;
             }
 
+            // 2. Tipe Auditor (Pegawai didulukan dibanding Subkontrak/Subkon)
+            $typeA = trim($a->jenis_auditor) === 'Pegawai' ? 0 : 1;
+            $typeB = trim($b->jenis_auditor) === 'Pegawai' ? 0 : 1;
+            if ($typeA !== $typeB) {
+                return $typeA <=> $typeB;
+            }
+
+            // 3. Jumlah Keberangkatan (workload terkecil dulu)
             if ($a->workload_count !== $b->workload_count) {
                 return $a->workload_count <=> $b->workload_count;
             }
 
+            // 4. Jarak Lokasi
             return $a->scoring['kategori'] <=> $b->scoring['kategori'];
         });
 
         // Filter auditors based on position: Lead must be Lead Auditor
         $potentialLeads = $auditors->filter(fn($a) => trim($a->jabatan) === 'Lead Auditor')->values();
         
-        // Select the top 1 Lead Auditor (first available, or fallback to first busy)
+        // Select the top 1 Lead Auditor (first in sorted list)
         $leadAuditor = null;
         if ($potentialLeads->count() > 0) {
-            $availableLeads = $potentialLeads->filter(fn($a) => $a->scoring['ketersediaan_status'] === 'Tersedia');
-            if ($availableLeads->count() > 0) {
-                $leadAuditor = $availableLeads->first();
-            } else {
-                $leadAuditor = $potentialLeads->first();
-            }
+            $leadAuditor = $potentialLeads->first();
         } else {
-            // Fallback if no AMMI auditor is found in the list of competent auditors
+            // Fallback if no Lead Auditor is found in the list of competent auditors
             $leadAuditor = $auditors->first();
         }
 
