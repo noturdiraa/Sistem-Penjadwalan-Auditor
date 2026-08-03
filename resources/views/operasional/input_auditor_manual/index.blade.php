@@ -792,7 +792,7 @@
                                     
                                     <div class="d-flex gap-4 flex-wrap text-secondary" style="font-size: 12px;">
                                         <div>Jenis Audit: <strong class="text-dark">${item.lembaga}</strong></div>
-                                        <div>Poin Keberangkatan: <strong class="${item.totalAudit === 0 ? 'text-success' : 'text-primary'}">${item.totalAudit} Poin</strong>${item.totalAudit === 0 ? ' <span class="badge bg-success text-white ms-1" style="font-size: 9px; padding: 2px 5px; border-radius: 4px;">Prioritas Utama</span>' : ''}</div>
+                                        <div>Poin Keberangkatan: <strong class="${item.totalAudit === 0 ? 'text-success' : 'text-primary'}">${item.totalAudit} Poin</strong></div>
                                         <div>Lokasi: <strong class="text-dark">${item.lokasi}</strong></div>
                                     </div>
                                 </div>

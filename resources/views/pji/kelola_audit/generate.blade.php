@@ -572,11 +572,6 @@
                                                  <span class="badge {{ $auditor->workload_count === 0 ? 'bg-success-subtle text-success' : 'bg-primary-subtle text-primary' }} fw-bold px-3 py-2 fs-7" style="border-radius: 8px;">
                                                      {{ $auditor->workload_count }} Kali
                                                  </span>
-                                                 @if($auditor->workload_count === 0)
-                                                     <span class="badge bg-success text-white fw-bold px-2 py-1 fs-8" style="border-radius: 6px; font-size: 10px;">
-                                                         Prioritas Utama
-                                                     </span>
-                                                 @endif
                                              </div>
                                           </div>
                                       </div>
