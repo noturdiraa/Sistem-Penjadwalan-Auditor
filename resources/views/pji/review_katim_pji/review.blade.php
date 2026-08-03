@@ -41,7 +41,7 @@ body {
     height: 100vh;
     background: #0F3D91;
     color: white;
-    padding: 10px 12px;
+    padding: 14px 18px;
     overflow-y: auto;
     z-index: 1000;
 }

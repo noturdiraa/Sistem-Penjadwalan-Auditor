@@ -117,7 +117,7 @@
             height: 100vh;
             background: #0F3D91; /* Warna background disamakan dengan Dashboard PJI (#0F3D91) */
             color: white;
-            padding: 10px 12px; /* Padding disamakan dengan Dashboard PJI */
+            padding: 14px 18px; /* Padding disamakan dengan Dashboard PJI */
             overflow-y: auto; /* Aktifkan scroll di samping sidebar jika menu melebihi tinggi layar */
             z-index: 1000;
         }
