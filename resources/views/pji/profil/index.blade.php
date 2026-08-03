@@ -330,6 +330,7 @@
         <!-- ================= CONTENT ================= -->
         <div class="content">
             <div class="navbar-custom">
+                <div></div> <!-- Spacer -->
                 <div class="profile">
                     
                     <img src="{{ asset('images/logo.png') }}">
