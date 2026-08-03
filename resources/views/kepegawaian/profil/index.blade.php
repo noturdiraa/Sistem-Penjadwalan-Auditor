@@ -287,9 +287,6 @@
     <div class="content">
         <!-- NAVBAR -->
         <div class="navbar-custom">
-            <div class="search-box">
-                <input type="text" class="form-control" placeholder="Cari...">
-            </div>
             <div class="right-menu">
                 
                 <div class="profile">

@@ -284,11 +284,7 @@
     <!-- CONTENT -->
     <div class="content">
         <div class="navbar-custom">
-            <!-- Search bar on left of navbar -->
-            <input type="text" class="form-control search" placeholder="Cari...">
-            
             <div class="right-menu d-flex align-items-center gap-3">
-                
                 <div class="profile">
                     <img src="{{ asset('images/logo.png') }}">
                     <span>Operasional</span>
