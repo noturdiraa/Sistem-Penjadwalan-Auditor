@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('pji.audit.selesai');
 
         Route::view('/pji/tim-audit', 'pji.tim_audit.index')->name('pji.timaudit.index');
+        Route::get('/pji/rekapan-audit', [App\Http\Controllers\AuditController::class, 'rekapan'])->name('pji.rekapan.index');
         Route::view('/pji/review-katim', 'pji.review_katim_pji.index')->name('pji.reviewkatim.index');
         Route::view('/pji/review-katim/review', 'pji.review_katim_pji.review')->name('pji.reviewkatim.review');
         Route::post('/pji/review-katim/submit/{id}', function(\Illuminate\Http\Request $request, $id) {

@@ -285,6 +285,12 @@ box-shadow:0 6px 18px rgba(15,61,145,0.06);
                 </a>
             </li>
             <li>
+                <a href="/pji/rekapan-audit">
+                    <i class="fas fa-file-invoice"></i>
+                    Rekapan Audit
+                </a>
+            </li>
+            <li>
                 <a href="/pji/profil">
                     <i class="fas fa-user"></i>
                     Profil

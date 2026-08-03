@@ -408,4 +408,32 @@ class AuditController extends Controller
 
         return redirect()->route('pji.audit.index')->with('success', 'Data audit berhasil dihapus.');
     }
+
+    public function rekapan(\Illuminate\Http\Request $request)
+    {
+        $bulan = $request->input('bulan', date('m'));
+        $tahun = $request->input('tahun', date('Y'));
+
+        $query = \App\Models\JadwalAudit::with(['audit.perusahaan', 'timAudits.auditor', 'lokasi'])
+            ->where('status_jadwal', 'Selesai');
+
+        if ($bulan !== 'all') {
+            $query->whereMonth('tanggal_mulai', $bulan);
+        }
+        $query->whereYear('tanggal_mulai', $tahun);
+
+        $jadwalAudits = $query->orderBy('tanggal_mulai', 'desc')->get();
+
+        // Calculate total penugasan hari kerja
+        $totalHari = 0;
+        foreach ($jadwalAudits as $j) {
+            if ($j->tanggal_mulai && $j->tanggal_selesai) {
+                $start = \Carbon\Carbon::parse($j->tanggal_mulai);
+                $end = \Carbon\Carbon::parse($j->tanggal_selesai);
+                $totalHari += $start->diffInDays($end) + 1;
+            }
+        }
+
+        return view('pji.rekapan_audit.index', compact('jadwalAudits', 'bulan', 'tahun', 'totalHari'));
+    }
 }
