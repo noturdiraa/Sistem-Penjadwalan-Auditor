@@ -305,12 +305,16 @@
 
             .table-custom th {
                 background: #F3F4F6 !important;
+                border: 1px solid #9CA3AF !important;
                 border-bottom: 2px solid #9CA3AF !important;
                 color: black !important;
+                text-align: center;
+                padding: 10px 5px !important;
             }
 
             .table-custom td {
-                border-bottom: 1px solid #D1D5DB !important;
+                border: 1px solid #D1D5DB !important;
+                padding: 10px 8px !important;
             }
 
             /* Show official report header */
@@ -374,7 +378,6 @@
                 margin: 0;
                 font-weight: 700;
                 font-size: 16px;
-                text-decoration: underline;
                 text-transform: uppercase;
             }
 
@@ -471,7 +474,7 @@
                     '07' => 'Juli', '08' => 'Agustus', '09' => 'September',
                     '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
                 ];
-                $periodeStr = $bulan === 'all' ? 'Tahun ' . $tahun : $indoMonths[$bulan] . ' ' . $tahun;
+                $periodeStr = $indoMonths[$bulanMulai] . ' - ' . $indoMonths[$bulanSelesai] . ' ' . $tahun;
             @endphp
             <div class="print-header">
                 <div class="print-header-top">
@@ -484,8 +487,8 @@
                     </div>
                 </div>
                 <div class="print-title">
-                    <h5>LAPORAN REKAPITULASI PELAKSANAAN AUDIT</h5>
-                    <p>Periode: <strong>{{ $periodeStr }}</strong></p>
+                    <h5>Rencana Kegiatan Audit Lembaga Sertifikasi</h5>
+                    <p>Periode : {{ $periodeStr }}</p>
                 </div>
             </div>
 
@@ -500,24 +503,31 @@
             <!-- ================= FILTERS SECTION ================= -->
             <div class="card p-4 border-0 shadow-sm rounded-4 mb-4 filters-section" style="background: white;">
                 <form action="{{ route('pji.rekapan.index') }}" method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold text-secondary small">Filter Bulan</label>
-                        <select name="bulan" class="form-select">
-                            <option value="all" {{ $bulan === 'all' ? 'selected' : '' }}>Semua Bulan</option>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-secondary small">Bulan Mulai</label>
+                        <select name="bulan_mulai" class="form-select">
                             @foreach($indoMonths as $mNum => $mName)
-                                <option value="{{ $mNum }}" {{ $bulan === $mNum ? 'selected' : '' }}>{{ $mName }}</option>
+                                <option value="{{ $mNum }}" {{ $bulanMulai === $mNum ? 'selected' : '' }}>{{ $mName }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold text-secondary small">Filter Tahun</label>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-secondary small">Bulan Selesai</label>
+                        <select name="bulan_selesai" class="form-select">
+                            @foreach($indoMonths as $mNum => $mName)
+                                <option value="{{ $mNum }}" {{ $bulanSelesai === $mNum ? 'selected' : '' }}>{{ $mName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-secondary small">Tahun</label>
                         <select name="tahun" class="form-select">
                             @for($y = date('Y') - 5; $y <= date('Y') + 5; $y++)
                                 <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endfor
                         </select>
                     </div>
-                    <div class="col-md-4 d-flex gap-2">
+                    <div class="col-md-3 d-flex gap-2">
                         <button type="submit" class="btn btn-primary w-50" style="background: #0F3D91; border-color: #0F3D91;">
                             <i class="fas fa-filter me-2"></i>Filter
                         </button>
@@ -553,47 +563,43 @@
             <!-- ================= TABLE CARD ================= -->
             <div class="table-card">
                 <div class="table-responsive">
-                    <table class="table table-custom">
+                    <table class="table table-custom table-bordered">
                         <thead>
-                            <tr>
-                                <th>No. Audit</th>
+                            <tr class="text-center align-middle">
+                                <th style="width: 50px;">No.</th>
                                 <th>Nama Perusahaan</th>
-                                <th>Lembaga / Jenis Audit</th>
-                                <th>Nama Tim Auditor</th>
-                                <th>Tanggal Pelaksanaan</th>
-                                <th>Kategori Wilayah</th>
+                                <th>Ruang Lingkup / Komoditi</th>
+                                <th>Alamat</th>
+                                <th>Jenis Audit (Lembaga Sertifikasi)</th>
+                                <th>Tgl. Jatuh Tempo</th>
+                                <th>Tim Audit</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($jadwalAudits as $j)
+                            @forelse($jadwalAudits as $index => $j)
                                 @php
                                     $lead = $j->timAudits->firstWhere('peran', 'Lead Auditor');
                                     $leadName = $lead ? ($lead->auditor->nama_auditor ?? '-') : '-';
                                     
-                                    $members = $j->timAudits->filter(fn($t) => $t->peran !== 'Lead Auditor')->map(fn($t) => $t->auditor->nama_auditor ?? '')->filter()->all();
-                                    $membersStr = count($members) > 0 ? implode(', ', $members) : '-';
+                                    $members = $j->timAudits->filter(fn($t) => $t->peran !== 'Lead Auditor')->all();
                                 @endphp
                                 <tr>
-                                    <td class="fw-bold" style="color: #0F3D91;">AUD-{{ $j->id_jadwal }}</td>
-                                    <td>{{ $j->audit->perusahaan->nama_perusahaan ?? '-' }}</td>
-                                    <td>{{ $j->audit->jenis_audit ?? '-' }}</td>
+                                    <td class="text-center">{{ $index + 1 }}</td>
+                                    <td class="fw-bold">{{ $j->audit->perusahaan->nama_perusahaan ?? '-' }}</td>
+                                    <td>{{ $j->audit->ruang_lingkup ?? ($j->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</td>
+                                    <td>{{ $j->audit->perusahaan->alamat ?? '-' }}</td>
+                                    <td>{{ $j->keterangan ?? '-' }} ({{ $j->audit->jenis_audit ?? '-' }})</td>
+                                    <td class="text-center">{{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d-M-y') : '-' }}</td>
                                     <td>
-                                        <div><strong>Lead:</strong> {{ $leadName }}</div>
-                                        <div class="text-secondary" style="font-size: 12px; margin-top: 3px;"><strong>Anggota:</strong> {{ $membersStr }}</div>
-                                    </td>
-                                    <td>
-                                        {{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d M Y') : '-' }} s.d.
-                                        {{ $j->tanggal_selesai ? \Carbon\Carbon::parse($j->tanggal_selesai)->format('d M Y') : '-' }}
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $j->lokasi && $j->lokasi->kategori_wilayah === 'Luar Negeri' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary' }}" style="font-size: 11px; padding: 4px 8px;">
-                                            {{ $j->lokasi->kategori_wilayah ?? 'Dalam Kota' }}
-                                        </span>
+                                        <div>LA : {{ $leadName }}</div>
+                                        @foreach($members as $m)
+                                            <div>A : {{ $m->auditor->nama_auditor ?? '-' }}</div>
+                                        @endforeach
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-5 text-muted">
+                                    <td colspan="7" class="text-center py-5 text-muted">
                                         <div class="mb-2">
                                             <i class="fas fa-folder-open fa-3x text-secondary opacity-50"></i>
                                         </div>
