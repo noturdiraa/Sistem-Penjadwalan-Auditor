@@ -328,13 +328,45 @@ class AuditController extends Controller
             return $a->scoring['kategori'] <=> $b->scoring['kategori'];
         });
 
-        // Prioritize available auditors and take exactly 3
-        $availableAuditors = $auditors->filter(fn($a) => $a->scoring['ketersediaan_status'] === 'Tersedia');
-        if ($availableAuditors->count() >= 3) {
-            $auditors = $availableAuditors->take(3)->values();
+        // Filter auditors based on position: Lead must be AMMI
+        $potentialLeads = $auditors->filter(fn($a) => trim($a->posisi) === 'AMMI')->values();
+        
+        // Select the top 1 Lead Auditor (first available, or fallback to first busy)
+        $leadAuditor = null;
+        if ($potentialLeads->count() > 0) {
+            $availableLeads = $potentialLeads->filter(fn($a) => $a->scoring['ketersediaan_status'] === 'Tersedia');
+            if ($availableLeads->count() > 0) {
+                $leadAuditor = $availableLeads->first();
+            } else {
+                $leadAuditor = $potentialLeads->first();
+            }
         } else {
-            $auditors = $auditors->take(3)->values();
+            // Fallback if no AMMI auditor is found in the list of competent auditors
+            $leadAuditor = $auditors->first();
         }
+
+        // Selected Lead Auditor is excluded from the remaining list of potential members
+        $potentialMembers = $auditors->filter(fn($a) => $a->id_auditor !== ($leadAuditor ? $leadAuditor->id_auditor : null))->values();
+        
+        // Select the top 2 members (available ones first)
+        $selectedMembers = collect();
+        $availableMembers = $potentialMembers->filter(fn($a) => $a->scoring['ketersediaan_status'] === 'Tersedia');
+        if ($availableMembers->count() >= 2) {
+            $selectedMembers = $availableMembers->take(2);
+        } else {
+            $selectedMembers = $potentialMembers->take(2);
+        }
+
+        // Combine: Lead at index 0, followed by the 2 members
+        $finalAuditors = collect();
+        if ($leadAuditor) {
+            $finalAuditors->push($leadAuditor);
+        }
+        foreach ($selectedMembers as $m) {
+            $finalAuditors->push($m);
+        }
+
+        $auditors = $finalAuditors;
 
         return view('pji.kelola_audit.generate', compact('auditors', 'request', 'perusahaan', 'requestedScopes'));
     }

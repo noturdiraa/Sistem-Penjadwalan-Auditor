@@ -216,6 +216,15 @@
             border-top: 1px solid rgba(0,0,0,.08);
             margin: 10px 0 12px;
         }
+
+        .toggle-password i {
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .toggle-password:hover i {
+            color: #2563EB;
+            transform: scale(1.15);
+        }
     </style>
 </head>
 
@@ -286,16 +295,26 @@
                 <!-- Password -->
                 <div class="mb-4 text-start">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Masukkan password..." required>
-                    @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <div class="position-relative">
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Masukkan password..." required style="padding-right: 45px;">
+                        <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent text-secondary toggle-password" type="button" data-target="password" style="z-index: 10;">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <!-- Konfirmasi Password -->
                 <div class="mb-4 text-start">
                     <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password..." required>
+                    <div class="position-relative">
+                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password..." required style="padding-right: 45px;">
+                        <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent text-secondary toggle-password" type="button" data-target="password_confirmation" style="z-index: 10;">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Role aktif -->
@@ -337,6 +356,25 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

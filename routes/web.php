@@ -233,6 +233,7 @@ Route::middleware(['auth'])->group(function () {
 
             // Delete existing tim audit for this schedule
             \App\Models\TimAudit::where('id_jadwal', $jadwal->id_jadwal)->delete();
+            \App\Models\RiwayatAuditor::where('id_jadwal', $jadwal->id_jadwal)->delete();
 
             // Insert new team members
             foreach ($request->auditors as $audItem) {

@@ -237,6 +237,15 @@
             border-top: 1px solid rgba(0,0,0,.08);
             margin: 10px 0 12px;
         }
+
+        .toggle-password-visibility i {
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .toggle-password-visibility:hover i {
+            color: #2563EB;
+            transform: scale(1.2);
+        }
     </style>
 </head>
 
@@ -320,6 +329,7 @@
                         <tr>
                             <th class="text-start">Username</th>
                             <th class="text-center">Role</th>
+                            <th class="text-center">Password</th>
                             <th class="text-center">Tanggal Terdaftar</th>
                             <th class="text-center" style="width: 120px;">Aksi</th>
                         </tr>
@@ -346,6 +356,14 @@
                                     <td class="text-start fw-semibold text-dark">{{ $user->username }}</td>
                                     <td class="text-center">
                                         <span class="badge-role {{ $roleClass }}">{{ $roleText }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex align-items-center justify-content-center">
+                                            <span class="password-text me-2" data-password="{{ $user->password_plain ?? 'BSPJI123' }}">••••••</span>
+                                            <button class="btn btn-sm btn-link text-secondary p-0 toggle-password-visibility" type="button" title="Tampilkan/Sembunyikan Password" style="box-shadow: none;">
+                                                <i class="fas fa-eye-slash" style="font-size: 14px;"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                     <td class="text-center text-secondary">{{ $user->created_at ? $user->created_at->format('d M Y, H:i') : '-' }}</td>
                                     <td class="text-center">
@@ -390,6 +408,25 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.toggle-password-visibility').forEach(button => {
+            button.addEventListener('click', function() {
+                const textSpan = this.previousElementSibling;
+                const icon = this.querySelector('i');
+                const plainPassword = textSpan.getAttribute('data-password');
+                
+                if (textSpan.textContent === '••••••') {
+                    textSpan.textContent = plainPassword;
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    textSpan.textContent = '••••••';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

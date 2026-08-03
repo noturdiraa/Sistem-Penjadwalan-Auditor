@@ -409,15 +409,16 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
 <!-- ================= CARD STATISTIK ================= -->
 
 @php
-    $totalAudit = \App\Models\JadwalAudit::count();
     $auditSelesai = \App\Models\JadwalAudit::where('status_jadwal', 'Selesai')->count();
     $auditBerlangsung = \App\Models\JadwalAudit::where('status_jadwal', 'Aktif')->count();
+    $auditReview = \App\Models\JadwalAudit::where('status_jadwal', 'Review')->count();
+    $totalAudit = \App\Models\JadwalAudit::count();
 @endphp
 
 <div class="row">
 
     <!-- Total Audit Bulan Ini -->
-    <div class="col-lg-4 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
 
         <div class="card-stat text-center">
 
@@ -445,7 +446,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
     </div>
 
     <!-- Audit Selesai -->
-    <div class="col-lg-4 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
 
         <div class="card-stat text-center">
 
@@ -473,7 +474,7 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
     </div>
 
     <!-- Audit Berlangsung -->
-    <div class="col-lg-4 mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
 
         <div class="card-stat text-center">
 
@@ -491,6 +492,34 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                 <div class="icon-box bg-orange">
 
                     <i class="fas fa-spinner"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Menunggu Persetujuan -->
+    <div class="col-lg-3 col-md-6 mb-4">
+
+        <div class="card-stat text-center">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h3 class="fw-bold mb-0 text-dark text-start">{{ $auditReview }}</h3>
+                    <small class="text-secondary">
+                        Menunggu Review
+                    </small>
+
+                </div>
+
+                <div class="icon-box bg-purple">
+
+                    <i class="fas fa-clock"></i>
 
                 </div>
 

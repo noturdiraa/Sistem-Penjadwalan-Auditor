@@ -32,6 +32,7 @@ class UserController extends Controller
             'nama_user' => $request->username,
             'username' => $request->username,
             'password' => Hash::make($request->password),
+            'password_plain' => $request->password,
             'role' => $request->role,
         ]);
 
@@ -67,6 +68,7 @@ class UserController extends Controller
 
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
+            $data['password_plain'] = $request->password;
         }
 
         $user->update($data);

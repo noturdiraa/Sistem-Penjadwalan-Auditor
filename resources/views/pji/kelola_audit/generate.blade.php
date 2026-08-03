@@ -563,14 +563,14 @@
                                             </div>
                                         </div>
                                         
-                                         <!-- Bagian: Poin Keberangkatan -->
+                                         <!-- Bagian: Pengalaman Audit -->
                                          <div class="mb-3 text-start">
                                              <div class="text-secondary fw-semibold mb-1" style="font-size: 13px;">
-                                                 <i class="fas fa-route text-primary me-1"></i> Poin Keberangkatan:
+                                                 <i class="fas fa-briefcase text-primary me-1"></i> Pengalaman Audit:
                                              </div>
                                              <div class="d-flex align-items-center gap-2">
                                                  <span class="badge {{ $auditor->workload_count === 0 ? 'bg-success-subtle text-success' : 'bg-primary-subtle text-primary' }} fw-bold px-3 py-2 fs-7" style="border-radius: 8px;">
-                                                     {{ $auditor->workload_count }} Poin
+                                                     {{ $auditor->workload_count }} Kali
                                                  </span>
                                                  @if($auditor->workload_count === 0)
                                                      <span class="badge bg-success text-white fw-bold px-2 py-1 fs-8" style="border-radius: 6px; font-size: 10px;">

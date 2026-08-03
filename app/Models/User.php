@@ -17,6 +17,7 @@ class User extends Authenticatable
         'nama_user',
         'username',
         'password',
+        'password_plain',
         'role',
     ];
 

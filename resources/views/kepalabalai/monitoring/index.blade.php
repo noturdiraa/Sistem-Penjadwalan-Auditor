@@ -13,7 +13,12 @@
         $perusahaan = $audit->perusahaan;
         if (!$perusahaan) continue;
 
-        $status = 'berjalan';
+        // Skip if status is not Aktif or Selesai
+        if ($j->status_jadwal !== 'Aktif' && $j->status_jadwal !== 'Selesai') {
+            continue;
+        }
+
+        $status = 'berlangsung';
         if ($j->status_jadwal === 'Selesai') {
             $status = 'selesai';
         }
@@ -36,7 +41,7 @@
         ];
     }
 
-    $berjalanCount = collect($monitoringData)->where('status', 'berjalan')->count();
+    $berlangsungCount = collect($monitoringData)->where('status', 'berlangsung')->count();
     $selesaiCount = collect($monitoringData)->where('status', 'selesai')->count();
 @endphp
 <!DOCTYPE html>
@@ -363,13 +368,13 @@
 
             <!-- ================= CARD STATISTIK ================= -->
             <div class="row">
-                <!-- Audit Berjalan -->
+                <!-- Audit Berlangsung -->
                 <div class="col-lg-6 mb-4">
                     <div class="card-stat p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h2 class="fw-bold mb-1" style="font-size: 32px;">{{ $berjalanCount }}</h2>
-                                <span class="text-secondary" style="font-size: 14px;">Audit Berjalan</span>
+                                <h2 class="fw-bold mb-1" style="font-size: 32px;">{{ $berlangsungCount }}</h2>
+                                <span class="text-secondary" style="font-size: 14px;">Audit Berlangsung</span>
                             </div>
                             <div class="icon-box bg-orange">
                                 <i class="fas fa-spinner"></i>
@@ -398,8 +403,8 @@
             <div class="table-card">
                 <!-- Tabs Filter -->
                 <div class="d-flex gap-2 mb-4 border-bottom pb-3">
-                    <button class="btn btn-primary px-4 py-2 filter-tab active" onclick="filterCategory('berjalan')" id="tabBerjalan" style="border-radius: 8px; font-size: 14px;">
-                        <i class="fas fa-spinner me-2"></i>Audit Berjalan ({{ $berjalanCount }})
+                    <button class="btn btn-primary px-4 py-2 filter-tab active" onclick="filterCategory('berlangsung')" id="tabBerlangsung" style="border-radius: 8px; font-size: 14px;">
+                        <i class="fas fa-spinner me-2"></i>Audit Berlangsung ({{ $berlangsungCount }})
                     </button>
                     <button class="btn btn-outline-secondary px-4 py-2 filter-tab" onclick="filterCategory('selesai')" id="tabSelesai" style="border-radius: 8px; font-size: 14px; border-color: #E2E8F0; color: #4B5563;">
                         <i class="fas fa-circle-check me-2"></i>Audit Selesai ({{ $selesaiCount }})
@@ -446,7 +451,7 @@
         // Data Monitoring Audit
         const monitoringData = @json($monitoringData);
 
-        let currentCategory = "berjalan";
+        let currentCategory = "berlangsung";
 
         document.addEventListener('DOMContentLoaded', function() {
             renderTable();
@@ -455,11 +460,11 @@
         function filterCategory(category) {
             currentCategory = category;
             
-            const tabBerjalan = document.getElementById('tabBerjalan');
+            const tabBerlangsung = document.getElementById('tabBerlangsung');
             const tabSelesai = document.getElementById('tabSelesai');
             
-            if (category === 'berjalan') {
-                tabBerjalan.className = 'btn btn-primary px-4 py-2 filter-tab active';
+            if (category === 'berlangsung') {
+                tabBerlangsung.className = 'btn btn-primary px-4 py-2 filter-tab active';
                 tabSelesai.className = 'btn btn-outline-secondary px-4 py-2 filter-tab';
                 // Reset styling to look secondary
                 tabSelesai.style.color = '#4B5563';
@@ -467,11 +472,11 @@
                 tabSelesai.style.backgroundColor = 'transparent';
             } else {
                 tabSelesai.className = 'btn btn-primary px-4 py-2 filter-tab active';
-                tabBerjalan.className = 'btn btn-outline-secondary px-4 py-2 filter-tab';
+                tabBerlangsung.className = 'btn btn-outline-secondary px-4 py-2 filter-tab';
                 // Reset styling to look secondary
-                tabBerjalan.style.color = '#4B5563';
-                tabBerjalan.style.borderColor = '#E2E8F0';
-                tabBerjalan.style.backgroundColor = 'transparent';
+                tabBerlangsung.style.color = '#4B5563';
+                tabBerlangsung.style.borderColor = '#E2E8F0';
+                tabBerlangsung.style.backgroundColor = 'transparent';
             }
             
             renderTable();
@@ -505,8 +510,8 @@
                 const initials = item.ketua_tim.split(' ').map(n => n[0]).join('');
 
                 let statusBadge = '';
-                if (item.status === 'berjalan') {
-                    statusBadge = '<span class="badge bg-warning-subtle text-warning" style="padding: 6px 12px; border-radius: 8px; font-weight: 600;">Audit Berjalan</span>';
+                if (item.status === 'berlangsung') {
+                    statusBadge = '<span class="badge bg-warning-subtle text-warning" style="padding: 6px 12px; border-radius: 8px; font-weight: 600;">Audit Berlangsung</span>';
                 } else {
                     statusBadge = '<span class="badge bg-success-subtle text-success" style="padding: 6px 12px; border-radius: 8px; font-weight: 600;">Audit Selesai</span>';
                 }
