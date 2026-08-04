@@ -608,6 +608,9 @@ Pantau seluruh aktivitas audit dan lihat statistik pelaksanaan audit secara real
                         $aud->total_assignments = $aud->tim_audits_count + $aud->riwayat_auditors_count;
                         return $aud;
                     })
+                    ->filter(function($aud) {
+                        return $aud->total_assignments > 0;
+                    })
                     ->sortByDesc('total_assignments')
                     ->take(5);
 

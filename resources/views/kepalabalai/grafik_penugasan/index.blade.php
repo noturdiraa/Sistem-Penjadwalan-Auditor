@@ -4,6 +4,9 @@
             $aud->total = $aud->tim_audits_count + $aud->riwayat_auditors_count;
             return $aud;
         })
+        ->filter(function($aud) {
+            return $aud->total > 0;
+        })
         ->sortByDesc('total')
         ->values();
 
@@ -291,8 +294,12 @@
                             <span>Grafik Keberangkatan Penugasan</span>
                             <span class="badge bg-light text-secondary border" style="font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 6px;">H1 2026</span>
                         </h4>
-                        <div style="position: relative; height: 350px; width: 100%;">
-                            <canvas id="keberangkatanChart"></canvas>
+                        <div style="position: relative; height: 350px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                            @if(count($auditorData) > 0)
+                                <canvas id="keberangkatanChart"></canvas>
+                            @else
+                                <p class="text-secondary text-center mb-0" style="font-size: 13px;">Belum ada data keberangkatan penugasan.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -377,60 +384,63 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // 1. Grafik Keberangkatan Penugasan (Horizontal Bar)
-            const ctxKeberangkatan = document.getElementById('keberangkatanChart').getContext('2d');
-            new Chart(ctxKeberangkatan, {
-                type: 'bar',
-                data: {
-                    labels: @json($auditorLabels),
-                    datasets: [{
-                        label: 'Jumlah Keberangkatan',
-                        data: @json($auditorData),
-                        backgroundColor: '#3B82F6',
-                        borderRadius: 8,
-                        barThickness: 16
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            bottom: 15
-                        }
+            const canvasKeberangkatan = document.getElementById('keberangkatanChart');
+            if (canvasKeberangkatan) {
+                const ctxKeberangkatan = canvasKeberangkatan.getContext('2d');
+                new Chart(ctxKeberangkatan, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($auditorLabels),
+                        datasets: [{
+                            label: 'Jumlah Keberangkatan',
+                            data: @json($auditorData),
+                            backgroundColor: '#3B82F6',
+                            borderRadius: 8,
+                            barThickness: 16
+                        }]
                     },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    family: 'Poppins'
-                                }
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 15
                             }
                         },
-                        y: {
-                            grid: {
-                                color: '#F3F4F6'
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        family: 'Poppins'
+                                    }
+                                }
                             },
-                            ticks: {
-                                color: '#1F2937',
-                                font: {
-                                    family: 'Poppins',
-                                    weight: '500'
+                            y: {
+                                grid: {
+                                    color: '#F3F4F6'
+                                },
+                                ticks: {
+                                    color: '#1F2937',
+                                    font: {
+                                        family: 'Poppins',
+                                        weight: '500'
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
 
             // 2. Grafik Jumlah Hari Penugasan (Smooth Area Chart)
             const ctxJumlahHari = document.getElementById('jumlahHariChart').getContext('2d');
