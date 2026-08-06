@@ -32,7 +32,7 @@ class LoginController extends Controller
         $credentials = $request->only('username', 'password');
 
         // Mencoba login ke database
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
+        if (Auth::attempt($credentials, $request->has('remember'))) {
             // Jika sukses, buat ulang session agar aman
             $request->session()->regenerate();
 
