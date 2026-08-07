@@ -438,8 +438,48 @@ Periksa informasi audit sebelum dikembalikan.
             </div>
         @endforelse
     </div>
-
 </div>
+
+@php
+    $reviewOperasional = $jadwal->reviewTeknis->sortByDesc('created_at')->first();
+@endphp
+
+@if($reviewOperasional && ($reviewOperasional->tim_awal || $reviewOperasional->alasan_pergantian || $reviewOperasional->catatan))
+    <!-- ================= CATATAN DARI OPERASIONAL ================= -->
+    <div class="card-box mb-4" style="background: #F8FAFC; border-left: 4px solid #F59E0B;">
+        <h3 class="info-title" style="color: #D97706; font-size: 20px; margin-bottom: 15px;">
+            <i class="fa-solid fa-circle-info me-2"></i>
+            Catatan & Informasi dari Operasional
+        </h3>
+        
+        @if($reviewOperasional->tim_awal)
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary small d-block mb-1">Tim Auditor Awal (Sebelum Diganti):</label>
+                <div class="p-2 bg-white rounded border" style="font-size: 14px; line-height: 1.5; color: #4B5563;">
+                    {!! nl2br(e($reviewOperasional->tim_awal)) !!}
+                </div>
+            </div>
+        @endif
+
+        @if($reviewOperasional->alasan_pergantian)
+            <div class="mb-3">
+                <label class="fw-semibold text-secondary small d-block mb-1">Alasan Pergantian Auditor:</label>
+                <div class="p-2 bg-white rounded border" style="font-size: 14px; line-height: 1.5; color: #B45309; background-color: #FFFBEB !important; border-color: #FDE68A !important;">
+                    <strong>{!! nl2br(e($reviewOperasional->alasan_pergantian)) !!}</strong>
+                </div>
+            </div>
+        @endif
+
+        @if($reviewOperasional->catatan)
+            <div class="mb-0">
+                <label class="fw-semibold text-secondary small d-block mb-1">Catatan Tambahan Operasional:</label>
+                <div class="p-2 bg-white rounded border" style="font-size: 14px; line-height: 1.5; color: #4B5563;">
+                    {!! nl2br(e($reviewOperasional->catatan)) !!}
+                </div>
+            </div>
+        @endif
+    </div>
+@endif
 
 <form action="{{ route('pji.reviewkatim.submit', $jadwal->id_jadwal) }}" method="POST" id="formReviewKatim">
     @csrf
