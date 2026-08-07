@@ -381,7 +381,7 @@
             <div class="profile">
                 
                 <img src="{{ asset('images/logo.png') }}" alt="Profil">
-                <span>Kepala Balai</span>
+                <strong>Kepala Balai</strong>
             </div>
         </div>
 
