@@ -456,7 +456,8 @@
             'jadwalAudit.audit.perusahaan',
             'jadwalAudit.audit.ruangLingkup',
             'jadwalAudit.lokasi',
-            'jadwalAudit.timAudits.auditor',
+            'jadwalAudit.timAudits.auditor.riwayatAuditors',
+            'jadwalAudit.timAudits.auditor.timAudits',
             'user'
         ])
         ->where('status_review', 'Dikembalikan')
@@ -483,12 +484,13 @@
                 foreach ($jadwal->timAudits as $tim) {
                     $auditor = $tim->auditor;
                     if ($auditor) {
+                        $totalAudit = $auditor->riwayatAuditors->where('id_jadwal', '!=', $jadwal->id_jadwal)->count() + $auditor->timAudits->where('id_jadwal', '!=', $jadwal->id_jadwal)->count();
                         $item = [
                             'name' => $auditor->nama_auditor ?? '',
                             'role' => $tim->peran ?? 'Auditor',
                             'NIP' => $auditor->nip ?? '',
                             'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
-                            'point' => 0
+                            'point' => $totalAudit
                         ];
                         if (strtolower($tim->peran) === 'ketua tim' || strtolower($tim->peran) === 'lead auditor') {
                             $ketua = $item;
