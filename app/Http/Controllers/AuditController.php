@@ -415,8 +415,7 @@ class AuditController extends Controller
         $bulanSelesai = $request->input('bulan_selesai', date('m'));
         $tahun = $request->input('tahun', date('Y'));
 
-        $query = \App\Models\JadwalAudit::with(['audit.perusahaan', 'timAudits.auditor', 'lokasi'])
-            ->where('status_jadwal', 'Selesai');
+        $query = \App\Models\JadwalAudit::with(['audit.perusahaan', 'timAudits.auditor', 'lokasi']);
 
         $query->whereMonth('tanggal_mulai', '>=', $bulanMulai)
               ->whereMonth('tanggal_mulai', '<=', $bulanSelesai);

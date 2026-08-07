@@ -496,7 +496,7 @@
             <div class="header-card">
                 <div>
                     <h2 class="title">Rekapan Audit</h2>
-                    <p class="subtitle">Rekapitulasi pelaksanaan audit yang telah berstatus selesai.</p>
+                    <p class="subtitle">Rekapitulasi pelaksanaan seluruh rencana kegiatan audit.</p>
                 </div>
             </div>
 
@@ -551,7 +551,7 @@
                                 <th>Ruang Lingkup / Komoditi</th>
                                 <th>Alamat</th>
                                 <th>Jenis Audit (Lembaga Sertifikasi)</th>
-                                <th>Tgl. Jatuh Tempo</th>
+                                <th>Tanggal Pelaksanaan</th>
                                 <th>Tim Audit</th>
                             </tr>
                         </thead>
@@ -569,7 +569,12 @@
                                     <td>{{ $j->audit->ruang_lingkup ?? ($j->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</td>
                                     <td>{{ $j->audit->perusahaan->alamat ?? '-' }}</td>
                                     <td>{{ $j->keterangan ?? '-' }} ({{ $j->audit->jenis_audit ?? '-' }})</td>
-                                    <td class="text-center">{{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d-M-y') : '-' }}</td>
+                                    <td class="text-center">
+                                        {{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d-M-y') : '-' }}
+                                        @if($j->tanggal_selesai && $j->tanggal_selesai !== $j->tanggal_mulai)
+                                            s.d. {{ \Carbon\Carbon::parse($j->tanggal_selesai)->format('d-M-y') }}
+                                        @endif
+                                    </td>
                                     <td>
                                         <div>LA : {{ $leadName }}</div>
                                         @foreach($members as $m)
@@ -583,7 +588,7 @@
                                         <div class="mb-2">
                                             <i class="fas fa-folder-open fa-3x text-secondary opacity-50"></i>
                                         </div>
-                                        <span>Tidak ada rekapan audit selesai untuk periode ini.</span>
+                                        <span>Tidak ada rekapan audit untuk periode ini.</span>
                                     </td>
                                 </tr>
                             @endforelse
