@@ -528,13 +528,7 @@
                             </div>
                         </div>
 
-                        <!-- Alasan Pergantian Auditor -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-dark mb-2" style="font-size: 13px;">
-                                <i class="fas fa-clipboard-question me-1 text-primary"></i> Keterangan / Alasan Pergantian:
-                            </label>
-                            <textarea class="form-control" id="alasanPergantianInput" rows="3" placeholder="Contoh: Risman Affandy cuti mendadak karena sakit" style="border-radius: 10px; font-size: 13px; resize: none;"></textarea>
-                        </div>
+
 
                         <!-- Action Button -->
                         <button class="btn btn-primary w-100 py-3 fw-bold disabled" id="btnSimpanTeam" style="border-radius: 12px;" onclick="simpanTetapkan()">
@@ -914,12 +908,7 @@
                 `;
             });
             
-            // Add alasan_pergantian
-            const alasanInput = document.getElementById('alasanPergantianInput');
-            const alasanVal = alasanInput ? alasanInput.value : '';
-            container.innerHTML += `
-                <input type="hidden" name="alasan_pergantian" value="${alasanVal}">
-            `;
+
             
             form.submit();
         }

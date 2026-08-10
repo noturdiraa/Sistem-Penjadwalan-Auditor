@@ -595,7 +595,7 @@
                 'keputusan' => $keputusan,
                 'catatan' => $catatan,
                 'timAwal' => $rev->tim_awal ?? 'Belum ada tim',
-                'alasanPergantian' => $rev->alasan_pergantian ?? '-',
+
                 'status' => $statusText,
                 'jenisAudit' => $audit->jenis_audit ?? 'Sertifikasi',
                 'lembaga' => $audit->jenis_audit ?? 'LSSM',
@@ -845,12 +845,7 @@
                             "${item.catatan}"
                         </div>
                     </div>
-                    <div class="mt-3">
-                        <small class="text-secondary d-block mb-1" style="font-size: 11px;">Keterangan / Alasan Pergantian Auditor</small>
-                        <div class="p-3 bg-light rounded-3 text-dark fw-medium" style="font-size: 13px; border: 1px solid #eef2f6;">
-                            ${item.alasanPergantian}
-                        </div>
-                    </div>
+
                 </div>
             `;
 

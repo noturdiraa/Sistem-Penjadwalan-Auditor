@@ -227,7 +227,6 @@ Route::middleware(['auth'])->group(function () {
                 'auditors' => 'required|array|min:1',
                 'auditors.*.id_auditor' => 'required|exists:auditors,id_auditor',
                 'auditors.*.peran' => 'required|in:Lead Auditor,Auditor',
-                'alasan_pergantian' => 'nullable|string',
             ]);
 
             $jadwal = \App\Models\JadwalAudit::findOrFail($id);
@@ -252,16 +251,6 @@ Route::middleware(['auth'])->group(function () {
             if ($jadwal->audit) {
                 $jadwal->audit->status = 'Revisi';
                 $jadwal->audit->touch();
-            }
-
-            // Save the reasons of change
-            $review = \App\Models\ReviewOperasional::where('id_jadwal', $jadwal->id_jadwal)
-                ->where('status_review', 'Dikembalikan')
-                ->orderBy('created_at', 'desc')
-                ->first();
-            if ($review) {
-                $review->alasan_pergantian = $request->alasan_pergantian;
-                $review->save();
             }
 
             return redirect()->route('operasional.reviewjadwal.index')->with('success', 'Tim audit manual berhasil disimpan. Menunggu persetujuan Katim PJI.');

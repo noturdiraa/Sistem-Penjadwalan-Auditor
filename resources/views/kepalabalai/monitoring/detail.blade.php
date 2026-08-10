@@ -567,15 +567,9 @@
                                     <span class="badge" style="{{ $badgeStyle }} font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600;">{{ $rev->status_review }}</span>
                                     <span class="badge bg-light text-secondary border" style="font-size: 11px;">{{ \Carbon\Carbon::parse($rev->created_at)->format('d F Y') }}</span>
                                 </div>
-                                @if(!$isPji && $rev->alasan_pergantian)
-                                <div class="text-secondary" style="font-size: 13px;">
-                                    Alasan Ganti: <strong class="text-dark">{{ $rev->alasan_pergantian }}</strong>
-                                </div>
-                                @else
                                 <div class="text-secondary" style="font-size: 13px;">
                                     Catatan: <strong class="text-dark">{{ $rev->catatan ?? '-' }}</strong>
                                 </div>
-                                @endif
                                 @if(!$isPji && $rev->rekomendasi)
                                 <small class="text-muted d-block mt-1" style="font-size: 12px; font-style: italic;">
                                     Rekomendasi: {{ $rev->rekomendasi }}
