@@ -783,7 +783,7 @@
                 <!-- Tim Rekomendasi Sistem (Awal) Card -->
                 <div class="card p-3 border-0 shadow-sm rounded-3 bg-white mb-3" style="border: 1px solid #ffccd5 !important; background-color: #fffafb !important;">
                     <h6 class="fw-bold text-danger mb-2" style="font-size: 15px;">
-                        <i class="fas fa-users-slash me-2"></i>Tim Rekomendasi Sistem (Awal)
+                        <i class="fas fa-users-slash me-2"></i>Tim Awal
                     </h6>
                     <div class="p-2 border rounded-3 text-danger fw-semibold" style="font-size: 13px; background-color: #fff0f2;">
                         ${item.timAwal}
@@ -795,7 +795,7 @@
                 <!-- Tim Audit Card -->
                 <div class="card p-3 border-0 shadow-sm rounded-3 bg-white mb-3" style="border: 1px solid #eef2f6 !important;">
                     <h6 class="fw-bold text-success mb-3" style="font-size: 15px;">
-                        <i class="fas fa-users-gear me-2"></i>Tim Hasil Ganti (Baru)
+                        <i class="fas fa-users-gear me-2"></i>Tim Baru
                     </h6>
                     <div class="row">
                         <!-- Ketua Tim -->

@@ -628,10 +628,10 @@
                                             <span class="badge text-danger fw-semibold" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; background-color: #FDE8E8; border: 1px solid #FCA5A5;">Auditor Diubah Manual</span>
                                         </div>
                                         <div class="text-secondary mb-1">
-                                            <i class="fas fa-users-slash text-danger me-1"></i> Tim Awal (Rekomendasi): <span class="text-dark">{{ $rev->tim_awal }}</span>
+                                            <i class="fas fa-users-slash text-danger me-1"></i> Tim Awal: <span class="text-dark">{{ $rev->tim_awal }}</span>
                                         </div>
                                         <div class="text-secondary mb-2">
-                                            <i class="fas fa-users text-success me-1"></i> Tim Baru (Hasil Ganti): 
+                                            <i class="fas fa-users text-success me-1"></i> Tim Baru: 
                                             <span class="text-dark fw-medium">
                                                 @php
                                                     $newTeamNames = [];
