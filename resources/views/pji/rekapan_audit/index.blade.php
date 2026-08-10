@@ -569,10 +569,10 @@
                                     <td>{{ $j->audit->ruang_lingkup ?? ($j->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</td>
                                     <td>{{ $j->audit->perusahaan->alamat ?? '-' }}</td>
                                     <td>{{ $j->keterangan ?? '-' }} ({{ $j->audit->jenis_audit ?? '-' }})</td>
-                                    <td class="text-center">
-                                        {{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->format('d-M-y') : '-' }}
+                                    <td class="text-center" style="white-space: nowrap;">
+                                        {{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->locale('id')->translatedFormat('d M') : '-' }}
                                         @if($j->tanggal_selesai && $j->tanggal_selesai !== $j->tanggal_mulai)
-                                            s.d. {{ \Carbon\Carbon::parse($j->tanggal_selesai)->format('d-M-y') }}
+                                            s.d. {{ \Carbon\Carbon::parse($j->tanggal_selesai)->locale('id')->translatedFormat('d M') }}
                                         @endif
                                     </td>
                                     <td>
