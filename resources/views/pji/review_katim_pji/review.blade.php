@@ -278,6 +278,12 @@ body {
                 Review Katim PJI
             </a>
         </li>
+            <li>
+                <a href="/pji/rekapan-audit">
+                    <i class="fas fa-file-invoice"></i>
+                    Rekapan Audit
+                </a>
+            </li>
         <li>
             <a href="/pji/profil">
                 <i class="fas fa-user"></i>
