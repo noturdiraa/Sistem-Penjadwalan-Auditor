@@ -462,15 +462,13 @@ Periksa informasi audit sebelum dikembalikan.
         @endif
 
         @if($reviewOperasional->alasan_pergantian)
-            <div class="mb-3">
+            <div class="mb-0">
                 <label class="fw-semibold text-secondary small d-block mb-1">Alasan Pergantian Auditor:</label>
                 <div class="p-2 bg-white rounded border" style="font-size: 14px; line-height: 1.5; color: #B45309; background-color: #FFFBEB !important; border-color: #FDE68A !important;">
                     <strong>{!! nl2br(e($reviewOperasional->alasan_pergantian)) !!}</strong>
                 </div>
             </div>
-        @endif
-
-        @if($reviewOperasional->catatan)
+        @elseif($reviewOperasional->catatan)
             <div class="mb-0">
                 <label class="fw-semibold text-secondary small d-block mb-1">Catatan Tambahan Operasional:</label>
                 <div class="p-2 bg-white rounded border" style="font-size: 14px; line-height: 1.5; color: #4B5563;">
