@@ -568,7 +568,13 @@
                                     <td class="fw-bold">{{ $j->audit->perusahaan->nama_perusahaan ?? '-' }}</td>
                                     <td>{{ $j->audit->ruang_lingkup ?? ($j->audit->ruangLingkup->nama_ruang_lingkup ?? '-') }}</td>
                                     <td>{{ $j->audit->perusahaan->alamat ?? '-' }}</td>
-                                    <td>{{ $j->keterangan ?? '-' }} ({{ $j->audit->jenis_audit ?? '-' }})</td>
+                                    <td>
+                                        @if($j->keterangan)
+                                            {{ $j->keterangan }} ({{ $j->audit->jenis_audit ?? '' }})
+                                        @else
+                                            {{ $j->audit->jenis_audit ?? '-' }}
+                                        @endif
+                                    </td>
                                     <td class="text-center" style="white-space: nowrap;">
                                         {{ $j->tanggal_mulai ? \Carbon\Carbon::parse($j->tanggal_mulai)->locale('id')->translatedFormat('d M') : '-' }}
                                         @if($j->tanggal_selesai && $j->tanggal_selesai !== $j->tanggal_mulai)
