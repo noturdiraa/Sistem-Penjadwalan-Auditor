@@ -335,8 +335,8 @@ color:#777;
                     <li>
                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
-                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; font-size: 15px; line-height: 1.1; cursor: pointer;">
-                        <i class="fas fa-right-from-bracket"></i>
+                    <button type="submit" style="background: none; border: none; color: white; display: flex; align-items: center; gap: 15px; width: 100%; padding: 10px 12px; font-size: 15px; line-height: 1.1; cursor: pointer; border-radius: 12px; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#2563EB'" onmouseout="this.style.backgroundColor='transparent'">
+                        <i class="fas fa-right-from-bracket" style="font-size: 16px; width: 20px; text-align: center;"></i>
                         Logout
                     </button>
                 </form>
