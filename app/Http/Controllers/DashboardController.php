@@ -16,8 +16,8 @@ class DashboardController extends Controller
         $totalLembaga = Lembaga::count();
         $totalRuangLingkup = RuangLingkup::count();
         
-        // Mengambil semua auditor beserta relasi kompetensinya
-        $auditors = Auditor::with('detailAuditors.ruangLingkup.lembaga')->get();
+        // Mengambil 5 auditor teratas beserta relasi kompetensinya
+        $auditors = Auditor::with('detailAuditors.ruangLingkup.lembaga')->take(5)->get();
 
         return view('dashboard.kepegawaian', compact(
             'totalAuditor',
