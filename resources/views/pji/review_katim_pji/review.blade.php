@@ -305,7 +305,7 @@ body {
 <!-- CONTENT -->
 <div class="content">
     <div class="navbar-custom">
-        <input type="text" class="form-control search" placeholder="Cari...">
+        <div></div>
 
         <div class="profile">
             

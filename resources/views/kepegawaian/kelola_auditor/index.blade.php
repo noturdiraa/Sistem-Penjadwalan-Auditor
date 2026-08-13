@@ -542,14 +542,7 @@ color:#EF4444;
 
 <div class="navbar-custom">
 
-    <div class="search-box">
-
-        <input
-            type="text"
-            class="form-control"
-            placeholder="Cari...">
-
-    </div>
+    <div></div>
 
     <div class="right-menu">
 

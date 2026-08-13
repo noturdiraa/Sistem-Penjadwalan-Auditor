@@ -386,7 +386,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
     <div class="navbar-custom">
 
-        <input type="text" class="form-control search" placeholder="Cari...">
+        <div></div>
 
         <div class="profile">
 

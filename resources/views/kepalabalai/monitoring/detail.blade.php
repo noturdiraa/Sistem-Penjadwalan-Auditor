@@ -366,10 +366,7 @@
     <!-- ================= CONTENT ================= -->
         <div class="content">
         <div class="navbar-custom">
-            <div class="search-box-container" style="position: relative; width: 320px;">
-                <input type="text" class="form-control" placeholder="Cari..." style="height: 38px; border-radius: 20px; padding-left: 35px; font-size: 14px; border: 1px solid #E2E8F0; background-color: #F8FAFC;">
-                <i class="fas fa-search text-secondary" style="position: absolute; left: 12px; top: 12px; font-size: 14px;"></i>
-            </div>
+            <div></div>
 
             <div class="profile">
                 

@@ -288,7 +288,7 @@
     <div class="content">
         <!-- NAVBAR -->
         <div class="navbar-custom">
-            <input type="text" class="form-control search" placeholder="Cari...">
+            <div></div>
             <div class="profile">
                 <img src="{{ asset('images/logo.png') }}" alt="Admin Profile">
                 <span>Administrator</span>

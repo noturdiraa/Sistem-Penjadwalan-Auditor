@@ -311,7 +311,7 @@ box-shadow:0 6px 18px rgba(15,61,145,0.06);
     <!-- ================= CONTENT ================= -->
     <div class="content">
         <div class="navbar-custom">
-            <input type="text" class="form-control search" placeholder="Cari...">
+            <div></div>
 
             <div class="profile">
                 
