@@ -388,7 +388,7 @@
                     <div class="card-stat d-flex align-items-center justify-content-between">
                         <div>
                             <h3 class="text-dark">{{ $totalRiwayat }}</h3>
-                            <small class="text-secondary">Total Riwayat Penugasan</small>
+                            <small class="text-secondary">Total Penugasan Auditor</small>
                         </div>
                         <div class="icon-box bg-blue-light">
                             <i class="fas fa-clipboard-list fa-xl"></i>
@@ -399,7 +399,7 @@
                     <div class="card-stat d-flex align-items-center justify-content-between">
                         <div>
                             <h3 class="text-dark">{{ $berlangsung }}</h3>
-                            <small class="text-secondary">Penugasan Berlangsung</small>
+                            <small class="text-secondary">Auditor Sedang Bertugas</small>
                         </div>
                         <div class="icon-box bg-orange-light">
                             <i class="fas fa-spinner fa-xl"></i>
@@ -410,7 +410,7 @@
                     <div class="card-stat d-flex align-items-center justify-content-between">
                         <div>
                             <h3 class="text-dark">{{ $selesai }}</h3>
-                            <small class="text-secondary">Penugasan Selesai</small>
+                            <small class="text-secondary">Auditor Selesai Bertugas</small>
                         </div>
                         <div class="icon-box bg-green-light">
                             <i class="fas fa-circle-check fa-xl"></i>
