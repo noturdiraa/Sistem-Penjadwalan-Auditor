@@ -52,4 +52,18 @@ class RiwayatAuditor extends Model
     {
         return $this->belongsTo(JadwalAudit::class, 'id_jadwal', 'id_jadwal');
     }
+
+    // Accessor untuk menyelaraskan status secara dinamis dari jadwal audit
+    public function getStatusPenugasanAttribute($value)
+    {
+        if ($this->id_jadwal && $this->jadwalAudit) {
+            $status = $this->jadwalAudit->status_jadwal === 'Selesai' ? 'Selesai' : 'Berlangsung';
+            if ($value !== $status) {
+                $this->status_penugasan = $status;
+                $this->saveQuietly();
+            }
+            return $status;
+        }
+        return $value;
+    }
 }
