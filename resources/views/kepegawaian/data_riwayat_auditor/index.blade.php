@@ -79,6 +79,13 @@
             background: #2563EB;
         }
 
+        .menu li a i,
+        .menu li i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
         /* CONTENT */
         .content {
             margin-left: 290px;

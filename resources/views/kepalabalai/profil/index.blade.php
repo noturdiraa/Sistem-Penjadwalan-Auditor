@@ -89,6 +89,13 @@
             background: #2563EB;
         }
 
+        .menu li a i,
+        .menu li i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
         .content {
             margin-left: 270px;
             min-height: 100vh;
